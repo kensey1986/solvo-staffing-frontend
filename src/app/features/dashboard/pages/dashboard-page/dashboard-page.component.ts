@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CustomButtonComponent } from '@shared/components/custom-button/custom-button.component';
-import { CustomCardComponent } from '@shared/components/custom-card/custom-card.component';
+import { CustomButtonComponent, CustomCardComponent } from '@shared';
 
 /**
  * DashboardPageComponent
