@@ -1,0 +1,162 @@
+@use '../../../../styles/variables' as vars;
+@use '../../../../styles/mixins' as mixins;
+
+// ==========================================================================
+// CUSTOM BUTTON COMPONENT STYLES
+// ==========================================================================
+
+.custom-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$spacing-2;
+  font-family: vars.$font-family-primary;
+  font-weight: vars.$font-weight-medium;
+  border-radius: vars.$radius-lg;
+  transition: all vars.$transition-fast;
+  cursor: pointer;
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+
+  // ==========================================================================
+  // SIZE VARIANTS
+  // ==========================================================================
+
+  &--small {
+    padding: vars.$spacing-1 vars.$spacing-3;
+    font-size: vars.$font-size-label-medium;
+    min-height: 32px;
+
+    .custom-button__icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &--medium {
+    padding: vars.$spacing-2 vars.$spacing-4;
+    font-size: vars.$font-size-label-large;
+    min-height: 40px;
+
+    .custom-button__icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &--large {
+    padding: vars.$spacing-3 vars.$spacing-6;
+    font-size: vars.$font-size-body-large;
+    min-height: 48px;
+
+    .custom-button__icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  // ==========================================================================
+  // COLOR VARIANTS
+  // ==========================================================================
+
+  &--primary {
+    --mdc-filled-button-container-color: #{vars.$primary-color};
+    --mdc-filled-button-label-text-color: #{vars.$primary-contrast};
+
+    &:hover:not(:disabled) {
+      --mdc-filled-button-container-color: #{vars.$primary-dark};
+    }
+
+    &:active:not(:disabled) {
+      --mdc-filled-button-container-color: #{vars.$primary-dark};
+      filter: brightness(0.95);
+    }
+  }
+
+  &--secondary {
+    --mdc-filled-button-container-color: #{vars.$secondary-color};
+    --mdc-filled-button-label-text-color: #{vars.$secondary-contrast};
+
+    &:hover:not(:disabled) {
+      --mdc-filled-button-container-color: #{vars.$secondary-dark};
+    }
+
+    &:active:not(:disabled) {
+      --mdc-filled-button-container-color: #{vars.$secondary-dark};
+      filter: brightness(0.95);
+    }
+  }
+
+  &--warn {
+    --mdc-filled-button-container-color: #{vars.$warn-color};
+    --mdc-filled-button-label-text-color: #{vars.$warn-contrast};
+
+    &:hover:not(:disabled) {
+      --mdc-filled-button-container-color: #{vars.$warn-dark};
+    }
+  }
+
+  &--text {
+    background: transparent;
+    color: vars.$primary-color;
+
+    &:hover:not(:disabled) {
+      background: rgba(vars.$primary-color, 0.08);
+    }
+
+    &:active:not(:disabled) {
+      background: rgba(vars.$primary-color, 0.12);
+    }
+  }
+
+  // ==========================================================================
+  // STATES
+  // ==========================================================================
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--loading {
+    pointer-events: none;
+
+    .custom-button__spinner {
+      position: absolute;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // ==========================================================================
+  // CHILD ELEMENTS
+  // ==========================================================================
+
+  &__label {
+    &--hidden {
+      visibility: hidden;
+    }
+  }
+
+  &__icon {
+    &--start {
+      margin-right: vars.$spacing-1;
+    }
+
+    &--end {
+      margin-left: vars.$spacing-1;
+    }
+  }
+
+  &__spinner {
+    --mdc-circular-progress-active-indicator-color: currentColor;
+  }
+}

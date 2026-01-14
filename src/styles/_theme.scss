@@ -1,0 +1,162 @@
+// Solvo Global - Material 3 Theme Configuration
+// Custom theme with brand colors
+
+@use '@angular/material' as mat;
+@use 'variables' as vars;
+
+// ==========================================================================
+// CUSTOM COLOR PALETTES
+// ==========================================================================
+
+// Primary Palette - Sandy Orange (#F09F54)
+// Generated using Material 3 color principles
+$solvo-primary-palette: (
+  0: #000000,
+  10: #331300,
+  20: #542300,
+  25: #662b00,
+  30: #793400,
+  35: #8d3d00,
+  40: #a14700,
+  50: #c85a00,
+  60: #f09f54,
+  70: #ffb77a,
+  80: #ffd4a8,
+  90: #ffeedd,
+  95: #fff8f5,
+  98: #fffbff,
+  99: #fffbff,
+  100: #ffffff,
+);
+
+// Secondary Palette - Malibu Blue (#74E1F5)
+$solvo-secondary-palette: (
+  0: #000000,
+  10: #001f24,
+  20: #00363d,
+  25: #00424a,
+  30: #004f58,
+  35: #005c67,
+  40: #006976,
+  50: #008494,
+  60: #00a0b3,
+  70: #1dbcd1,
+  80: #74e1f5,
+  90: #b0f4ff,
+  95: #d8f9ff,
+  98: #edfcff,
+  99: #f6feff,
+  100: #ffffff,
+);
+
+// Error Palette - Material Red (#B00020)
+$solvo-error-palette: (
+  0: #000000,
+  10: #410002,
+  20: #690005,
+  25: #7e0007,
+  30: #93000a,
+  35: #a80710,
+  40: #ba1a1a,
+  50: #de3730,
+  60: #ff5449,
+  70: #ff897d,
+  80: #ffb4ab,
+  90: #ffdad6,
+  95: #ffedea,
+  98: #fff8f7,
+  99: #fffbff,
+  100: #ffffff,
+);
+
+// Neutral Palette
+$solvo-neutral-palette: (
+  0: #000000,
+  10: #1c1b1f,
+  20: #313033,
+  25: #3c3b3f,
+  30: #48464a,
+  35: #545256,
+  40: #605d62,
+  50: #79767a,
+  60: #938f94,
+  70: #aea9ae,
+  80: #c9c5ca,
+  90: #e6e1e5,
+  95: #f4eff4,
+  98: #fdf8fd,
+  99: #fffbff,
+  100: #ffffff,
+);
+
+// ==========================================================================
+// THEME DEFINITION
+// ==========================================================================
+
+// Light Theme
+$solvo-light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$orange-palette,
+      tertiary: mat.$cyan-palette,
+    ),
+  )
+);
+
+// Dark Theme
+$solvo-dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: mat.$orange-palette,
+      tertiary: mat.$cyan-palette,
+    ),
+  )
+);
+
+// ==========================================================================
+// THEME MIXINS
+// ==========================================================================
+
+/// Apply light theme
+@mixin light-theme {
+  @include mat.theme($solvo-light-theme);
+
+  // Override with custom brand colors
+  --mat-sys-primary: #{vars.$primary-color};
+  --mat-sys-on-primary: #{vars.$primary-contrast};
+  --mat-sys-primary-container: #{vars.$primary-light};
+  --mat-sys-on-primary-container: #{vars.$primary-dark};
+
+  --mat-sys-secondary: #{vars.$secondary-color};
+  --mat-sys-on-secondary: #{vars.$secondary-contrast};
+  --mat-sys-secondary-container: #{vars.$secondary-light};
+  --mat-sys-on-secondary-container: #{vars.$secondary-dark};
+
+  --mat-sys-error: #{vars.$warn-color};
+  --mat-sys-on-error: #{vars.$warn-contrast};
+  --mat-sys-error-container: #{vars.$warn-light};
+  --mat-sys-on-error-container: #{vars.$warn-dark};
+}
+
+/// Apply dark theme
+@mixin dark-theme {
+  @include mat.theme($solvo-dark-theme);
+
+  // Override with custom brand colors (adjusted for dark mode)
+  --mat-sys-primary: #{vars.$primary-light};
+  --mat-sys-on-primary: #{vars.$primary-dark};
+  --mat-sys-primary-container: #{vars.$primary-color};
+  --mat-sys-on-primary-container: #{vars.$primary-light};
+
+  --mat-sys-secondary: #{vars.$secondary-light};
+  --mat-sys-on-secondary: #{vars.$secondary-dark};
+  --mat-sys-secondary-container: #{vars.$secondary-color};
+  --mat-sys-on-secondary-container: #{vars.$secondary-light};
+
+  --mat-sys-error: #{vars.$warn-light};
+  --mat-sys-on-error: #{vars.$warn-dark};
+  --mat-sys-error-container: #{vars.$warn-color};
+  --mat-sys-on-error-container: #{vars.$warn-light};
+}

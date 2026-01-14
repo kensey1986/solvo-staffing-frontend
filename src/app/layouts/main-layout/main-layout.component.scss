@@ -1,0 +1,117 @@
+@use '../../../styles/variables' as vars;
+@use '../../../styles/mixins' as mixins;
+
+// ==========================================================================
+// MAIN LAYOUT STYLES
+// ==========================================================================
+
+.main-layout {
+  height: 100%;
+
+  // ==========================================================================
+  // SIDENAV
+  // ==========================================================================
+
+  &__sidenav {
+    width: 260px;
+    background-color: var(--mat-sys-surface-container);
+    border-right: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__sidenav-header {
+    @include mixins.flex-center;
+    padding: vars.$spacing-4;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    min-height: 64px;
+  }
+
+  &__logo {
+    object-fit: contain;
+  }
+
+  // ==========================================================================
+  // NAVIGATION
+  // ==========================================================================
+
+  &__nav {
+    padding-top: vars.$spacing-2;
+  }
+
+  &__nav-item {
+    margin: vars.$spacing-1 vars.$spacing-2;
+    border-radius: vars.$radius-lg;
+    transition: background-color vars.$transition-fast;
+
+    &:hover {
+      background-color: rgba(vars.$primary-color, 0.08);
+    }
+
+    &--active {
+      background-color: rgba(vars.$primary-color, 0.12);
+      color: vars.$primary-color;
+
+      mat-icon {
+        color: vars.$primary-color;
+      }
+    }
+
+    mat-icon {
+      color: var(--mat-sys-on-surface-variant);
+      margin-right: vars.$spacing-3;
+    }
+  }
+
+  // ==========================================================================
+  // TOOLBAR
+  // ==========================================================================
+
+  &__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: vars.$z-index-sticky;
+    background-color: vars.$primary-color;
+    color: vars.$primary-contrast;
+
+    --mat-toolbar-container-background-color: #{vars.$primary-color};
+    --mat-toolbar-container-text-color: #{vars.$primary-contrast};
+  }
+
+  &__toolbar-title {
+    font-size: vars.$font-size-title-large;
+    font-weight: vars.$font-weight-medium;
+    margin-left: vars.$spacing-2;
+  }
+
+  &__toolbar-spacer {
+    flex: 1;
+  }
+
+  // ==========================================================================
+  // CONTENT
+  // ==========================================================================
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--mat-sys-surface);
+  }
+
+  &__main {
+    flex: 1;
+    padding: vars.$spacing-6;
+    overflow-y: auto;
+
+    @include mixins.breakpoint-down(md) {
+      padding: vars.$spacing-4;
+    }
+  }
+}
+
+// ==========================================================================
+// MATERIAL OVERRIDES
+// ==========================================================================
+
+mat-sidenav-container.main-layout {
+  --mat-sidenav-container-background-color: var(--mat-sys-surface);
+}

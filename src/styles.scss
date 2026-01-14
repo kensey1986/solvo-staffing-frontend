@@ -1,0 +1,200 @@
+// Solvo Staffing Frontend - Global Styles
+// Main entry point for all global styles
+
+@use 'styles/variables' as vars;
+@use 'styles/mixins' as mixins;
+@use 'styles/theme' as theme;
+
+// ==========================================================================
+// ANGULAR MATERIAL THEME
+// ==========================================================================
+
+html {
+  height: 100%;
+  @include theme.light-theme;
+}
+
+// Dark mode support (based on system preference)
+@media (prefers-color-scheme: dark) {
+  html.dark-mode {
+    @include theme.dark-theme;
+  }
+}
+
+// Manual dark mode toggle class
+html.dark {
+  @include theme.dark-theme;
+}
+
+// ==========================================================================
+// BASE STYLES
+// ==========================================================================
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+  font-family: vars.$font-family-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ==========================================================================
+// TYPOGRAPHY RESET
+// ==========================================================================
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: vars.$font-family-primary;
+  font-weight: vars.$font-weight-medium;
+  line-height: vars.$line-height-tight;
+}
+
+h1 {
+  font-size: vars.$font-size-headline-large;
+}
+
+h2 {
+  font-size: vars.$font-size-headline-medium;
+}
+
+h3 {
+  font-size: vars.$font-size-headline-small;
+}
+
+h4 {
+  font-size: vars.$font-size-title-large;
+}
+
+h5 {
+  font-size: vars.$font-size-title-medium;
+}
+
+h6 {
+  font-size: vars.$font-size-title-small;
+}
+
+p {
+  margin: 0;
+  font-size: vars.$font-size-body-medium;
+  line-height: vars.$line-height-normal;
+}
+
+// ==========================================================================
+// LINK STYLES
+// ==========================================================================
+
+a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  transition: color vars.$transition-fast;
+
+  &:hover {
+    text-decoration: underline;
+    color: vars.$primary-dark;
+  }
+
+  &:focus-visible {
+    @include mixins.focus-ring;
+  }
+}
+
+// ==========================================================================
+// UTILITY CLASSES
+// ==========================================================================
+
+.container {
+  @include mixins.container;
+}
+
+.flex-center {
+  @include mixins.flex-center;
+}
+
+.flex-column {
+  @include mixins.flex-column;
+}
+
+.flex-between {
+  @include mixins.flex-between;
+}
+
+.visually-hidden {
+  @include mixins.visually-hidden;
+}
+
+// ==========================================================================
+// MATERIAL COMPONENT OVERRIDES
+// ==========================================================================
+
+// Custom button styles using brand colors
+.mat-mdc-button.mat-primary,
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-flat-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: #{vars.$primary-color};
+  --mdc-filled-button-label-text-color: #{vars.$primary-contrast};
+}
+
+.mat-mdc-button.mat-accent,
+.mat-mdc-raised-button.mat-accent,
+.mat-mdc-flat-button.mat-accent,
+.mat-mdc-unelevated-button.mat-accent {
+  --mdc-filled-button-container-color: #{vars.$secondary-color};
+  --mdc-filled-button-label-text-color: #{vars.$secondary-contrast};
+}
+
+// FAB button overrides
+.mat-mdc-fab.mat-primary {
+  --mdc-fab-container-color: #{vars.$primary-color};
+  --mat-fab-foreground-color: #{vars.$primary-contrast};
+}
+
+.mat-mdc-fab.mat-accent {
+  --mdc-fab-container-color: #{vars.$secondary-color};
+  --mat-fab-foreground-color: #{vars.$secondary-contrast};
+}
+
+// Form field styling
+.mat-mdc-form-field.mat-focused {
+  .mat-mdc-form-field-focus-overlay {
+    background-color: rgba(vars.$primary-color, 0.08);
+  }
+}
+
+// Checkbox and radio styling
+.mat-mdc-checkbox.mat-primary,
+.mat-mdc-radio-button.mat-primary {
+  --mdc-checkbox-selected-checkmark-color: #{vars.$primary-contrast};
+  --mdc-checkbox-selected-focus-icon-color: #{vars.$primary-color};
+  --mdc-checkbox-selected-hover-icon-color: #{vars.$primary-color};
+  --mdc-checkbox-selected-icon-color: #{vars.$primary-color};
+}
+
+// Progress bar and spinner
+.mat-mdc-progress-bar,
+.mat-mdc-progress-spinner {
+  --mdc-linear-progress-active-indicator-color: #{vars.$primary-color};
+  --mdc-circular-progress-active-indicator-color: #{vars.$primary-color};
+}
+
+// Slide toggle
+.mat-mdc-slide-toggle.mat-primary {
+  --mdc-switch-selected-track-color: #{vars.$primary-color};
+  --mdc-switch-selected-handle-color: #{vars.$primary-color};
+}
+
+// Tabs
+.mat-mdc-tab-group.mat-primary {
+  --mat-tab-header-active-label-text-color: #{vars.$primary-color};
+  --mat-tab-header-active-focus-indicator-color: #{vars.$primary-color};
+  --mat-tab-header-active-ripple-color: #{vars.$primary-color};
+}

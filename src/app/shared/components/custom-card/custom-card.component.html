@@ -1,0 +1,50 @@
+<mat-card
+  [class.custom-card]="true"
+  [class.custom-card--flat]="elevation() === 'flat'"
+  [class.custom-card--raised]="elevation() === 'raised'"
+  [class.custom-card--elevated]="elevation() === 'elevated'"
+  [class.custom-card--clickable]="clickable()"
+  [class.custom-card--selected]="selected()"
+  [class.custom-card--padded]="padded()"
+  [attr.tabindex]="clickable() ? 0 : null"
+  [attr.role]="clickable() ? 'button' : null"
+  (click)="onClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  @if (title() || subtitle() || icon()) {
+    <mat-card-header class="custom-card__header">
+      @if (icon()) {
+        <mat-icon mat-card-avatar class="custom-card__icon">
+          {{ icon() }}
+        </mat-icon>
+      }
+
+      <mat-card-title-group>
+        @if (title()) {
+          <mat-card-title class="custom-card__title">
+            {{ title() }}
+          </mat-card-title>
+        }
+
+        @if (subtitle()) {
+          <mat-card-subtitle class="custom-card__subtitle">
+            {{ subtitle() }}
+          </mat-card-subtitle>
+        }
+      </mat-card-title-group>
+    </mat-card-header>
+  }
+
+  <!-- Custom header content slot -->
+  <ng-content select="[card-header]" />
+
+  <mat-card-content class="custom-card__content">
+    <ng-content />
+  </mat-card-content>
+
+  <!-- Footer content slot -->
+  <ng-content select="[card-footer]" />
+
+  <!-- Actions content slot -->
+  <ng-content select="[card-actions]" />
+</mat-card>
