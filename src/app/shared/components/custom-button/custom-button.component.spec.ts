@@ -1,6 +1,8 @@
+import { jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomButtonComponent, ButtonVariant, ButtonSize } from './custom-button.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { PLATFORM_ID } from '@angular/core';
 
 describe('CustomButtonComponent', () => {
   let component: CustomButtonComponent;
@@ -9,6 +11,7 @@ describe('CustomButtonComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CustomButtonComponent, NoopAnimationsModule],
+      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomButtonComponent);

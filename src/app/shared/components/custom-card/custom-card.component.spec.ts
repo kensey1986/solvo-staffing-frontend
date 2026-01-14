@@ -1,6 +1,8 @@
+import { jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomCardComponent, CardElevation } from './custom-card.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { PLATFORM_ID } from '@angular/core';
 
 describe('CustomCardComponent', () => {
   let component: CustomCardComponent;
@@ -9,6 +11,7 @@ describe('CustomCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CustomCardComponent, NoopAnimationsModule],
+      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomCardComponent);
