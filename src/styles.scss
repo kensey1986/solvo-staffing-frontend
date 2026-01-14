@@ -12,18 +12,11 @@
 html {
   height: 100%;
   @include theme.light-theme;
-}
+  transition: background-color vars.$transition-normal;
 
-// Dark mode support (based on system preference)
-@media (prefers-color-scheme: dark) {
-  html.dark-mode {
+  &.dark {
     @include theme.dark-theme;
   }
-}
-
-// Manual dark mode toggle class
-html.dark {
-  @include theme.dark-theme;
 }
 
 // ==========================================================================

@@ -69,11 +69,24 @@
     position: sticky;
     top: 0;
     z-index: vars.$z-index-sticky;
-    background-color: vars.$primary-color;
-    color: vars.$primary-contrast;
 
-    --mat-toolbar-container-background-color: #{vars.$primary-color};
-    --mat-toolbar-container-text-color: #{vars.$primary-contrast};
+    // Light mode defaults
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    box-shadow: vars.$shadow-sm;
+
+    transition:
+      background-color vars.$transition-normal,
+      color vars.$transition-normal,
+      border-color vars.$transition-normal;
+
+    // Dark mode refinement: Use a dark surface instead of light orange
+    :host-context(html.dark) & {
+      background-color: var(--mat-sys-surface-container);
+      color: var(--mat-sys-on-surface);
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+      box-shadow: none;
+    }
   }
 
   &__toolbar-title {

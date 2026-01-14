@@ -7,5 +7,5 @@
 // Interceptors (add exports as created)
 // export * from './interceptors/auth.interceptor';
 
-// Services (add exports as created)
-// export * from './services/api.service';
+// Services
+export * from './services/theme.service';

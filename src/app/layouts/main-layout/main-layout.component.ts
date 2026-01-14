@@ -10,6 +10,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
+import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
 
 /**
  * Navigation item interface for sidebar menu.
@@ -40,6 +41,7 @@ interface NavItem {
     MatButtonModule,
     MatListModule,
     MatMenuModule,
+    ThemeToggleComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',

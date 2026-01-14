@@ -144,19 +144,28 @@ $solvo-dark-theme: mat.define-theme(
 @mixin dark-theme {
   @include mat.theme($solvo-dark-theme);
 
-  // Override with custom brand colors (adjusted for dark mode)
+  // Material 3 Dark Palette Overrides
+  --mat-sys-surface: #121212; // Deeper dark for background
+  --mat-sys-on-surface: #e6e1e5;
+  --mat-sys-surface-container: #1e1e1e; // Elevated surface for sidenav/cards
+  --mat-sys-surface-container-low: #1a1a1a;
+  --mat-sys-surface-container-high: #252525;
+  --mat-sys-outline: #48464a;
+  --mat-sys-outline-variant: #3c3b3f;
+
+  // Override with custom brand colors (optimized for dark mode contrast)
   --mat-sys-primary: #{vars.$primary-light};
   --mat-sys-on-primary: #{vars.$primary-dark};
-  --mat-sys-primary-container: #{vars.$primary-color};
+  --mat-sys-primary-container: #{vars.$primary-dark};
   --mat-sys-on-primary-container: #{vars.$primary-light};
 
   --mat-sys-secondary: #{vars.$secondary-light};
   --mat-sys-on-secondary: #{vars.$secondary-dark};
-  --mat-sys-secondary-container: #{vars.$secondary-color};
+  --mat-sys-secondary-container: #{vars.$secondary-dark};
   --mat-sys-on-secondary-container: #{vars.$secondary-light};
 
   --mat-sys-error: #{vars.$warn-light};
   --mat-sys-on-error: #{vars.$warn-dark};
-  --mat-sys-error-container: #{vars.$warn-color};
+  --mat-sys-error-container: #{vars.$warn-dark};
   --mat-sys-on-error-container: #{vars.$warn-light};
 }
