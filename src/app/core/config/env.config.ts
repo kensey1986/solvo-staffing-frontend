@@ -7,7 +7,7 @@
  * set useMockServices to false.
  */
 
-import { isDevMode } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 /**
  * Helper function to replace URL parameters (e.g., :id) with actual values.
@@ -23,14 +23,7 @@ export function buildUrl(template: string, params: Record<string, string | numbe
 /**
  * API Endpoints configuration.
  */
-export const API_ENDPOINTS = {
-  vacancies: {
-    list: '/vacancies',
-    detail: '/vacancies/:id',
-    state: '/vacancies/:id/state',
-    history: '/vacancies/:id/history',
-  },
-} as const;
+export const API_ENDPOINTS = environment.apiEndpoints;
 
 /**
  * Environment configuration object.
@@ -39,19 +32,19 @@ export const API_ENDPOINTS = {
  */
 export const ENV = {
   /** Whether the app is running in production mode */
-  production: !isDevMode(),
+  production: environment.production,
 
   /** API base URL (e.g., http://localhost:3000/api) */
-  apiBaseUrl: 'http://localhost:3000/api',
+  apiBaseUrl: environment.apiBaseUrl,
 
   /** API version (e.g., v1) */
-  apiVersion: 'v1',
+  apiVersion: environment.apiVersion,
 
   /**
    * Whether to use mock services instead of real API calls.
    * Set to false when backend is available.
    */
-  useMockServices: true,
+  useMockServices: environment.useMockServices,
 
   /** Complete API URL including version */
   get apiUrl(): string {
