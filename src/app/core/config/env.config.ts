@@ -2,12 +2,29 @@
  * Environment Configuration
  *
  * Centralizes all environment variables.
- * Note: Angular doesn't use Vite, so import.meta.env won't work.
- * For production, use Angular's environment file replacement or
- * set useMockServices to false.
+ * Values are loaded from /assets/env.json at runtime via APP_INITIALIZER.
+ * Default values below are fallbacks if env.json fails to load.
  */
 
-import { environment } from '../../../environments/environment';
+export interface VacancyEndpoints {
+  list: string;
+  detail: string;
+  state: string;
+  history: string;
+}
+
+export interface ApiEndpoints {
+  vacancies: VacancyEndpoints;
+}
+
+export interface RuntimeEnv {
+  production: boolean;
+  apiBaseUrl: string;
+  apiVersion: string;
+  useMockServices: boolean;
+  apiEndpoints: ApiEndpoints;
+  apiUrl: string;
+}
 
 /**
  * Helper function to replace URL parameters (e.g., :id) with actual values.
@@ -21,33 +38,69 @@ export function buildUrl(template: string, params: Record<string, string | numbe
 }
 
 /**
- * API Endpoints configuration.
+ * API Endpoints configuration (defaults, overwritten by env.json).
  */
-export const API_ENDPOINTS = environment.apiEndpoints;
+export const API_ENDPOINTS: ApiEndpoints = {
+  vacancies: {
+    list: '/vacancies',
+    detail: '/vacancies/:id',
+    state: '/vacancies/:id/state',
+    history: '/vacancies/:id/history',
+  },
+};
 
 /**
- * Environment configuration object.
+ * Environment configuration object (defaults, overwritten by env.json).
  *
- * IMPORTANT: Set useMockServices to false when connecting to real backend.
+ * IMPORTANT: These are fallback values. Actual config comes from /assets/env.json.
  */
-export const ENV = {
+export const ENV: RuntimeEnv = {
   /** Whether the app is running in production mode */
-  production: environment.production,
+  production: false,
 
   /** API base URL (e.g., http://localhost:3000/api) */
-  apiBaseUrl: environment.apiBaseUrl,
+  apiBaseUrl: 'http://localhost:3000/api',
 
   /** API version (e.g., v1) */
-  apiVersion: environment.apiVersion,
+  apiVersion: 'v1',
 
   /**
    * Whether to use mock services instead of real API calls.
    * Set to false when backend is available.
    */
-  useMockServices: environment.useMockServices,
+  useMockServices: true,
+
+  /** API endpoints */
+  apiEndpoints: API_ENDPOINTS,
 
   /** Complete API URL including version */
   get apiUrl(): string {
     return `${this.apiBaseUrl}/${this.apiVersion}`;
   },
-} as const;
+};
+
+export function applyRuntimeEnv(runtimeEnv: Partial<RuntimeEnv>): void {
+  if (!runtimeEnv) {
+    return;
+  }
+
+  if (typeof runtimeEnv.production === 'boolean') {
+    ENV.production = runtimeEnv.production;
+  }
+
+  if (typeof runtimeEnv.apiBaseUrl === 'string' && runtimeEnv.apiBaseUrl) {
+    ENV.apiBaseUrl = runtimeEnv.apiBaseUrl;
+  }
+
+  if (typeof runtimeEnv.apiVersion === 'string' && runtimeEnv.apiVersion) {
+    ENV.apiVersion = runtimeEnv.apiVersion;
+  }
+
+  if (typeof runtimeEnv.useMockServices === 'boolean') {
+    ENV.useMockServices = runtimeEnv.useMockServices;
+  }
+
+  if (runtimeEnv.apiEndpoints?.vacancies) {
+    Object.assign(API_ENDPOINTS.vacancies, runtimeEnv.apiEndpoints.vacancies);
+  }
+}

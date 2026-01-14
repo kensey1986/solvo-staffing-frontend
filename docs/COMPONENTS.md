@@ -124,6 +124,74 @@ import { CustomCardComponent } from '@shared/components/custom-card/custom-card.
 
 ---
 
+## Core Services
+
+### Vacancy Service
+
+The vacancy service provides CRUD operations for job vacancies with automatic mock/API switching.
+
+#### Import
+
+```typescript
+import { VACANCY_SERVICE, IVacancyService } from '@core';
+```
+
+#### Injection
+
+```typescript
+private readonly vacancyService = inject(VACANCY_SERVICE);
+```
+
+#### API
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| `getAll` | `VacancyFilterParams?` | `Observable<PaginatedResponse<Vacancy>>` | List vacancies with filters |
+| `getById` | `id: number` | `Observable<Vacancy>` | Get single vacancy |
+| `create` | `CreateVacancyDto` | `Observable<Vacancy>` | Create new vacancy |
+| `update` | `id, UpdateVacancyDto` | `Observable<Vacancy>` | Update vacancy |
+| `delete` | `id: number` | `Observable<void>` | Delete vacancy |
+| `changeState` | `id, ChangeVacancyStateDto` | `Observable<Vacancy>` | Change pipeline stage |
+| `getStateHistory` | `id: number` | `Observable<VacancyStateChange[]>` | Get state history |
+
+#### Examples
+
+```typescript
+// List with filters
+this.vacancyService.getAll({
+  page: 1,
+  pageSize: 50,
+  status: 'active',
+  pipelineStage: 'contacted'
+}).subscribe(response => {
+  console.log(response.data);      // Vacancy[]
+  console.log(response.total);     // Total count
+  console.log(response.totalPages);
+});
+
+// Get single vacancy
+this.vacancyService.getById(123)
+  .subscribe(vacancy => console.log(vacancy));
+
+// Change pipeline state
+this.vacancyService.changeState(123, {
+  newState: 'proposal',
+  note: 'Moving to proposal stage after client meeting',
+  tags: ['priority', 'client-meeting']
+}).subscribe(updated => console.log(updated));
+```
+
+#### Mock vs API Service
+
+The service automatically switches between implementations based on `ENV.useMockServices`:
+
+| Mode | Service | Description |
+|------|---------|-------------|
+| `USE_MOCK_SERVICES=true` | `VacancyMockService` | Static data with simulated 300ms delay |
+| `USE_MOCK_SERVICES=false` | `VacancyApiService` | Real HTTP calls to backend API |
+
+---
+
 ## Design Tokens
 
 Components use design tokens from `_variables.scss`:

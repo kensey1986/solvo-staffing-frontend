@@ -56,12 +56,43 @@ src/app/
 - [Architecture](docs/ARCHITECTURE.md)
 - [Components](docs/COMPONENTS.md)
 
+## Environment Configuration
+
+The app uses runtime configuration loaded from `/assets/env.json`.
+
+### Local Development
+
+Edit `.env` file:
+
+```env
+API_BASE_URL=http://localhost:3000/api
+API_VERSION=v1
+USE_MOCK_SERVICES=true
+PRODUCTION=false
+```
+
+### CI/CD Pipeline
+
+Set environment variables in Azure DevOps (from Key Vault or variable groups):
+
+```yaml
+variables:
+  API_BASE_URL: $(KeyVault-ApiBaseUrl)
+  USE_MOCK_SERVICES: 'false'
+  PRODUCTION: 'true'
+```
+
+Then run `npm run build:prod`.
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Development server |
-| `npm run build` | Production build |
+| `npm start` | Development server (generates env.json) |
+| `npm run build` | Production build (generates env.json) |
+| `npm run build:dev` | Development build |
+| `npm run build:prod` | Production build |
+| `npm run generate-env` | Generate env.json from environment variables |
 | `npm test` | Run tests |
 | `npm run test:coverage` | Test with coverage |
 | `npm run lint` | ESLint check |

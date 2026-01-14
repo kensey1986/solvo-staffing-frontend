@@ -41,6 +41,9 @@ __screenshots__/
 # Linting cache
 .eslintcache
 
+# Generated env file (created by npm run generate-env)
+/public/assets/env.json
+
 # System files
 .DS_Store
 Thumbs.db

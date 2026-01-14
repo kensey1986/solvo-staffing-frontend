@@ -84,10 +84,13 @@ solvo-staffing-frontend/
 │   │   └── styles.scss
 │   │
 │   ├── assets/
-│   ├── environments/
+│   │   └── env.json              # Generated environment config
 │   └── index.html
 │
 ├── docs/                            # Documentation
+├── scripts/
+│   └── generate-env.js             # Generates env.json from env vars
+├── .env                             # Local environment variables
 ├── .eslintrc.json
 ├── .prettierrc
 ├── angular.json
@@ -337,6 +340,267 @@ See `src/styles/_theme.scss` for complete theme configuration.
 
 - Pre-commit: lint-staged (ESLint + Prettier)
 - Pre-push: Run tests
+
+---
+
+## Core Module Architecture
+
+The `core/` module contains singleton services, providers, interfaces, models, and DTOs that form the foundation of the application.
+
+### Directory Structure
+
+```
+src/app/core/
+├── config/                  # Environment configuration
+│   ├── env.config.ts        # ENV, API_ENDPOINTS, buildUrl()
+│   ├── runtime-env.service.ts  # Loads env.json at runtime
+│   └── index.ts
+├── dtos/                    # Data Transfer Objects
+│   ├── vacancy.dto.ts       # CreateVacancyDto, UpdateVacancyDto, etc.
+│   └── index.ts
+├── interfaces/              # Service contracts
+│   ├── vacancy-service.interface.ts  # IVacancyService
+│   └── index.ts
+├── models/                  # Domain models
+│   ├── vacancy.model.ts     # Vacancy, VacancyStatus, PipelineStage
+│   ├── pagination.model.ts  # PaginatedResponse, PaginationParams
+│   └── index.ts
+├── providers/               # Factory providers
+│   ├── vacancy-service.provider.ts  # VACANCY_SERVICE token
+│   └── index.ts
+├── services/                # Service implementations
+│   ├── theme.service.ts
+│   └── vacancy/
+│       ├── vacancy-api.service.ts   # Real API implementation
+│       ├── vacancy-mock.service.ts  # Mock implementation
+│       └── index.ts
+└── index.ts                 # Public API exports
+```
+
+### Service Provider Pattern
+
+The application uses a **factory provider pattern** to switch between mock and real API services based on the `USE_MOCK_SERVICES` environment variable.
+
+#### Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        ENV.useMockServices                      │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                  vacancyServiceFactory()                         │
+│  ┌───────────────────┐       ┌───────────────────┐              │
+│  │ useMockServices   │  YES  │ VacancyMockService │              │
+│  │    === true       │──────►│   (static data)    │              │
+│  └───────────────────┘       └───────────────────┘              │
+│           │ NO                                                   │
+│           ▼                                                      │
+│  ┌───────────────────┐                                          │
+│  │ VacancyApiService │                                          │
+│  │   (HttpClient)    │                                          │
+│  └───────────────────┘                                          │
+└─────────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              VACANCY_SERVICE (InjectionToken)                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Interface Definition
+
+```typescript
+// src/app/core/interfaces/vacancy-service.interface.ts
+export interface IVacancyService {
+  getAll(params?: VacancyFilterParams): Observable<PaginatedResponse<Vacancy>>;
+  getById(id: number): Observable<Vacancy>;
+  create(data: CreateVacancyDto): Observable<Vacancy>;
+  update(id: number, data: UpdateVacancyDto): Observable<Vacancy>;
+  delete(id: number): Observable<void>;
+  changeState(id: number, data: ChangeVacancyStateDto): Observable<Vacancy>;
+  getStateHistory(id: number): Observable<VacancyStateChange[]>;
+}
+```
+
+#### Provider Configuration
+
+```typescript
+// src/app/core/providers/vacancy-service.provider.ts
+export const VACANCY_SERVICE = new InjectionToken<IVacancyService>('VacancyService');
+
+export function vacancyServiceFactory(injector: EnvironmentInjector): IVacancyService {
+  if (ENV.useMockServices) {
+    return new VacancyMockService();
+  }
+  return runInInjectionContext(injector, () => new VacancyApiService());
+}
+
+export const VACANCY_SERVICE_PROVIDER: Provider = {
+  provide: VACANCY_SERVICE,
+  useFactory: vacancyServiceFactory,
+  deps: [EnvironmentInjector],
+};
+```
+
+#### Usage in Components
+
+```typescript
+import { VACANCY_SERVICE } from '@core';
+
+@Component({...})
+export class VacancyListComponent {
+  private readonly vacancyService = inject(VACANCY_SERVICE);
+
+  vacancies = signal<Vacancy[]>([]);
+
+  loadVacancies(): void {
+    this.vacancyService.getAll({ page: 1, pageSize: 50 })
+      .subscribe(response => this.vacancies.set(response.data));
+  }
+}
+```
+
+### Adding New Services
+
+To add a new service following this pattern:
+
+1. **Define the interface** in `core/interfaces/`
+2. **Create models** in `core/models/`
+3. **Create DTOs** in `core/dtos/`
+4. **Implement mock service** in `core/services/{feature}/{feature}-mock.service.ts`
+5. **Implement API service** in `core/services/{feature}/{feature}-api.service.ts`
+6. **Create provider** in `core/providers/{feature}-service.provider.ts`
+7. **Export from index.ts** files
+8. **Register provider** in `app.config.ts`
+
+### Models and DTOs
+
+#### Models (Domain Entities)
+
+```typescript
+// vacancy.model.ts
+export type VacancyStatus = 'active' | 'filled' | 'expired';
+export type PipelineStage = 'detected' | 'contacted' | 'proposal' | 'won' | 'lost';
+
+export interface Vacancy {
+  id: number;
+  jobTitle: string;
+  companyId: number;
+  companyName: string;
+  location: string;
+  status: VacancyStatus;
+  pipelineStage: PipelineStage;
+  // ... more fields
+}
+```
+
+#### DTOs (API Contracts)
+
+```typescript
+// vacancy.dto.ts
+export interface CreateVacancyDto {
+  jobTitle: string;
+  companyId: number;
+  location?: string;
+}
+
+export interface VacancyFilterParams extends PaginationParams {
+  search?: string;
+  status?: VacancyStatus;
+  pipelineStage?: PipelineStage;
+}
+```
+
+#### Pagination
+
+```typescript
+// pagination.model.ts
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+```
+
+---
+
+## Environment Configuration
+
+### Overview
+
+Environment variables are managed through a **runtime configuration** approach that supports:
+- Local development with `.env` file
+- CI/CD pipelines injecting variables from Azure Key Vault
+- No code changes required between environments
+
+### Flow
+
+```
+.env (local) ──────────┐
+                       ├──► generate-env.js ──► public/assets/env.json ──► APP_INITIALIZER ──► ENV
+Pipeline env vars ─────┘
+```
+
+### Configuration Files
+
+| File | Purpose |
+|------|--------|
+| `.env` | Local development variables |
+| `scripts/generate-env.js` | Generates `env.json` from environment variables |
+| `public/assets/env.json` | Runtime config loaded by Angular (gitignored) |
+| `src/app/core/config/env.config.ts` | TypeScript config with fallback defaults |
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|--------|
+| `API_BASE_URL` | Backend API base URL | `http://localhost:3000/api` |
+| `API_VERSION` | API version | `v1` |
+| `USE_MOCK_SERVICES` | Use mock services instead of real API | `true` |
+| `PRODUCTION` | Production mode flag | `false` |
+| `API_ENDPOINT_VACANCIES` | Vacancies list endpoint | `/vacancies` |
+| `API_ENDPOINT_VACANCY_DETAIL` | Vacancy detail endpoint | `/vacancies/:id` |
+| `API_ENDPOINT_VACANCY_STATE` | Vacancy state endpoint | `/vacancies/:id/state` |
+| `API_ENDPOINT_VACANCY_HISTORY` | Vacancy history endpoint | `/vacancies/:id/history` |
+
+### Usage in Code
+
+```typescript
+import { ENV, API_ENDPOINTS, buildUrl } from '@core/config';
+
+// Access configuration
+const apiUrl = ENV.apiUrl; // http://localhost:3000/api/v1
+const useMock = ENV.useMockServices;
+
+// Build endpoint URLs
+const vacancyUrl = buildUrl(API_ENDPOINTS.vacancies.detail, { id: 123 });
+// Result: /vacancies/123
+```
+
+### Local Development
+
+1. Copy `.env.example` to `.env` (if exists) or create `.env`
+2. Run `npm start` (automatically generates `env.json`)
+
+### CI/CD Pipeline (Azure DevOps)
+
+```yaml
+variables:
+  API_BASE_URL: $(KeyVault-ApiBaseUrl)
+  API_VERSION: 'v1'
+  USE_MOCK_SERVICES: 'false'
+  PRODUCTION: 'true'
+
+steps:
+  - script: npm ci
+  - script: npm run build:prod
+```
+
+The `generate-env` script reads environment variables injected by the pipeline (from Key Vault or variable groups) and generates `env.json` before the Angular build.
 
 ---
 
