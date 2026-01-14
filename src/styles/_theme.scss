@@ -123,21 +123,40 @@ $solvo-dark-theme: mat.define-theme(
 @mixin light-theme {
   @include mat.theme($solvo-light-theme);
 
-  // Override with custom brand colors
-  --mat-sys-primary: #{vars.$primary-color};
-  --mat-sys-on-primary: #{vars.$primary-contrast};
-  --mat-sys-primary-container: #{vars.$primary-light};
-  --mat-sys-on-primary-container: #{vars.$primary-dark};
+  // Surface colors - más definidos para mejor contraste
+  --mat-sys-surface: #ffffff;
+  --mat-sys-on-surface: #1c1b1f;
+  --mat-sys-surface-container: #f3f3f3;
+  --mat-sys-surface-container-low: #f8f8f8;
+  --mat-sys-surface-container-high: #e8e8e8;
+  --mat-sys-surface-container-highest: #e0e0e0;
+  --mat-sys-surface-variant: #e7e0ec;
+  --mat-sys-on-surface-variant: #49454f;
+  --mat-sys-background: #fafafa;
+  --mat-sys-on-background: #1c1b1f;
+  --mat-sys-outline: #79747e;
+  --mat-sys-outline-variant: #cac4d0;
 
-  --mat-sys-secondary: #{vars.$secondary-color};
-  --mat-sys-on-secondary: #{vars.$secondary-contrast};
-  --mat-sys-secondary-container: #{vars.$secondary-light};
-  --mat-sys-on-secondary-container: #{vars.$secondary-dark};
+  // Override with custom brand colors - más saturados
+  --mat-sys-primary: #e08a3a;
+  --mat-sys-on-primary: #{vars.$primary-contrast};
+  --mat-sys-primary-container: #ffd9b8;
+  --mat-sys-on-primary-container: #5c3000;
+
+  --mat-sys-secondary: #4fc9dd;
+  --mat-sys-on-secondary: #003640;
+  --mat-sys-secondary-container: #b5e9f5;
+  --mat-sys-on-secondary-container: #00424d;
+
+  --mat-sys-tertiary: #7d5260;
+  --mat-sys-on-tertiary: #ffffff;
+  --mat-sys-tertiary-container: #ffd8e4;
+  --mat-sys-on-tertiary-container: #31111d;
 
   --mat-sys-error: #{vars.$warn-color};
   --mat-sys-on-error: #{vars.$warn-contrast};
-  --mat-sys-error-container: #{vars.$warn-light};
-  --mat-sys-on-error-container: #{vars.$warn-dark};
+  --mat-sys-error-container: #ffdad6;
+  --mat-sys-on-error-container: #410002;
 }
 
 /// Apply dark theme
