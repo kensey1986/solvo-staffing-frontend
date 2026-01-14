@@ -1,11 +1,21 @@
 // Core Module Index
 // Exports all core services, guards, and interceptors
 
-// Guards (add exports as created)
-// export * from './guards/auth.guard';
+// Configuration
+export * from './config';
 
-// Interceptors (add exports as created)
-// export * from './interceptors/auth.interceptor';
+// Models
+export * from './models';
+
+// DTOs
+export * from './dtos';
+
+// Interfaces
+export * from './interfaces';
+
+// Providers
+export * from './providers';
 
 // Services
 export * from './services/theme.service';
+export * from './services/vacancy';

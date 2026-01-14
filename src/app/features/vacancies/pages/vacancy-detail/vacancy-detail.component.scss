@@ -1,0 +1,235 @@
+@use 'styles/variables' as vars;
+
+.vacancy-detail-container {
+  padding: vars.$spacing-6;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: vars.$spacing-8;
+}
+
+// Breadcrumb
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: vars.$font-size-body-small;
+  margin-bottom: vars.$spacing-6;
+}
+
+.breadcrumb-link {
+  color: var(--mat-sys-on-surface-variant);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--mat-sys-on-surface);
+    text-decoration: none;
+  }
+}
+
+.breadcrumb-separator {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.breadcrumb-current {
+  color: var(--mat-sys-on-surface);
+  font-weight: vars.$font-weight-medium;
+}
+
+// Page Header
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: vars.$spacing-8;
+  padding-bottom: vars.$spacing-6;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.page-header-left {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-4;
+}
+
+.page-title {
+  font-size: vars.$font-size-headline-medium;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-header-actions {
+  display: flex;
+  gap: vars.$spacing-2;
+}
+
+// Tabs
+.detail-tabs {
+  ::ng-deep {
+    .mat-mdc-tab-header {
+      background-color: var(--mat-sys-surface-container);
+      border-radius: vars.$radius-md vars.$radius-md 0 0;
+    }
+
+    .mat-mdc-tab-body-wrapper {
+      background-color: var(--mat-sys-surface-container);
+      border-radius: 0 0 vars.$radius-md vars.$radius-md;
+    }
+  }
+}
+
+.tab-content {
+  padding: vars.$spacing-6;
+}
+
+// Info Cards
+.info-card {
+  background-color: var(--mat-sys-surface-container-high);
+  border-radius: vars.$radius-md;
+  padding: vars.$spacing-6;
+  margin-bottom: vars.$spacing-6;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: vars.$spacing-4;
+}
+
+.card-title {
+  font-size: vars.$font-size-body-medium;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+  margin-bottom: vars.$spacing-4;
+}
+
+.card-header .card-title {
+  margin-bottom: 0;
+}
+
+// Company Row
+.company-row {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-4;
+}
+
+.company-link {
+  font-size: vars.$font-size-body-large;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Info Grid
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: vars.$spacing-6;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-1;
+}
+
+.info-label {
+  font-size: vars.$font-size-label-small;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface);
+}
+
+.external-link {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Notes
+.notes-content {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.6;
+  background-color: var(--mat-sys-surface-container-highest);
+  padding: vars.$spacing-4;
+  border-radius: vars.$radius-sm;
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: vars.$spacing-8;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// History Table
+.history-table {
+  width: 100%;
+  margin-top: vars.$spacing-4;
+
+  th.mat-mdc-header-cell {
+    font-size: vars.$font-size-label-small;
+    font-weight: vars.$font-weight-medium;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: uppercase;
+    background-color: transparent;
+  }
+
+  td.mat-mdc-cell {
+    font-size: vars.$font-size-body-small;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.change-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.arrow {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 4px;
+}
+
+.note-cell {
+  font-style: italic;
+  max-width: 300px;
+}
+
+.tags-container {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag-chip {
+  font-size: 10px;
+  padding: 2px 6px;
+  background-color: var(--mat-sys-surface-container-highest);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$radius-sm;
+  color: var(--mat-sys-on-surface-variant);
+}

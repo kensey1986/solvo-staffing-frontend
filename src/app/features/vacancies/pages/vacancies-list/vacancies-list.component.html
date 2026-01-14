@@ -1,0 +1,222 @@
+<div class="vacancies-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Vacancies</h1>
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      New Vacancy
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-card">
+    <div class="filters-row">
+      <!-- Search -->
+      <mat-form-field appearance="outline" class="filter-field filter-search">
+        <mat-label>Search title</mat-label>
+        <input
+          matInput
+          placeholder="Job title..."
+          [ngModel]="searchFilter()"
+          (ngModelChange)="searchFilter.set($event)"
+          (keyup.enter)="applyFilters()"
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Status -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select
+          [ngModel]="statusFilter()"
+          (ngModelChange)="statusFilter.set($event); applyFilters()"
+        >
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Pipeline -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Pipeline</mat-label>
+        <mat-select
+          [ngModel]="pipelineFilter()"
+          (ngModelChange)="pipelineFilter.set($event); applyFilters()"
+        >
+          @for (option of pipelineOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Source -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Source</mat-label>
+        <mat-select
+          [ngModel]="sourceFilter()"
+          (ngModelChange)="sourceFilter.set($event); applyFilters()"
+        >
+          @for (option of sourceOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- US State -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>US State</mat-label>
+        <mat-select
+          [ngModel]="stateFilter()"
+          (ngModelChange)="stateFilter.set($event); applyFilters()"
+        >
+          @for (state of usStates; track state.value) {
+            <mat-option [value]="state.value">{{ state.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Company -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Company</mat-label>
+        <input
+          matInput
+          placeholder="Search company..."
+          [ngModel]="companyFilter()"
+          (ngModelChange)="companyFilter.set($event)"
+          (keyup.enter)="applyFilters()"
+        />
+      </mat-form-field>
+
+      <!-- Date From -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>From</mat-label>
+        <input
+          matInput
+          type="date"
+          [ngModel]="dateFrom()"
+          (ngModelChange)="dateFrom.set($event)"
+          (change)="applyFilters()"
+        />
+      </mat-form-field>
+
+      <!-- Date To -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>To</mat-label>
+        <input
+          matInput
+          type="date"
+          [ngModel]="dateTo()"
+          (ngModelChange)="dateTo.set($event)"
+          (change)="applyFilters()"
+        />
+      </mat-form-field>
+
+      <!-- Clear Filters -->
+      <button mat-stroked-button (click)="clearFilters()" class="clear-btn">Clear</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <!-- Table Header -->
+    <div class="table-header">
+      <span class="table-count">{{ paginationInfo() }}</span>
+    </div>
+
+    <!-- Loading Spinner -->
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else {
+      <!-- Data Table -->
+      <table mat-table [dataSource]="vacancies()" class="vacancies-table">
+        <!-- Job Title Column -->
+        <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let vacancy">
+            <span class="job-title">{{ vacancy.jobTitle }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Company Column -->
+        <ng-container matColumnDef="companyName">
+          <th mat-header-cell *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let vacancy">
+            <a class="company-link" [routerLink]="['/companies', vacancy.companyId]">
+              {{ vacancy.companyName }}
+            </a>
+          </td>
+        </ng-container>
+
+        <!-- Location Column -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Location</th>
+          <td mat-cell *matCellDef="let vacancy">{{ vacancy.location }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let vacancy">
+            <app-status-badge [status]="vacancy.status" />
+          </td>
+        </ng-container>
+
+        <!-- Pipeline Column -->
+        <ng-container matColumnDef="pipelineStage">
+          <th mat-header-cell *matHeaderCellDef>Pipeline</th>
+          <td mat-cell *matCellDef="let vacancy">
+            <app-pipeline-badge [stage]="vacancy.pipelineStage" />
+          </td>
+        </ng-container>
+
+        <!-- Source Column -->
+        <ng-container matColumnDef="source">
+          <th mat-header-cell *matHeaderCellDef>Source</th>
+          <td mat-cell *matCellDef="let vacancy">{{ getSourceLabel(vacancy.source) }}</td>
+        </ng-container>
+
+        <!-- Published Date Column -->
+        <ng-container matColumnDef="publishedDate">
+          <th mat-header-cell *matHeaderCellDef>Published</th>
+          <td mat-cell *matCellDef="let vacancy">{{ formatDate(vacancy.publishedDate) }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let vacancy">
+            <button
+              mat-button
+              color="primary"
+              (click)="goToDetail(vacancy); $event.stopPropagation()"
+            >
+              View
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let vacancy; columns: displayedColumns"
+          (click)="goToDetail(vacancy)"
+          class="vacancy-row"
+        ></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator
+        [length]="totalItems()"
+        [pageSize]="pageSize()"
+        [pageIndex]="currentPage() - 1"
+        [pageSizeOptions]="[25, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    }
+  </div>
+</div>

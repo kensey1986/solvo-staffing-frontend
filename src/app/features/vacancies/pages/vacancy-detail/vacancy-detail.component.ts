@@ -1,0 +1,192 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import {
+  VACANCY_SERVICE,
+  VACANCY_SERVICE_PROVIDER,
+  Vacancy,
+  VacancyStateChange,
+  VACANCY_SOURCE_LABELS,
+  PIPELINE_STAGE_LABELS,
+} from '@core';
+import { PipelineBadgeComponent, StatusBadgeComponent } from '@shared';
+
+/**
+ * VacancyDetailComponent
+ *
+ * Detail page for viewing and managing a single vacancy.
+ * Features tabs for General info and State History (CRM tracking).
+ */
+@Component({
+  selector: 'app-vacancy-detail',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MatTabsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    PipelineBadgeComponent,
+    StatusBadgeComponent,
+  ],
+  providers: [VACANCY_SERVICE_PROVIDER],
+  templateUrl: './vacancy-detail.component.html',
+  styleUrl: './vacancy-detail.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class VacancyDetailComponent implements OnInit {
+  private readonly vacancyService = inject(VACANCY_SERVICE);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+
+  // State
+  readonly isLoading = signal(true);
+  readonly vacancy = signal<Vacancy | null>(null);
+  readonly stateHistory = signal<VacancyStateChange[]>([]);
+  readonly selectedTabIndex = signal(0);
+
+  // History table columns
+  readonly historyColumns = ['date', 'user', 'change', 'note', 'tags'];
+
+  // Computed values
+  readonly vacancyId = computed(() => {
+    const id = this.route.snapshot.paramMap.get('id');
+    return id ? parseInt(id, 10) : null;
+  });
+
+  readonly pageTitle = computed(() => this.vacancy()?.jobTitle || 'Vacancy Detail');
+
+  readonly sourceLabel = computed(() => {
+    const source = this.vacancy()?.source;
+    return source ? VACANCY_SOURCE_LABELS[source] : '';
+  });
+
+  ngOnInit(): void {
+    const id = this.vacancyId();
+    if (id) {
+      this.loadVacancy(id);
+      this.loadStateHistory(id);
+    }
+  }
+
+  /**
+   * Loads the vacancy details.
+   */
+  loadVacancy(id: number): void {
+    this.isLoading.set(true);
+    this.vacancyService.getById(id).subscribe({
+      next: vacancy => {
+        this.vacancy.set(vacancy);
+        this.isLoading.set(false);
+      },
+      error: err => {
+        console.error('Error loading vacancy:', err);
+        this.snackBar.open('Error loading vacancy', 'Close', { duration: 3000 });
+        this.isLoading.set(false);
+        this.router.navigate(['/vacancies']);
+      },
+    });
+  }
+
+  /**
+   * Loads the state change history.
+   */
+  loadStateHistory(id: number): void {
+    this.vacancyService.getStateHistory(id).subscribe({
+      next: history => {
+        this.stateHistory.set(history);
+      },
+      error: err => {
+        console.error('Error loading state history:', err);
+      },
+    });
+  }
+
+  /**
+   * Opens the edit vacancy dialog.
+   */
+  openEditDialog(): void {
+    // TODO: Implement edit dialog
+    this.snackBar.open('Edit dialog coming soon', 'Close', { duration: 3000 });
+  }
+
+  /**
+   * Opens the state change dialog.
+   */
+  openStateChangeDialog(): void {
+    // TODO: Implement state change dialog
+    this.snackBar.open('State change dialog coming soon', 'Close', { duration: 3000 });
+  }
+
+  /**
+   * Formats date for display.
+   */
+  formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  }
+
+  /**
+   * Formats datetime for display.
+   */
+  formatDateTime(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  /**
+   * Gets pipeline stage label.
+   */
+  getPipelineLabel(stage: string): string {
+    return PIPELINE_STAGE_LABELS[stage as keyof typeof PIPELINE_STAGE_LABELS] || stage;
+  }
+
+  /**
+   * Gets remote viable display text.
+   */
+  getRemoteViableText(value?: boolean): string {
+    if (value === undefined) return 'N/A';
+    return value ? 'Yes' : 'No';
+  }
+}
