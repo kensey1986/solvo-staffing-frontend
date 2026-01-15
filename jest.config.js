@@ -24,6 +24,7 @@ module.exports = {
         '!src/app/**/*.config.ts',
         '!src/app/**/*.guard.ts',
         '!src/app/**/*.interceptor.ts',
+        '!src/app/**/*.provider.ts',
     ],
     coverageReporters: ['text', 'text-summary', 'lcov', 'html'],
     coverageThreshold: {

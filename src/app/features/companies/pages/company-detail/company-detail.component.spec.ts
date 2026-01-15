@@ -16,7 +16,7 @@ import { of, throwError } from 'rxjs';
 
 import { CompanyDetailComponent } from './company-detail.component';
 import { COMPANY_SERVICE } from '@core';
-import { Company, CompanyStateChange, CompanyResearch } from '@core';
+import { Company, CompanyStateChange, Research } from '@core';
 import { Vacancy } from '@core';
 
 // Mock company data
@@ -34,8 +34,8 @@ const mockCompany: Company = {
   contacts: [
     {
       id: 1,
-      name: 'John Doe',
-      title: 'CEO',
+      fullName: 'John Doe',
+      jobTitle: 'CEO',
       email: 'john@test.com',
       phone: '+1111111111',
       isPrimary: true,
@@ -54,11 +54,10 @@ const mockCompany: Company = {
 
 const mockStateHistory: CompanyStateChange[] = [
   {
-    id: 1,
     fromState: 'prospecting',
     toState: 'engaged',
-    changedAt: '2025-01-15',
-    changedBy: 'Admin User',
+    date: '2025-01-15',
+    user: 'Admin User',
     note: 'First contact',
     tags: ['priority'],
   },
@@ -72,10 +71,10 @@ const mockVacancies: Vacancy[] = [
     companyName: 'Test Company',
     location: 'Remote',
     status: 'active',
-    pipelineStage: 'active_search',
-    workMode: 'remote',
-    createdAt: '2025-01-10',
-    updatedAt: '2025-01-10',
+    pipelineStage: 'detected',
+    workModality: 'remote',
+    source: 'linkedin',
+    publishedDate: '2025-01-10',
   },
 ];
 
@@ -356,7 +355,7 @@ describe('CompanyDetailComponent', () => {
     });
 
     it('should save research changes', fakeAsync(() => {
-      const updatedResearch: CompanyResearch = {
+      const updatedResearch: Research = {
         ...mockCompany.research!,
         mission: 'Updated mission',
       };
@@ -396,7 +395,7 @@ describe('CompanyDetailComponent', () => {
     });
 
     it('should send undefined for empty optional research fields when saving', fakeAsync(() => {
-      const updatedResearch: CompanyResearch = { completenessPercent: 0 };
+      const updatedResearch: Research = { completenessPercent: 0 };
       mockCompanyService.updateResearch.mockReturnValue(of(updatedResearch));
 
       component.openResearchModal();
@@ -416,7 +415,7 @@ describe('CompanyDetailComponent', () => {
     }));
 
     it('should update company with new research on save success', fakeAsync(() => {
-      const updatedResearch: CompanyResearch = {
+      const updatedResearch: Research = {
         completenessPercent: 100,
         valueProposition: 'New VP',
         mission: 'New Mission',
@@ -487,7 +486,7 @@ describe('CompanyDetailComponent', () => {
       mockCompanyService.changeState.mockReturnValue(of(updatedCompany));
       mockCompanyService.getStateHistory.mockClear();
 
-      component.onStateChange({ newState: 'proposal' });
+      component.onStateChange({ newState: 'proposal', note: '', tags: [] });
       tick();
 
       expect(mockCompanyService.getStateHistory).toHaveBeenCalledWith(1, {});
@@ -496,7 +495,7 @@ describe('CompanyDetailComponent', () => {
     it('should handle state change error', fakeAsync(() => {
       mockCompanyService.changeState.mockReturnValue(throwError(() => new Error('Change failed')));
 
-      component.onStateChange({ newState: 'proposal' });
+      component.onStateChange({ newState: 'proposal', note: '', tags: [] });
       tick();
 
       expect(mockCompanyService.changeState).toHaveBeenCalled();
@@ -504,7 +503,7 @@ describe('CompanyDetailComponent', () => {
 
     it('should not change state if no new state', fakeAsync(() => {
       mockCompanyService.changeState.mockClear();
-      component.onStateChange({ newState: undefined });
+      component.onStateChange({ newState: undefined, note: '', tags: [] });
       tick();
 
       expect(mockCompanyService.changeState).not.toHaveBeenCalled();
@@ -550,7 +549,7 @@ describe('CompanyDetailComponent', () => {
     it('should return 0 for missing research completeness', () => {
       const companyWithoutCompleteness = {
         ...mockCompany,
-        research: { ...mockCompany.research, completenessPercent: undefined },
+        research: undefined,
       };
       component.company.set(companyWithoutCompleteness as Company);
       expect(component.getResearchCompleteness()).toBe(0);
