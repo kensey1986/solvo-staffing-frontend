@@ -65,6 +65,18 @@ describe('EditVacancyModalComponent', () => {
     expect(component.formData.notes).toBe('Test notes');
   });
 
+  it('should reset form to defaults when opened without vacancy', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('vacancy', null);
+    fixture.detectChanges();
+
+    expect(component.formData.jobTitle).toBe('');
+    expect(component.formData.department).toBe('');
+    expect(component.formData.seniorityLevel).toBe('');
+    expect(component.formData.salaryRange).toBe('');
+    expect(component.formData.notes).toBe('');
+  });
+
   it('should emit closeModal when close is called', () => {
     const closeSpy = jest.fn();
     component.closeModal.subscribe(closeSpy);
@@ -89,6 +101,20 @@ describe('EditVacancyModalComponent', () => {
         seniorityLevel: 'senior',
       })
     );
+  });
+
+  it('should not emit submitEdit when form is invalid', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('vacancy', { ...mockVacancy, jobTitle: '   ' });
+    fixture.detectChanges();
+
+    const submitSpy = jest.fn();
+    component.submitEdit.subscribe(submitSpy);
+
+    component.submit();
+
+    expect(component.isValid()).toBe(false);
+    expect(submitSpy).not.toHaveBeenCalled();
   });
 
   it('should not submit when jobTitle is empty', () => {

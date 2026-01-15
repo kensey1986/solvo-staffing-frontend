@@ -26,6 +26,7 @@ describe('RuntimeEnvService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    jest.restoreAllMocks();
   });
 
   it('should load runtime env and apply values', async () => {
@@ -48,6 +49,19 @@ describe('RuntimeEnvService', () => {
     await loadPromise;
 
     expect(applySpy).toHaveBeenCalledWith(payload);
+  });
+
+  it('should not apply runtime env when response is empty', async () => {
+    const applySpy = jest.spyOn(envConfig, 'applyRuntimeEnv');
+
+    const loadPromise = service.load();
+
+    const req = httpMock.expectOne('/assets/env.json');
+    req.flush(null);
+
+    await loadPromise;
+
+    expect(applySpy).not.toHaveBeenCalled();
   });
 
   it('should warn when runtime env fails to load', async () => {

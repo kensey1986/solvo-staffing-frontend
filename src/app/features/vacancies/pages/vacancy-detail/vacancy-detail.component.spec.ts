@@ -170,6 +170,87 @@ describe('VacancyDetailComponent', () => {
     }));
   });
 
+  describe('Edit vacancy modal', () => {
+    it('should open edit modal when vacancy exists', () => {
+      component.vacancy.set(mockVacancy);
+      component.openEditDialog();
+      expect(component.showEditModal()).toBe(true);
+    });
+
+    it('should not open edit modal when vacancy is null', () => {
+      component.vacancy.set(null);
+      component.openEditDialog();
+      expect(component.showEditModal()).toBe(false);
+    });
+
+    it('should close edit modal', () => {
+      component.showEditModal.set(true);
+      component.closeEditModal();
+      expect(component.showEditModal()).toBe(false);
+    });
+
+    it('should update vacancy on edit submit', fakeAsync(() => {
+      mockVacancyService.update.mockReturnValue(of({ ...mockVacancy, jobTitle: 'Updated Title' }));
+
+      component.showEditModal.set(true);
+      component.onEditSubmit({
+        jobTitle: 'Updated Title',
+        status: 'active',
+        department: 'Engineering',
+        seniorityLevel: 'senior',
+        salaryRange: '$100k-$120k',
+        notes: 'Updated notes',
+      });
+      tick();
+
+      expect(mockVacancyService.update).toHaveBeenCalledWith(1, {
+        jobTitle: 'Updated Title',
+        status: 'active',
+        department: 'Engineering',
+        seniorityLevel: 'senior',
+        salaryRange: '$100k-$120k',
+        notes: 'Updated notes',
+      });
+      expect(component.vacancy()?.jobTitle).toBe('Updated Title');
+      expect(component.showEditModal()).toBe(false);
+    }));
+
+    it('should handle edit submit error', fakeAsync(() => {
+      mockVacancyService.update.mockReturnValue(throwError(() => new Error('Update failed')));
+
+      component.showEditModal.set(true);
+      component.onEditSubmit({
+        jobTitle: 'Updated Title',
+        status: 'active',
+        department: 'Engineering',
+        seniorityLevel: 'senior',
+        salaryRange: '$100k-$120k',
+        notes: 'Updated notes',
+      });
+      tick();
+
+      expect(mockVacancyService.update).toHaveBeenCalled();
+      expect(component.showEditModal()).toBe(true);
+    }));
+
+    it('should not submit edit when id is missing', fakeAsync(() => {
+      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
+      mockVacancyService.update.mockClear();
+
+      component.onEditSubmit({
+        jobTitle: 'Updated Title',
+        status: 'active',
+        department: 'Engineering',
+        seniorityLevel: 'senior',
+        salaryRange: '$100k-$120k',
+        notes: 'Updated notes',
+      });
+      tick();
+
+      expect(mockVacancyService.update).not.toHaveBeenCalled();
+    }));
+  });
+
   describe('Utility methods', () => {
     beforeEach(fakeAsync(() => {
       fixture.detectChanges();
