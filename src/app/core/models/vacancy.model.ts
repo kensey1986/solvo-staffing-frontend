@@ -121,3 +121,17 @@ export const VACANCY_SOURCE_LABELS: Record<VacancySource, string> = {
   company_website: 'Website',
   manual: 'Manual',
 };
+
+/**
+ * Labels for seniority level display.
+ */
+export const SENIORITY_LEVEL_LABELS: Record<SeniorityLevel, string> = {
+  entry_level: 'Entry-level',
+  mid_level: 'Mid-level',
+  mid_senior: 'Mid-Senior',
+  senior: 'Senior',
+  lead: 'Lead',
+  manager: 'Manager',
+  director: 'Director',
+  executive: 'Executive',
+};

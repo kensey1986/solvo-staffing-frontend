@@ -208,5 +208,13 @@
       (submitChange)="onStateChange($event)"
       (closeModal)="closeStateModal()"
     />
+
+    <!-- Edit Vacancy Modal -->
+    <app-edit-vacancy-modal
+      [isOpen]="showEditModal()"
+      [vacancy]="vacancy()"
+      (submitEdit)="onEditSubmit($event)"
+      (closeModal)="closeEditModal()"
+    />
   }
 </div>
