@@ -2,3 +2,4 @@
 // Exports all service providers
 
 export * from './vacancy-service.provider';
+export * from './company-service.provider';

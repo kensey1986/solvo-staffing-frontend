@@ -28,8 +28,18 @@ import {
   VacancyStateChange,
   VACANCY_SOURCE_LABELS,
   PIPELINE_STAGE_LABELS,
+  PipelineStage,
 } from '@core';
-import { PipelineBadgeComponent, StatusBadgeComponent } from '@shared';
+import {
+  PipelineBadgeComponent,
+  StatusBadgeComponent,
+  StateChangeModalComponent,
+  StateOption,
+  StateChangeResult,
+} from '@shared';
+
+/** Pipeline stage options for state change */
+const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', 'won', 'lost'];
 
 /**
  * VacancyDetailComponent
@@ -57,6 +67,7 @@ import { PipelineBadgeComponent, StatusBadgeComponent } from '@shared';
     MatProgressSpinnerModule,
     PipelineBadgeComponent,
     StatusBadgeComponent,
+    StateChangeModalComponent,
   ],
   providers: [VACANCY_SERVICE_PROVIDER],
   templateUrl: './vacancy-detail.component.html',
@@ -75,9 +86,18 @@ export class VacancyDetailComponent implements OnInit {
   readonly vacancy = signal<Vacancy | null>(null);
   readonly stateHistory = signal<VacancyStateChange[]>([]);
   readonly selectedTabIndex = signal(0);
+  readonly showStateModal = signal(false);
 
   // History table columns
   readonly historyColumns = ['date', 'user', 'change', 'note', 'tags'];
+
+  // State options for state change modal
+  readonly stateOptions = computed<StateOption<PipelineStage>[]>(() =>
+    PIPELINE_STAGES.map(stage => ({
+      value: stage,
+      label: PIPELINE_STAGE_LABELS[stage],
+    }))
+  );
 
   // Computed values
   readonly vacancyId = computed(() => {
@@ -145,8 +165,43 @@ export class VacancyDetailComponent implements OnInit {
    * Opens the state change dialog.
    */
   openStateChangeDialog(): void {
-    // TODO: Implement state change dialog
-    this.snackBar.open('State change dialog coming soon', 'Close', { duration: 3000 });
+    if (this.vacancy()) {
+      this.showStateModal.set(true);
+    }
+  }
+
+  /**
+   * Closes the state change dialog.
+   */
+  closeStateModal(): void {
+    this.showStateModal.set(false);
+  }
+
+  /**
+   * Handles state change from modal.
+   */
+  onStateChange(result: StateChangeResult<PipelineStage | undefined>): void {
+    const id = this.vacancyId();
+    if (!id || !result.newState) return;
+
+    const changeDto = {
+      newState: result.newState,
+      note: result.note,
+      tags: result.tags,
+    };
+
+    this.vacancyService.changeState(id, changeDto).subscribe({
+      next: updated => {
+        this.vacancy.set(updated);
+        this.closeStateModal();
+        this.loadStateHistory(id);
+        this.snackBar.open('State changed successfully', 'Close', { duration: 3000 });
+      },
+      error: err => {
+        console.error('Error changing state:', err);
+        this.snackBar.open('Error changing state', 'Close', { duration: 3000 });
+      },
+    });
   }
 
   /**

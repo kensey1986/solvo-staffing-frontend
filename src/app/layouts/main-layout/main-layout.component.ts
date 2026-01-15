@@ -69,6 +69,7 @@ export class MainLayoutComponent {
   public readonly navItems: NavItem[] = [
     { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
     { label: 'Vacancies', route: '/vacancies', icon: 'work' },
+    { label: 'Companies', route: '/companies', icon: 'business' },
     { label: 'Staffing', route: '/staffing', icon: 'people' },
     { label: 'Reports', route: '/reports', icon: 'bar_chart' },
     { label: 'Settings', route: '/settings', icon: 'settings' },

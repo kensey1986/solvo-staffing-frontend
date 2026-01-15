@@ -28,6 +28,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('@features/vacancies/vacancies.routes').then(m => m.VACANCIES_ROUTES),
       },
+      {
+        path: 'companies',
+        loadChildren: () =>
+          import('@features/companies/companies.routes').then(m => m.COMPANIES_ROUTES),
+      },
       // Add more feature routes here as needed
       // {
       //   path: 'staffing',

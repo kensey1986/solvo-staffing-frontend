@@ -11,6 +11,15 @@
  * - API_ENDPOINT_VACANCY_DETAIL
  * - API_ENDPOINT_VACANCY_STATE
  * - API_ENDPOINT_VACANCY_HISTORY
+ * - API_ENDPOINT_COMPANIES
+ * - API_ENDPOINT_COMPANY_DETAIL
+ * - API_ENDPOINT_COMPANY_STATE
+ * - API_ENDPOINT_COMPANY_HISTORY
+ * - API_ENDPOINT_COMPANY_VACANCIES
+ * - API_ENDPOINT_COMPANY_RESEARCH
+ * - API_ENDPOINT_COMPANY_CONTACTS
+ * - API_ENDPOINT_COMPANY_CONTACT_DETAIL
+ * - API_ENDPOINT_COMPANY_INVESTIGATE
  */
 
 const fs = require('fs');
@@ -34,6 +43,17 @@ const envConfig = {
       detail: process.env.API_ENDPOINT_VACANCY_DETAIL || '/vacancies/:id',
       state: process.env.API_ENDPOINT_VACANCY_STATE || '/vacancies/:id/state',
       history: process.env.API_ENDPOINT_VACANCY_HISTORY || '/vacancies/:id/history',
+    },
+    companies: {
+      list: process.env.API_ENDPOINT_COMPANIES || '/companies',
+      detail: process.env.API_ENDPOINT_COMPANY_DETAIL || '/companies/:id',
+      state: process.env.API_ENDPOINT_COMPANY_STATE || '/companies/:id/state',
+      history: process.env.API_ENDPOINT_COMPANY_HISTORY || '/companies/:id/history',
+      vacancies: process.env.API_ENDPOINT_COMPANY_VACANCIES || '/companies/:id/vacancies',
+      research: process.env.API_ENDPOINT_COMPANY_RESEARCH || '/companies/:id/research',
+      contacts: process.env.API_ENDPOINT_COMPANY_CONTACTS || '/companies/:id/contacts',
+      contactDetail: process.env.API_ENDPOINT_COMPANY_CONTACT_DETAIL || '/companies/:companyId/contacts/:contactId',
+      investigate: process.env.API_ENDPOINT_COMPANY_INVESTIGATE || '/companies/investigate',
     },
   },
 };

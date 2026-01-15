@@ -13,8 +13,21 @@ export interface VacancyEndpoints {
   history: string;
 }
 
+export interface CompanyEndpoints {
+  list: string;
+  detail: string;
+  state: string;
+  history: string;
+  vacancies: string;
+  research: string;
+  contacts: string;
+  contactDetail: string;
+  investigate: string;
+}
+
 export interface ApiEndpoints {
   vacancies: VacancyEndpoints;
+  companies: CompanyEndpoints;
 }
 
 export interface RuntimeEnv {
@@ -46,6 +59,17 @@ export const API_ENDPOINTS: ApiEndpoints = {
     detail: '/vacancies/:id',
     state: '/vacancies/:id/state',
     history: '/vacancies/:id/history',
+  },
+  companies: {
+    list: '/companies',
+    detail: '/companies/:id',
+    state: '/companies/:id/state',
+    history: '/companies/:id/history',
+    vacancies: '/companies/:id/vacancies',
+    research: '/companies/:id/research',
+    contacts: '/companies/:id/contacts',
+    contactDetail: '/companies/:companyId/contacts/:contactId',
+    investigate: '/companies/investigate',
   },
 };
 
@@ -102,5 +126,9 @@ export function applyRuntimeEnv(runtimeEnv: Partial<RuntimeEnv>): void {
 
   if (runtimeEnv.apiEndpoints?.vacancies) {
     Object.assign(API_ENDPOINTS.vacancies, runtimeEnv.apiEndpoints.vacancies);
+  }
+
+  if (runtimeEnv.apiEndpoints?.companies) {
+    Object.assign(API_ENDPOINTS.companies, runtimeEnv.apiEndpoints.companies);
   }
 }

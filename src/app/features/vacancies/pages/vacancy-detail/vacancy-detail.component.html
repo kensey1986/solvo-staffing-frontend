@@ -6,7 +6,7 @@
   } @else if (vacancy(); as vac) {
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
-      <a routerLink="/vacancies" class="breadcrumb-link">Vacancies</a>
+      <a routerLink="/vacancies" class="breadcrumb-link">Vacantes</a>
       <span class="breadcrumb-separator">›</span>
       <span class="breadcrumb-current">{{ vac.jobTitle }}</span>
     </nav>
@@ -24,7 +24,7 @@
       <div class="page-header-actions">
         <button mat-stroked-button (click)="openEditDialog()">
           <mat-icon>edit</mat-icon>
-          Edit
+          Editar
         </button>
       </div>
     </div>
@@ -40,7 +40,7 @@
         <div class="tab-content">
           <!-- Company Card -->
           <div class="info-card">
-            <h3 class="card-title">Associated Company</h3>
+            <h3 class="card-title">Empresa Asociada</h3>
             <div class="company-row">
               <a [routerLink]="['/companies', vac.companyId]" class="company-link">
                 {{ vac.companyName }}
@@ -51,38 +51,38 @@
 
           <!-- Vacancy Info Card -->
           <div class="info-card">
-            <h3 class="card-title">Vacancy Information</h3>
+            <h3 class="card-title">Información de la Vacante</h3>
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">Location</span>
+                <span class="info-label">Ubicación</span>
                 <span class="info-value">{{ vac.location }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Department</span>
+                <span class="info-label">Departamento</span>
                 <span class="info-value">{{ vac.department || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Seniority Level</span>
+                <span class="info-label">Nivel de Seniority</span>
                 <span class="info-value">{{ vac.seniorityLevel || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Job Type</span>
+                <span class="info-label">Tipo de Empleo</span>
                 <span class="info-value">{{ vac.jobType || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Work Modality</span>
+                <span class="info-label">Modalidad de Trabajo</span>
                 <span class="info-value">{{ vac.workModality || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Remote Viable</span>
+                <span class="info-label">Viable Remoto</span>
                 <span class="info-value">{{ getRemoteViableText(vac.isRemoteViable) }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Salary Range</span>
+                <span class="info-label">Rango Salarial</span>
                 <span class="info-value">{{ vac.salaryRange || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Status</span>
+                <span class="info-label">Estado</span>
                 <app-status-badge [status]="vac.status" />
               </div>
             </div>
@@ -90,18 +90,18 @@
 
           <!-- Source Info Card -->
           <div class="info-card">
-            <h3 class="card-title">Source Information</h3>
+            <h3 class="card-title">Información de Origen</h3>
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">Source</span>
+                <span class="info-label">Fuente</span>
                 <span class="info-value">{{ sourceLabel() }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Original URL</span>
+                <span class="info-label">URL Original</span>
                 <span class="info-value">
                   @if (vac.jobUrl) {
                     <a [href]="vac.jobUrl" target="_blank" class="external-link">
-                      View original ↗
+                      Ver original ↗
                     </a>
                   } @else {
                     N/A
@@ -109,11 +109,11 @@
                 </span>
               </div>
               <div class="info-item">
-                <span class="info-label">Published Date</span>
+                <span class="info-label">Fecha de Publicación</span>
                 <span class="info-value">{{ formatDate(vac.publishedDate) }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Detection Date</span>
+                <span class="info-label">Fecha de Detección</span>
                 <span class="info-value">{{
                   vac.scrapedAt ? formatDateTime(vac.scrapedAt) : 'N/A'
                 }}</span>
@@ -123,46 +123,46 @@
 
           <!-- Notes Card -->
           <div class="info-card">
-            <h3 class="card-title">Notes</h3>
+            <h3 class="card-title">Notas</h3>
             <div class="notes-content">
-              {{ vac.notes || 'No notes available.' }}
+              {{ vac.notes || 'Sin notas disponibles.' }}
             </div>
           </div>
         </div>
       </mat-tab>
 
       <!-- Tracking Tab -->
-      <mat-tab label="Tracking">
+      <mat-tab label="Seguimiento">
         <div class="tab-content">
           <div class="info-card">
             <div class="card-header">
-              <h3 class="card-title">State History</h3>
+              <h3 class="card-title">Historial de Estados</h3>
               <button mat-flat-button color="primary" (click)="openStateChangeDialog()">
-                Change State
+                Cambiar Estado
               </button>
             </div>
 
             @if (stateHistory().length === 0) {
               <div class="empty-state">
-                <p>No state changes recorded yet.</p>
+                <p>No hay cambios de estado registrados.</p>
               </div>
             } @else {
               <table mat-table [dataSource]="stateHistory()" class="history-table">
                 <!-- Date Column -->
                 <ng-container matColumnDef="date">
-                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <th mat-header-cell *matHeaderCellDef>Fecha</th>
                   <td mat-cell *matCellDef="let entry">{{ formatDate(entry.date) }}</td>
                 </ng-container>
 
                 <!-- User Column -->
                 <ng-container matColumnDef="user">
-                  <th mat-header-cell *matHeaderCellDef>User</th>
+                  <th mat-header-cell *matHeaderCellDef>Usuario</th>
                   <td mat-cell *matCellDef="let entry">{{ entry.user }}</td>
                 </ng-container>
 
                 <!-- Change Column -->
                 <ng-container matColumnDef="change">
-                  <th mat-header-cell *matHeaderCellDef>Change</th>
+                  <th mat-header-cell *matHeaderCellDef>Cambio</th>
                   <td mat-cell *matCellDef="let entry" class="change-cell">
                     @if (entry.fromState) {
                       <app-pipeline-badge [stage]="entry.fromState" />
@@ -174,13 +174,13 @@
 
                 <!-- Note Column -->
                 <ng-container matColumnDef="note">
-                  <th mat-header-cell *matHeaderCellDef>Note</th>
+                  <th mat-header-cell *matHeaderCellDef>Nota</th>
                   <td mat-cell *matCellDef="let entry" class="note-cell">{{ entry.note }}</td>
                 </ng-container>
 
                 <!-- Tags Column -->
                 <ng-container matColumnDef="tags">
-                  <th mat-header-cell *matHeaderCellDef>Tags</th>
+                  <th mat-header-cell *matHeaderCellDef>Etiquetas</th>
                   <td mat-cell *matCellDef="let entry">
                     <div class="tags-container">
                       @for (tag of entry.tags; track tag) {
@@ -198,5 +198,15 @@
         </div>
       </mat-tab>
     </mat-tab-group>
+
+    <!-- State Change Modal -->
+    <app-state-change-modal
+      [isOpen]="showStateModal()"
+      [currentState]="vacancy()?.pipelineStage"
+      [states]="stateOptions()"
+      [minNoteLength]="10"
+      (submitChange)="onStateChange($event)"
+      (closeModal)="closeStateModal()"
+    />
   }
 </div>
