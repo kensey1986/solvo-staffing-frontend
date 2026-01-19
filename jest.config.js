@@ -27,6 +27,16 @@ module.exports = {
         '!src/app/**/*.provider.ts',
     ],
     coverageReporters: ['text', 'text-summary', 'lcov', 'html'],
+    reporters: [
+        'default',
+        [
+            'jest-junit',
+            {
+                outputDirectory: './test-results',
+                outputName: 'junit.xml',
+            },
+        ],
+    ],
     coverageThreshold: {
         global: {
             branches: 90,
