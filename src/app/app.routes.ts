@@ -44,16 +44,14 @@ export const routes: Routes = [
 
   // Authentication layout
   {
-    path: 'auth',
+    path: 'auth/login',
     loadComponent: () =>
       import('@layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
-      // Add auth feature routes here
-      // {
-      //   path: '',
-      //   loadChildren: () =>
-      //     import('@features/auth/auth.routes').then(m => m.AUTH_ROUTES),
-      // },
+      {
+        path: '',
+        loadChildren: () => import('@features/login/login.routes').then(m => m.LOGIN_ROUTES),
+      },
     ],
   },
 

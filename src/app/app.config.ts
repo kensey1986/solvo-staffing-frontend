@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { RuntimeEnvService } from './core/config/runtime-env.service';
+import { AUTH_SERVICE_PROVIDER } from './core/providers/auth-service.provider';
 
 function initRuntimeEnv(): () => Promise<void> {
   const runtimeEnvService = inject(RuntimeEnvService);
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
+    AUTH_SERVICE_PROVIDER,
     {
       provide: APP_INITIALIZER,
       useFactory: initRuntimeEnv,
