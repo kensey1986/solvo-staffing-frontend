@@ -111,3 +111,105 @@
     flex-direction: column;
   }
 }
+
+@use '../../../../styles/variables' as vars;
+@use '../../../../styles/mixins' as mixins;
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: vars.$spacing-8;
+  background: linear-gradient(
+    135deg,
+    var(--mat-sys-primary-container) 0%,
+    var(--mat-sys-secondary-container) 100%
+  );
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--mat-sys-level5);
+  border-radius: vars.$radius-lg;
+
+  mat-card-header {
+    text-align: center;
+    margin-bottom: vars.$spacing-4;
+
+    mat-card-title {
+      font-size: vars.$font-size-headline-small;
+      font-weight: vars.$font-weight-medium;
+      color: var(--mat-sys-on-surface);
+      margin-bottom: 0.25rem;
+    }
+
+    mat-card-subtitle {
+      color: var(--mat-sys-on-surface-variant);
+    }
+
+    mat-mdc-card-content {
+      padding: 16px 16px;
+    }
+  }
+
+  mat-card-content {
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: vars.$spacing-8;
+
+      .full-width {
+        width: 100%;
+      }
+
+      .error-message {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background-color: var(--mat-sys-error-container);
+        color: var(--mat-sys-on-error-container);
+        border-radius: 0.25rem;
+        border-left: 4px solid var(--mat-sys-error);
+
+        mat-icon {
+          font-size: 20px;
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      .button-container {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  mat-card-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    margin-top: 1rem;
+
+    .footer-text {
+      color: var(--mat-sys-on-surface-variant);
+      font-size: 0.875rem;
+
+      small {
+        font-style: italic;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-card {
+    margin: 0;
+  }
+}
