@@ -100,7 +100,7 @@ describe('CompanyMockService', () => {
       tick(300);
 
       result!.data.forEach((company: Company) => {
-        expect(company.location.toLowerCase()).toContain('miami');
+        expect((company.location ?? '').toLowerCase()).toContain('miami');
       });
     }));
 

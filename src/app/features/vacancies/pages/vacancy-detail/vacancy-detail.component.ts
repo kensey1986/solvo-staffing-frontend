@@ -34,9 +34,12 @@ import {
   PipelineBadgeComponent,
   StatusBadgeComponent,
   StateChangeModalComponent,
+  EditVacancyModalComponent,
+  EditVacancyFormData,
   StateOption,
   StateChangeResult,
 } from '@shared';
+import { UpdateVacancyDto } from '@core';
 
 /** Pipeline stage options for state change */
 const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', 'won', 'lost'];
@@ -68,6 +71,7 @@ const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', '
     PipelineBadgeComponent,
     StatusBadgeComponent,
     StateChangeModalComponent,
+    EditVacancyModalComponent,
   ],
   providers: [VACANCY_SERVICE_PROVIDER],
   templateUrl: './vacancy-detail.component.html',
@@ -87,6 +91,7 @@ export class VacancyDetailComponent implements OnInit {
   readonly stateHistory = signal<VacancyStateChange[]>([]);
   readonly selectedTabIndex = signal(0);
   readonly showStateModal = signal(false);
+  readonly showEditModal = signal(false);
 
   // History table columns
   readonly historyColumns = ['date', 'user', 'change', 'note', 'tags'];
@@ -157,8 +162,45 @@ export class VacancyDetailComponent implements OnInit {
    * Opens the edit vacancy dialog.
    */
   openEditDialog(): void {
-    // TODO: Implement edit dialog
-    this.snackBar.open('Edit dialog coming soon', 'Close', { duration: 3000 });
+    if (this.vacancy()) {
+      this.showEditModal.set(true);
+    }
+  }
+
+  /**
+   * Closes the edit vacancy dialog.
+   */
+  closeEditModal(): void {
+    this.showEditModal.set(false);
+  }
+
+  /**
+   * Handles edit form submission.
+   */
+  onEditSubmit(formData: EditVacancyFormData): void {
+    const id = this.vacancyId();
+    if (!id) return;
+
+    const updateDto: UpdateVacancyDto = {
+      jobTitle: formData.jobTitle,
+      status: formData.status,
+      department: formData.department || undefined,
+      seniorityLevel: formData.seniorityLevel || undefined,
+      salaryRange: formData.salaryRange || undefined,
+      notes: formData.notes || undefined,
+    };
+
+    this.vacancyService.update(id, updateDto).subscribe({
+      next: updated => {
+        this.vacancy.set(updated);
+        this.closeEditModal();
+        this.snackBar.open('Vacancy updated successfully', 'Close', { duration: 3000 });
+      },
+      error: err => {
+        console.error('Error updating vacancy:', err);
+        this.snackBar.open('Error updating vacancy', 'Close', { duration: 3000 });
+      },
+    });
   }
 
   /**

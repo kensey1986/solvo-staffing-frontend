@@ -12,7 +12,7 @@ import { of, throwError, delay } from 'rxjs';
 
 import { CompaniesListComponent } from './companies-list.component';
 import { COMPANY_SERVICE } from '@core';
-import { Company, PaginatedResponse } from '@core';
+import { Company, Country, PaginatedResponse } from '@core';
 
 // Mock company data
 const mockCompanies: Company[] = [
@@ -406,7 +406,7 @@ describe('CompaniesListComponent', () => {
     }));
 
     it('should not investigate without country', fakeAsync(() => {
-      component.investigateForm.set({ name: 'Test Company', country: '' });
+      component.investigateForm.set({ name: 'Test Company', country: '' as Country });
       component.investigateCompany();
       tick();
 
