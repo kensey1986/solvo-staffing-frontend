@@ -198,6 +198,7 @@
               [ngModel]="createForm().industry"
               (ngModelChange)="updateCreateForm('industry', $event)"
             >
+              <option value="" disabled selected hidden>Seleccionar...</option>
               @for (option of industryOptions; track option.value) {
                 <option [value]="option.value">{{ option.label }}</option>
               }
@@ -225,6 +226,7 @@
               [ngModel]="createForm().employees"
               (ngModelChange)="updateCreateForm('employees', $event)"
             >
+              <option value="" disabled selected hidden>Seleccionar...</option>
               @for (option of employeeSizeOptions; track option.value) {
                 <option [value]="option.value">{{ option.label }}</option>
               }
