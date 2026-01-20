@@ -220,3 +220,10 @@
     }
   </div>
 </div>
+
+<!-- Create Vacancy Modal -->
+<app-create-vacancy-modal
+  [isOpen]="showCreateModal()"
+  (submitCreate)="onCreateVacancy($event)"
+  (closeModal)="closeCreateModal()"
+/>

@@ -10,6 +10,7 @@ export * from './components/status-badge/status-badge.component';
 export * from './components/tags-input/tags-input.component';
 export * from './components/state-change-modal/state-change-modal.component';
 export * from './components/edit-vacancy-modal/edit-vacancy-modal.component';
+export * from './components/create-vacancy-modal/create-vacancy-modal.component';
 export * from './components/company-pipeline-badge/company-pipeline-badge.component';
 export * from './components/relationship-type-badge/relationship-type-badge.component';
 

@@ -23,14 +23,21 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   VACANCY_SERVICE,
   VACANCY_SERVICE_PROVIDER,
+  COMPANY_SERVICE_PROVIDER,
   Vacancy,
   PipelineStage,
   VacancyStatus,
   VacancySource,
   VacancyFilterParams,
   PaginatedResponse,
+  CreateVacancyDto,
 } from '@core';
-import { PipelineBadgeComponent, StatusBadgeComponent } from '@shared';
+import {
+  PipelineBadgeComponent,
+  StatusBadgeComponent,
+  CreateVacancyModalComponent,
+  CreateVacancyFormData,
+} from '@shared';
 
 /**
  * VacanciesListComponent
@@ -57,8 +64,9 @@ import { PipelineBadgeComponent, StatusBadgeComponent } from '@shared';
     MatSnackBarModule,
     PipelineBadgeComponent,
     StatusBadgeComponent,
+    CreateVacancyModalComponent,
   ],
-  providers: [VACANCY_SERVICE_PROVIDER],
+  providers: [VACANCY_SERVICE_PROVIDER, COMPANY_SERVICE_PROVIDER],
   templateUrl: './vacancies-list.component.html',
   styleUrl: './vacancies-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +76,9 @@ export class VacanciesListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+
+  // Create modal state
+  readonly showCreateModal = signal(false);
 
   // Loading state
   readonly isLoading = signal(false);
@@ -227,8 +238,44 @@ export class VacanciesListComponent implements OnInit {
    * Opens the create vacancy dialog.
    */
   openCreateDialog(): void {
-    // TODO: Implement create dialog
-    this.snackBar.open('Create vacancy dialog coming soon', 'Close', { duration: 3000 });
+    this.showCreateModal.set(true);
+  }
+
+  /**
+   * Closes the create vacancy modal.
+   */
+  closeCreateModal(): void {
+    this.showCreateModal.set(false);
+  }
+
+  /**
+   * Handles vacancy creation from modal.
+   */
+  onCreateVacancy(formData: CreateVacancyFormData): void {
+    if (!formData.companyId) return;
+
+    const dto: CreateVacancyDto = {
+      jobTitle: formData.jobTitle,
+      companyId: formData.companyId,
+      location: formData.location || undefined,
+      department: formData.department || undefined,
+      seniorityLevel: formData.seniorityLevel || undefined,
+      salaryRange: formData.salaryRange || undefined,
+    };
+
+    this.vacancyService.create(dto).subscribe({
+      next: vacancy => {
+        this.snackBar.open(`Vacante "${vacancy.jobTitle}" creada exitosamente`, 'Cerrar', {
+          duration: 3000,
+        });
+        this.closeCreateModal();
+        this.loadVacancies();
+      },
+      error: err => {
+        console.error('Error creating vacancy:', err);
+        this.snackBar.open('Error al crear la vacante', 'Cerrar', { duration: 3000 });
+      },
+    });
   }
 
   /**
