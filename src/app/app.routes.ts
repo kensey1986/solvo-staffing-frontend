@@ -1,8 +1,13 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@core/guards/auth.guard';
+import { guestGuard } from '@core/guards/guest.guard';
+import { AUTH_SERVICE_PROVIDER } from '@core/providers/auth-service.provider';
 
 /**
  * Application routes configuration.
  * Uses lazy loading for all feature modules.
+ * Protected routes require authentication via authGuard.
+ * Public routes (auth) use guestGuard to redirect authenticated users.
  */
 export const routes: Routes = [
   // Redirect root to dashboard
@@ -12,11 +17,13 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 
-  // Main application layout (authenticated)
+  // Main application layout (authenticated - protected by authGuard)
   {
     path: '',
     loadComponent: () =>
       import('@layouts/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
+    canActivate: [authGuard],
+    providers: [AUTH_SERVICE_PROVIDER],
     children: [
       {
         path: 'dashboard',
@@ -33,27 +40,21 @@ export const routes: Routes = [
         loadChildren: () =>
           import('@features/companies/companies.routes').then(m => m.COMPANIES_ROUTES),
       },
-      // Add more feature routes here as needed
-      // {
-      //   path: 'staffing',
-      //   loadChildren: () =>
-      //     import('@features/staffing/staffing.routes').then(m => m.STAFFING_ROUTES),
-      // },
     ],
   },
 
-  // Authentication layout
+  // Authentication layout (public - guestGuard redirects if already logged in)
   {
     path: 'auth',
     loadComponent: () =>
       import('@layouts/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+    canActivate: [guestGuard],
+    providers: [AUTH_SERVICE_PROVIDER],
     children: [
-      // Add auth feature routes here
-      // {
-      //   path: '',
-      //   loadChildren: () =>
-      //     import('@features/auth/auth.routes').then(m => m.AUTH_ROUTES),
-      // },
+      {
+        path: '',
+        loadChildren: () => import('@features/auth/auth.routes').then(m => m.AUTH_ROUTES),
+      },
     ],
   },
 

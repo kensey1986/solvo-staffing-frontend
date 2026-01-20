@@ -25,9 +25,17 @@ export interface CompanyEndpoints {
   investigate: string;
 }
 
+export interface AuthEndpoints {
+  login: string;
+  logout: string;
+  me: string;
+  refresh: string;
+}
+
 export interface ApiEndpoints {
   vacancies: VacancyEndpoints;
   companies: CompanyEndpoints;
+  auth: AuthEndpoints;
 }
 
 export interface RuntimeEnv {
@@ -70,6 +78,12 @@ export const API_ENDPOINTS: ApiEndpoints = {
     contacts: '/companies/:id/contacts',
     contactDetail: '/companies/:companyId/contacts/:contactId',
     investigate: '/companies/investigate',
+  },
+  auth: {
+    login: '/auth/login',
+    logout: '/auth/logout',
+    me: '/auth/me',
+    refresh: '/auth/refresh',
   },
 };
 
@@ -130,5 +144,9 @@ export function applyRuntimeEnv(runtimeEnv: Partial<RuntimeEnv>): void {
 
   if (runtimeEnv.apiEndpoints?.companies) {
     Object.assign(API_ENDPOINTS.companies, runtimeEnv.apiEndpoints.companies);
+  }
+
+  if (runtimeEnv.apiEndpoints?.auth) {
+    Object.assign(API_ENDPOINTS.auth, runtimeEnv.apiEndpoints.auth);
   }
 }

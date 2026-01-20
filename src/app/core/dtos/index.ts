@@ -3,3 +3,4 @@
 
 export * from './vacancy.dto';
 export * from './company.dto';
+export * from './auth.dto';

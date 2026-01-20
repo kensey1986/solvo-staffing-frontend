@@ -1,0 +1,78 @@
+<div class="login">
+  <!-- Header -->
+  <header class="login__header">
+    <h2 class="login__title">Iniciar Sesión</h2>
+    <p class="login__subtitle">Ingresa tus credenciales para continuar</p>
+  </header>
+
+  <!-- Form -->
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login__form">
+    <!-- Email Field -->
+    <mat-form-field appearance="outline" class="login__field">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="tu@email.com"
+        autocomplete="email"
+      />
+      <mat-icon matSuffix>email</mat-icon>
+      @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+        <mat-error>El email es requerido</mat-error>
+      }
+      @if (
+        loginForm.get('email')?.hasError('email') && !loginForm.get('email')?.hasError('required')
+      ) {
+        <mat-error>Ingresa un email válido</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Password Field -->
+    <mat-form-field appearance="outline" class="login__field">
+      <mat-label>Contraseña</mat-label>
+      <input
+        matInput
+        [type]="hidePassword() ? 'password' : 'text'"
+        formControlName="password"
+        placeholder="Tu contraseña"
+        autocomplete="current-password"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="hidePassword() ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+      >
+        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+        <mat-error>La contraseña es requerida</mat-error>
+      }
+      @if (
+        loginForm.get('password')?.hasError('minlength') &&
+        !loginForm.get('password')?.hasError('required')
+      ) {
+        <mat-error>La contraseña debe tener al menos 6 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Forgot Password Link -->
+    <div class="login__forgot-password">
+      <a href="javascript:void(0)" class="login__link">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="login__actions">
+      <app-custom-button
+        label="Iniciar Sesión"
+        type="submit"
+        variant="primary"
+        [fullWidth]="true"
+        [loading]="isLoading()"
+        [disabled]="loginForm.invalid || isLoading()"
+      />
+    </div>
+  </form>
+</div>

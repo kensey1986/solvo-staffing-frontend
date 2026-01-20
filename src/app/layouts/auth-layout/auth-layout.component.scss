@@ -26,6 +26,12 @@
       vars.$primary-color 50%,
       vars.$secondary-dark 100%
     );
+    transition: background vars.$transition-normal;
+
+    // Dark mode: darker gradient
+    :host-context(html.dark) & {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
   }
 
   &__gradient {
@@ -34,6 +40,49 @@
     background:
       radial-gradient(ellipse at 30% 20%, rgba(vars.$secondary-color, 0.3) 0%, transparent 50%),
       radial-gradient(ellipse at 70% 80%, rgba(vars.$primary-light, 0.2) 0%, transparent 50%);
+    transition: background vars.$transition-normal;
+
+    // Dark mode: subtle glows
+    :host-context(html.dark) & {
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(vars.$secondary-color, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(vars.$primary-color, 0.1) 0%, transparent 50%);
+    }
+  }
+
+  // ==========================================================================
+  // THEME TOGGLE
+  // ==========================================================================
+
+  &__theme-toggle {
+    position: absolute;
+    top: vars.$spacing-4;
+    right: vars.$spacing-4;
+    z-index: 10;
+
+    @include mixins.breakpoint-down(sm) {
+      top: vars.$spacing-3;
+      right: vars.$spacing-3;
+    }
+
+    // Style the toggle button for visibility on gradient background
+    ::ng-deep {
+      button {
+        color: rgba(255, 255, 255, 0.9);
+        transition: all vars.$transition-fast;
+
+        &:hover {
+          color: #fff;
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+
+      .mat-mdc-icon-button {
+        --mdc-icon-button-state-layer-size: 44px;
+        width: 44px;
+        height: 44px;
+      }
+    }
   }
 
   // ==========================================================================
@@ -87,16 +136,29 @@
 
   &__content {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: vars.$radius-2xl;
-    padding: vars.$spacing-8;
+    padding: vars.$spacing-10 vars.$spacing-8;
     box-shadow: vars.$shadow-2xl;
+    transition:
+      background-color vars.$transition-normal,
+      box-shadow vars.$transition-normal,
+      border-color vars.$transition-normal;
 
     @include mixins.breakpoint-down(sm) {
       padding: vars.$spacing-6;
       border-radius: vars.$radius-xl;
+    }
+
+    // Dark mode: dark card with subtle border
+    :host-context(html.dark) & {
+      background: rgba(30, 30, 30, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
     }
   }
 

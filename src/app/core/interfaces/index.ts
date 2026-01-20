@@ -3,3 +3,4 @@
 
 export * from './vacancy-service.interface';
 export * from './company-service.interface';
+export * from './auth-service.interface';
