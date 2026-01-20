@@ -37,6 +37,17 @@ import {
 import { CompanyPipelineBadgeComponent, RelationshipTypeBadgeComponent } from '@shared';
 
 /**
+ * Interface for create company form validation errors
+ */
+export interface CreateCompanyFormErrors {
+  name: string;
+  website: string;
+  industry: string;
+  location: string;
+  employees: string;
+}
+
+/**
  * CompaniesListComponent
  *
  * Main page for viewing and filtering companies.
@@ -99,6 +110,16 @@ export class CompaniesListComponent implements OnInit {
     industry: undefined,
     location: '',
     employees: undefined,
+  });
+
+  // Create form validation
+  readonly createFormSubmitted = signal(false);
+  readonly createFormErrors = signal<CreateCompanyFormErrors>({
+    name: '',
+    website: '',
+    industry: '',
+    location: '',
+    employees: '',
   });
 
   // Investigate form state
@@ -258,6 +279,14 @@ export class CompaniesListComponent implements OnInit {
       location: '',
       employees: undefined,
     });
+    this.createFormSubmitted.set(false);
+    this.createFormErrors.set({
+      name: '',
+      website: '',
+      industry: '',
+      location: '',
+      employees: '',
+    });
     this.showCreateModal.set(true);
   }
 
@@ -272,11 +301,13 @@ export class CompaniesListComponent implements OnInit {
    * Creates a new company.
    */
   createCompany(): void {
-    const form = this.createForm();
-    if (!form.name.trim()) {
-      this.snackBar.open('El nombre es requerido', 'Cerrar', { duration: 3000 });
+    this.createFormSubmitted.set(true);
+
+    if (!this.validateCreateForm()) {
       return;
     }
+
+    const form = this.createForm();
 
     this.companyService.create(form).subscribe({
       next: newCompany => {
@@ -289,6 +320,45 @@ export class CompaniesListComponent implements OnInit {
         this.snackBar.open('Error al crear empresa', 'Cerrar', { duration: 3000 });
       },
     });
+  }
+
+  /**
+   * Validates the create company form.
+   * @returns true if form is valid, false otherwise
+   */
+  private validateCreateForm(): boolean {
+    const form = this.createForm();
+    const errors: CreateCompanyFormErrors = {
+      name: '',
+      website: '',
+      industry: '',
+      location: '',
+      employees: '',
+    };
+
+    // Validate name (required)
+    if (!form.name.trim()) {
+      errors.name = 'El nombre de la empresa es requerido';
+    } else if (form.name.trim().length < 2) {
+      errors.name = 'El nombre debe tener al menos 2 caracteres';
+    } else if (form.name.trim().length > 100) {
+      errors.name = 'El nombre no puede exceder 100 caracteres';
+    }
+
+    // Validate website (optional but must be valid URL if provided)
+    if (form.website && form.website.trim()) {
+      const urlPattern = /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(\/[^\s]*)?$/;
+      if (!urlPattern.test(form.website.trim())) {
+        errors.website = 'Ingrese una URL válida (ej: https://ejemplo.com)';
+      }
+    }
+
+    this.createFormErrors.set(errors);
+
+    // Return true if no errors
+    return (
+      !errors.name && !errors.website && !errors.industry && !errors.location && !errors.employees
+    );
   }
 
   /**

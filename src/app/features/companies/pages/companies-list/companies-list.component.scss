@@ -272,3 +272,21 @@
   background-position: right vars.$spacing-2 center;
   padding-right: vars.$spacing-8;
 }
+
+// Error styles
+.form-input.input-error,
+.form-select.select-error {
+  border-color: var(--mat-sys-error, #b00020);
+
+  &:focus {
+    border-color: var(--mat-sys-error, #b00020);
+    box-shadow: 0 0 0 2px rgba(176, 0, 32, 0.2);
+  }
+}
+
+.error-message {
+  display: block;
+  font-size: 11px;
+  color: var(--mat-sys-error, #b00020);
+  margin-top: vars.$spacing-1;
+}

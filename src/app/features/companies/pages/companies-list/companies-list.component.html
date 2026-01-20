@@ -172,10 +172,14 @@
             id="create-name"
             type="text"
             class="form-input"
+            [class.input-error]="createFormSubmitted() && createFormErrors().name"
             placeholder="Nombre de la empresa"
             [ngModel]="createForm().name"
             (ngModelChange)="updateCreateForm('name', $event)"
           />
+          @if (createFormSubmitted() && createFormErrors().name) {
+            <span class="error-message">{{ createFormErrors().name }}</span>
+          }
         </div>
 
         <div class="form-row">
@@ -185,16 +189,21 @@
               id="create-website"
               type="url"
               class="form-input"
+              [class.input-error]="createFormSubmitted() && createFormErrors().website"
               placeholder="https://ejemplo.com"
               [ngModel]="createForm().website"
               (ngModelChange)="updateCreateForm('website', $event)"
             />
+            @if (createFormSubmitted() && createFormErrors().website) {
+              <span class="error-message">{{ createFormErrors().website }}</span>
+            }
           </div>
           <div class="form-group">
             <label class="form-label" for="create-industry">Industria</label>
             <select
               id="create-industry"
               class="form-select"
+              [class.select-error]="createFormSubmitted() && createFormErrors().industry"
               [ngModel]="createForm().industry"
               (ngModelChange)="updateCreateForm('industry', $event)"
             >
@@ -203,6 +212,9 @@
                 <option [value]="option.value">{{ option.label }}</option>
               }
             </select>
+            @if (createFormSubmitted() && createFormErrors().industry) {
+              <span class="error-message">{{ createFormErrors().industry }}</span>
+            }
           </div>
         </div>
 
@@ -213,16 +225,21 @@
               id="create-location"
               type="text"
               class="form-input"
+              [class.input-error]="createFormSubmitted() && createFormErrors().location"
               placeholder="Ciudad, Estado"
               [ngModel]="createForm().location"
               (ngModelChange)="updateCreateForm('location', $event)"
             />
+            @if (createFormSubmitted() && createFormErrors().location) {
+              <span class="error-message">{{ createFormErrors().location }}</span>
+            }
           </div>
           <div class="form-group">
             <label class="form-label" for="create-employees">Empleados</label>
             <select
               id="create-employees"
               class="form-select"
+              [class.select-error]="createFormSubmitted() && createFormErrors().employees"
               [ngModel]="createForm().employees"
               (ngModelChange)="updateCreateForm('employees', $event)"
             >
@@ -231,6 +248,9 @@
                 <option [value]="option.value">{{ option.label }}</option>
               }
             </select>
+            @if (createFormSubmitted() && createFormErrors().employees) {
+              <span class="error-message">{{ createFormErrors().employees }}</span>
+            }
           </div>
         </div>
       </div>
