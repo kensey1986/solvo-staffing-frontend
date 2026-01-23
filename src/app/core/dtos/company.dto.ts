@@ -49,6 +49,8 @@ export interface UpdateCompanyDto {
   phone?: string;
   /** Type of relationship with the company */
   relationshipType?: CompanyRelationshipType;
+  /** Commercial assigned to this company */
+  assignedTo?: string;
 }
 
 /**
@@ -139,6 +141,8 @@ export interface CompanyFilterParams extends PaginationParams {
   industry?: Industry;
   /** Filter by location */
   location?: string;
+  /** Filter by assigned commercial */
+  assignedTo?: string;
 }
 
 /**

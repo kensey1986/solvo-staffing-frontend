@@ -35,7 +35,7 @@ const MOCK_COMPANIES: Company[] = [
     industry: 'technology',
     location: 'Miami, FL',
     relationshipType: 'client',
-    pipelineStage: 'client',
+    pipelineStage: 'onboarding_started',
     website: 'https://techcorp.com',
     phone: '+1 (305) 555-0123',
     employees: '500-1000',
@@ -73,6 +73,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-06-15',
     updatedAt: '2025-12-15',
+    assignedTo: 'Carlos M.',
+    researchStatus: 'completed',
   },
   {
     id: 2,
@@ -100,6 +102,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-09-10',
     updatedAt: '2025-12-10',
+    assignedTo: 'María G.',
+    researchStatus: 'pending',
   },
   {
     id: 3,
@@ -118,6 +122,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-11-20',
     updatedAt: '2025-11-20',
+    assignedTo: undefined,
+    researchStatus: undefined,
   },
   {
     id: 4,
@@ -125,7 +131,7 @@ const MOCK_COMPANIES: Company[] = [
     industry: 'financial_services',
     location: 'New York, NY',
     relationshipType: 'client',
-    pipelineStage: 'client',
+    pipelineStage: 'onboarding_started',
     website: 'https://financialpartners.com',
     phone: '+1 (212) 555-0300',
     employees: '100-200',
@@ -148,6 +154,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-03-05',
     updatedAt: '2025-12-01',
+    assignedTo: 'Carlos M.',
+    researchStatus: 'completed',
   },
   {
     id: 5,
@@ -174,6 +182,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-08-12',
     updatedAt: '2025-12-08',
+    assignedTo: 'Juan P.',
+    researchStatus: 'pending',
   },
   {
     id: 6,
@@ -181,7 +191,7 @@ const MOCK_COMPANIES: Company[] = [
     industry: 'technology',
     location: 'San Francisco, CA',
     relationshipType: 'prospect',
-    pipelineStage: 'proposal',
+    pipelineStage: 'initial_appointment_held',
     website: 'https://cloudscale.io',
     phone: '+1 (415) 555-0500',
     employees: '200-500',
@@ -207,6 +217,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-07-20',
     updatedAt: '2025-12-12',
+    assignedTo: 'Carlos M.',
+    researchStatus: 'completed',
   },
   {
     id: 7,
@@ -224,6 +236,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-12-01',
     updatedAt: '2025-12-01',
+    assignedTo: undefined,
+    researchStatus: undefined,
   },
   {
     id: 8,
@@ -250,6 +264,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-02-10',
     updatedAt: '2025-10-15',
+    assignedTo: 'María G.',
+    researchStatus: 'completed',
   },
   {
     id: 9,
@@ -277,6 +293,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-09-25',
     updatedAt: '2025-12-05',
+    assignedTo: undefined,
+    researchStatus: undefined,
   },
   {
     id: 10,
@@ -284,7 +302,7 @@ const MOCK_COMPANIES: Company[] = [
     industry: 'construction',
     location: 'Phoenix, AZ',
     relationshipType: 'client',
-    pipelineStage: 'client',
+    pipelineStage: 'onboarding_started',
     website: 'https://constructionplus.com',
     phone: '+1 (602) 555-0900',
     employees: '1000-5000',
@@ -307,6 +325,8 @@ const MOCK_COMPANIES: Company[] = [
     },
     createdAt: '2025-04-18',
     updatedAt: '2025-11-30',
+    assignedTo: 'Juan P.',
+    researchStatus: 'pending',
   },
 ];
 
@@ -316,8 +336,8 @@ const MOCK_STATE_HISTORY: Record<number, CompanyStateChange[]> = {
     {
       date: '2025-12-10',
       user: 'Carlos Mendoza',
-      fromState: 'proposal',
-      toState: 'client',
+      fromState: 'initial_appointment_held',
+      toState: 'onboarding_started',
       note: 'Contrato firmado. Cliente activo a partir de enero.',
       tags: ['#cierre', '#contrato'],
     },
@@ -325,7 +345,7 @@ const MOCK_STATE_HISTORY: Record<number, CompanyStateChange[]> = {
       date: '2025-11-28',
       user: 'Carlos Mendoza',
       fromState: 'engaged',
-      toState: 'proposal',
+      toState: 'initial_appointment_held',
       note: 'Enviada propuesta comercial para 5 posiciones iniciales.',
       tags: ['#propuesta'],
     },
@@ -351,7 +371,7 @@ const MOCK_STATE_HISTORY: Record<number, CompanyStateChange[]> = {
       date: '2025-12-12',
       user: 'Carlos Mendoza',
       fromState: 'engaged',
-      toState: 'proposal',
+      toState: 'initial_appointment_held',
       note: 'Propuesta enviada para posiciones de DevOps y Product.',
       tags: ['#propuesta'],
     },
@@ -544,7 +564,7 @@ export class CompanyMockService implements ICompanyService {
     company.updatedAt = new Date().toISOString().split('T')[0];
 
     // Update relationship type based on pipeline stage
-    if (data.newState === 'client') {
+    if (data.newState === 'onboarding_started') {
       company.relationshipType = 'client';
     } else if (data.newState === 'lost') {
       company.relationshipType = 'inactive';

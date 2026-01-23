@@ -263,7 +263,7 @@ describe('CompanyMockService', () => {
 
     it('should update relationship type when changing to client', fakeAsync(() => {
       const stateChangeData: ChangeCompanyStateDto = {
-        newState: 'client',
+        newState: 'onboarding_started',
         note: 'Deal closed, now a client',
       };
 
@@ -271,7 +271,7 @@ describe('CompanyMockService', () => {
       service.changeState(3, stateChangeData).subscribe(res => (result = res));
       tick(300);
 
-      expect(result!.pipelineStage).toBe('client');
+      expect(result!.pipelineStage).toBe('onboarding_started');
       expect(result!.relationshipType).toBe('client');
     }));
 
@@ -311,7 +311,7 @@ describe('CompanyMockService', () => {
 
     it('should throw error for non-existent company', fakeAsync(() => {
       expect(() => {
-        service.changeState(99999, { newState: 'client', note: 'test' });
+        service.changeState(99999, { newState: 'onboarding_started', note: 'test' });
       }).toThrow();
     }));
   });
@@ -354,7 +354,7 @@ describe('CompanyMockService', () => {
 
     it('should filter history by user', fakeAsync(() => {
       // Add history entry
-      service.changeState(1, { newState: 'proposal', note: 'test' }).subscribe();
+      service.changeState(1, { newState: 'initial_appointment_held', note: 'test' }).subscribe();
       tick(300);
 
       let history: CompanyStateChange[] | null = null;

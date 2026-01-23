@@ -12,9 +12,12 @@ export type CompanyPipelineStage =
   | 'lead'
   | 'prospecting'
   | 'engaged'
-  | 'proposal'
-  | 'client'
+  | 'initial_appointment_held'
+  | 'onboarding_started'
   | 'lost';
+
+/** Research status for prospection engine */
+export type ResearchStatus = 'pending' | 'completed';
 
 /** Industry categories */
 export type Industry =
@@ -115,6 +118,10 @@ export interface Company {
   createdAt?: string;
   /** Date when the company was last updated */
   updatedAt?: string;
+  /** Commercial assigned to this company */
+  assignedTo?: string;
+  /** Research status from prospection engine */
+  researchStatus?: ResearchStatus;
 }
 
 /**
@@ -153,8 +160,8 @@ export const COMPANY_PIPELINE_LABELS: Record<CompanyPipelineStage, string> = {
   lead: 'Lead',
   prospecting: 'Prospecting',
   engaged: 'Engaged',
-  proposal: 'Proposal',
-  client: 'Client',
+  initial_appointment_held: 'Initial Appointment Held',
+  onboarding_started: 'Onboarding Started',
   lost: 'Lost',
 };
 
