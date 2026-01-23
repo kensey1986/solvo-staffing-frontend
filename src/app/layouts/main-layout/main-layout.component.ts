@@ -73,6 +73,7 @@ export class MainLayoutComponent {
     { label: 'Staffing', route: '/staffing', icon: 'people' },
     { label: 'Reports', route: '/reports', icon: 'bar_chart' },
     { label: 'Settings', route: '/settings', icon: 'settings' },
+    { label: 'Componentes', route: '/componentes', icon: 'view_module' },
   ];
 
   /**

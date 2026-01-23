@@ -40,6 +40,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('@features/companies/companies.routes').then(m => m.COMPANIES_ROUTES),
       },
+      {
+        path: 'componentes',
+        loadChildren: () =>
+          import('@features/components/components.routes').then(m => m.COMPONENTS_ROUTES),
+      },
     ],
   },
 

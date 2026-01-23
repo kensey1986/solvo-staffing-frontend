@@ -1,12 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { PLATFORM_ID } from '@angular/core';
+import { PLATFORM_ID, signal } from '@angular/core';
+import { ThemeService } from '@core/services/theme.service';
+import { jest } from '@jest/globals';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
+      providers: [
+        { provide: ThemeService, useValue: { theme: signal('light'), toggleTheme: jest.fn() } },
+        { provide: PLATFORM_ID, useValue: 'browser' },
+      ],
     }).compileComponents();
   });
 
