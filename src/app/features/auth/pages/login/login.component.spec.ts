@@ -14,8 +14,6 @@ import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AUTH_SERVICE } from '@core/providers/auth-service.provider';
 import { IAuthService } from '@core/interfaces/auth-service.interface';
-import { LoginResponseDto } from '@core/dtos/auth.dto';
-import { User } from '@core/models/user.model';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -23,21 +21,6 @@ describe('LoginComponent', () => {
   let mockAuthService: jest.Mocked<IAuthService>;
   let mockRouter: jest.Mocked<Router>;
   let mockSnackBar: jest.Mocked<MatSnackBar>;
-
-  const mockUser: User = {
-    id: 1,
-    email: 'test@example.com',
-    firstName: 'Test',
-    lastName: 'User',
-    role: 'commercial',
-    createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2025-01-01T00:00:00Z',
-  };
-
-  const mockLoginResponse: LoginResponseDto = {
-    user: mockUser,
-    accessToken: 'mock-token',
-  };
 
   beforeEach(async () => {
     mockAuthService = {
@@ -47,6 +30,8 @@ describe('LoginComponent', () => {
       isAuthenticated: jest.fn(),
       getAccessToken: jest.fn(),
       restoreSession: jest.fn(),
+      initSsoLogin: jest.fn(),
+      handleSsoCallback: jest.fn(),
     };
 
     mockRouter = {
@@ -83,175 +68,41 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('form initialization', () => {
-    it('should have an empty form initially', () => {
-      expect(component.loginForm.get('email')?.value).toBe('');
-      expect(component.loginForm.get('password')?.value).toBe('');
-    });
-
-    it('should have password hidden by default', () => {
-      expect(component.hidePassword()).toBe(true);
-    });
-
+  describe('initial state', () => {
     it('should not be loading initially', () => {
-      expect(component.isLoading()).toBe(false);
+      expect(component.isSsoLoading()).toBe(false);
     });
   });
 
-  describe('form validation', () => {
-    it('should require email', () => {
-      const emailControl = component.loginForm.get('email');
-      emailControl?.setValue('');
-      expect(emailControl?.hasError('required')).toBe(true);
-    });
+  describe('loginWithMicrosoft', () => {
+    it('should set loading state and call initSsoLogin on success', fakeAsync(() => {
+      const mockAuthUrl = 'https://login.microsoftonline.com/auth';
+      mockAuthService.initSsoLogin.mockReturnValue(of({ authUrl: mockAuthUrl }));
 
-    it('should validate email format', () => {
-      const emailControl = component.loginForm.get('email');
-      emailControl?.setValue('invalid-email');
-      expect(emailControl?.hasError('email')).toBe(true);
+      // Not mocking window.location.href as it causes issues in this environment.
+      // We verify the logic by checking the service call and loading state.
 
-      emailControl?.setValue('valid@email.com');
-      expect(emailControl?.hasError('email')).toBe(false);
-    });
+      component.loginWithMicrosoft();
 
-    it('should require password', () => {
-      const passwordControl = component.loginForm.get('password');
-      passwordControl?.setValue('');
-      expect(passwordControl?.hasError('required')).toBe(true);
-    });
-
-    it('should require minimum password length', () => {
-      const passwordControl = component.loginForm.get('password');
-      passwordControl?.setValue('12345');
-      expect(passwordControl?.hasError('minlength')).toBe(true);
-
-      passwordControl?.setValue('123456');
-      expect(passwordControl?.hasError('minlength')).toBe(false);
-    });
-
-    it('should be invalid when form is empty', () => {
-      expect(component.loginForm.invalid).toBe(true);
-    });
-
-    it('should be valid with correct input', () => {
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: '123456789',
-      });
-      expect(component.loginForm.valid).toBe(true);
-    });
-  });
-
-  describe('togglePasswordVisibility', () => {
-    it('should toggle password visibility', () => {
-      expect(component.hidePassword()).toBe(true);
-
-      component.togglePasswordVisibility();
-      expect(component.hidePassword()).toBe(false);
-
-      component.togglePasswordVisibility();
-      expect(component.hidePassword()).toBe(true);
-    });
-  });
-
-  describe('onSubmit', () => {
-    it('should not submit if form is invalid', () => {
-      component.onSubmit();
-
-      expect(mockAuthService.login).not.toHaveBeenCalled();
-      expect(component.isLoading()).toBe(false);
-    });
-
-    it('should mark form as touched when invalid', () => {
-      const markAllAsTouchedSpy = jest.spyOn(component.loginForm, 'markAllAsTouched');
-
-      component.onSubmit();
-
-      expect(markAllAsTouchedSpy).toHaveBeenCalled();
-    });
-
-    it('should set loading state during login', fakeAsync(() => {
-      mockAuthService.login.mockReturnValue(of(mockLoginResponse));
-
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: '123456789',
-      });
-
-      component.onSubmit();
-      expect(component.isLoading()).toBe(true);
-
+      expect(component.isSsoLoading()).toBe(true);
       tick();
 
-      // Note: isLoading would be reset on error, but on success
-      // the component navigates away
+      expect(mockAuthService.initSsoLogin).toHaveBeenCalledWith('microsoft');
+      expect(component.isSsoLoading()).toBe(true);
     }));
 
-    it('should call authService.login with credentials', fakeAsync(() => {
-      mockAuthService.login.mockReturnValue(of(mockLoginResponse));
+    it('should show error snackbar on failure', () => {
+      const errorMessage = 'Error de conexión';
+      mockAuthService.initSsoLogin.mockReturnValue(throwError(() => new Error(errorMessage)));
 
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: '123456789',
-      });
+      component.loginWithMicrosoft();
 
-      component.onSubmit();
-      tick();
-
-      expect(mockAuthService.login).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: '123456789',
-      });
-    }));
-
-    it('should navigate to dashboard on successful login', fakeAsync(() => {
-      mockAuthService.login.mockReturnValue(of(mockLoginResponse));
-
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: '123456789',
-      });
-
-      component.onSubmit();
-      tick();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
-    }));
-
-    it('should show error snackbar on login failure', () => {
-      const errorMessage = 'Email o contraseña incorrectos';
-      mockAuthService.login.mockReturnValue(throwError(() => new Error(errorMessage)));
-
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: 'wrongpassword',
-      });
-
-      component.onSubmit();
-
-      // throwError emits synchronously, so the error handler runs immediately
       expect(mockSnackBar.open).toHaveBeenCalledWith(
-        errorMessage,
+        expect.stringContaining(errorMessage),
         'Cerrar',
-        expect.objectContaining({ duration: 5000 })
+        expect.any(Object)
       );
-      expect(component.isLoading()).toBe(false);
-    });
-
-    it('should reset loading state on error', () => {
-      mockAuthService.login.mockReturnValue(throwError(() => new Error('Error')));
-
-      component.loginForm.patchValue({
-        email: 'test@example.com',
-        password: 'wrongpassword',
-      });
-
-      // throwError emits synchronously, so by the time onSubmit returns,
-      // the error handler has already run and reset isLoading to false
-      component.onSubmit();
-
-      expect(component.isLoading()).toBe(false);
-      expect(mockAuthService.login).toHaveBeenCalled();
+      expect(component.isSsoLoading()).toBe(false);
     });
   });
 });
