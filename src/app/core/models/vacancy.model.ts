@@ -71,6 +71,8 @@ export interface Vacancy {
   scrapedAt?: string;
   /** Internal notes about the vacancy */
   notes?: string;
+  /** Commercial assigned to this vacancy */
+  assignedTo?: string;
 }
 
 /**

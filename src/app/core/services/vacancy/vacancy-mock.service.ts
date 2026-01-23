@@ -40,6 +40,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     source: 'indeed',
     publishedDate: '2025-12-13',
     notes: 'Ideal candidate with React and Node.js experience.',
+    assignedTo: 'Carlos M.',
   },
   {
     id: 2,
@@ -57,6 +58,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'proposal',
     source: 'linkedin',
     publishedDate: '2025-12-12',
+    assignedTo: 'Carlos M.',
   },
   {
     id: 3,
@@ -74,6 +76,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'detected',
     source: 'company_website',
     publishedDate: '2025-12-11',
+    assignedTo: undefined,
   },
   {
     id: 4,
@@ -91,6 +94,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'won',
     source: 'indeed',
     publishedDate: '2025-12-05',
+    assignedTo: 'Carlos M.',
   },
   {
     id: 5,
@@ -108,6 +112,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'detected',
     source: 'indeed',
     publishedDate: '2025-12-10',
+    assignedTo: undefined,
   },
   {
     id: 6,
@@ -125,6 +130,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'contacted',
     source: 'linkedin',
     publishedDate: '2025-12-14',
+    assignedTo: 'María G.',
   },
   {
     id: 7,
@@ -142,6 +148,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'lost',
     source: 'indeed',
     publishedDate: '2025-11-20',
+    assignedTo: 'Juan P.',
   },
   {
     id: 8,
@@ -159,6 +166,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'detected',
     source: 'company_website',
     publishedDate: '2025-12-09',
+    assignedTo: undefined,
   },
   {
     id: 9,
@@ -176,6 +184,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'contacted',
     source: 'indeed',
     publishedDate: '2025-12-08',
+    assignedTo: 'María G.',
   },
   {
     id: 10,
@@ -193,6 +202,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'proposal',
     source: 'linkedin',
     publishedDate: '2025-12-07',
+    assignedTo: 'Juan P.',
   },
   {
     id: 11,
@@ -210,6 +220,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'detected',
     source: 'indeed',
     publishedDate: '2025-12-14',
+    assignedTo: undefined,
   },
   {
     id: 12,
@@ -227,6 +238,7 @@ const MOCK_VACANCIES: Vacancy[] = [
     pipelineStage: 'detected',
     source: 'company_website',
     publishedDate: '2025-12-06',
+    assignedTo: undefined,
   },
 ];
 

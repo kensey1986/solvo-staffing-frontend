@@ -46,6 +46,8 @@ export interface UpdateVacancyDto {
   salaryRange?: string;
   /** Internal notes about the vacancy */
   notes?: string;
+  /** Commercial assigned to this vacancy */
+  assignedTo?: string;
 }
 
 /**
@@ -80,4 +82,6 @@ export interface VacancyFilterParams extends PaginationParams {
   dateFrom?: string;
   /** Filter by published date (to) */
   dateTo?: string;
+  /** Filter by assigned commercial */
+  assignedTo?: string;
 }
