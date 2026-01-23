@@ -1,92 +1,69 @@
 <div class="dashboard-page">
   <header class="dashboard-page__header">
-    <h1 class="dashboard-page__title">Dashboard</h1>
-    <p class="dashboard-page__subtitle">Welcome to Solvo Staffing Platform</p>
+    <div class="dashboard-page__header-left">
+      <h1 class="dashboard-page__title">Dashboard</h1>
+      @if (lastUpdated() && !isLoading() && !hasError()) {
+        <span class="dashboard-page__last-updated">Actualizado: {{ lastUpdated() }}</span>
+      }
+    </div>
+    <div class="dashboard-page__header-actions">
+      <button
+        mat-icon-button
+        (click)="loadData()"
+        [disabled]="isLoading()"
+        title="Actualizar datos"
+      >
+        <mat-icon [class.spinner]="isLoading()">refresh</mat-icon>
+      </button>
+    </div>
   </header>
 
-  <section class="dashboard-page__section">
-    <h2 class="dashboard-page__section-title">Button Components</h2>
-    <div class="dashboard-page__button-grid">
-      <app-custom-button
-        label="Primary Button"
-        variant="primary"
-        size="medium"
-        icon="add"
-        (buttonClick)="onPrimaryClick()"
-      />
+  <div class="dashboard-page__content">
+    @if (isLoading()) {
+      <div class="dashboard-page__loading">
+        <div class="skeleton-grid">
+          @for (item of [1, 2, 3, 4, 5]; track item) {
+            <div class="skeleton-card"></div>
+          }
+        </div>
+        <p>Cargando datos del dashboard...</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="dashboard-page__error">
+        <mat-icon color="error">error_outline</mat-icon>
+        <p>Error al cargar los datos del dashboard.</p>
+        <button mat-flat-button color="primary" (click)="loadData()">Reintentar</button>
+      </div>
+    } @else {
+      <!-- Vacancies Pipeline -->
+      <section class="dashboard-page__section">
+        <h2 class="dashboard-page__section-title">Pipeline de Vacantes</h2>
+        <div class="dashboard-page__kpi-grid">
+          @for (kpi of dashboardData()?.vacancyKpis; track kpi.label) {
+            <app-kpi-card
+              [label]="kpi.label"
+              [value]="kpi.value"
+              [icon]="kpi.icon"
+              [iconColor]="$any(kpi.color)"
+            />
+          }
+        </div>
+      </section>
 
-      <app-custom-button
-        label="Secondary Button"
-        variant="secondary"
-        size="medium"
-        icon="edit"
-        (buttonClick)="onSecondaryClick()"
-      />
-
-      <app-custom-button label="Warning Action" variant="warn" size="medium" icon="delete" />
-
-      <app-custom-button label="Text Button" variant="text" size="medium" />
-
-      <app-custom-button label="Small Button" variant="primary" size="small" />
-
-      <app-custom-button label="Large Button" variant="primary" size="large" />
-
-      <app-custom-button label="Disabled" variant="primary" [disabled]="true" />
-
-      <app-custom-button label="Loading..." variant="primary" [loading]="true" />
-
-      <app-custom-button label="Full Width Button" variant="secondary" [fullWidth]="true" />
-    </div>
-  </section>
-
-  <section class="dashboard-page__section">
-    <h2 class="dashboard-page__section-title">Card Components</h2>
-    <div class="dashboard-page__card-grid">
-      <app-custom-card
-        title="Flat Card"
-        subtitle="No shadow, bordered"
-        icon="dashboard"
-        elevation="flat"
-      >
-        <p>This card uses the flat elevation variant with a subtle border.</p>
-      </app-custom-card>
-
-      <app-custom-card
-        title="Raised Card"
-        subtitle="Default elevation"
-        icon="bar_chart"
-        elevation="raised"
-      >
-        <p>This card uses the raised elevation variant with medium shadow.</p>
-      </app-custom-card>
-
-      <app-custom-card
-        title="Elevated Card"
-        subtitle="Higher elevation"
-        icon="trending_up"
-        elevation="elevated"
-      >
-        <p>This card uses the elevated variant with a larger shadow.</p>
-      </app-custom-card>
-
-      <app-custom-card
-        title="Clickable Card"
-        subtitle="Interactive card"
-        icon="touch_app"
-        [clickable]="true"
-        (cardClick)="onCardClick()"
-      >
-        <p>Click this card to trigger an action.</p>
-      </app-custom-card>
-
-      <app-custom-card
-        title="Selected Card"
-        subtitle="Highlighted state"
-        icon="check_circle"
-        [selected]="true"
-      >
-        <p>This card is in a selected state.</p>
-      </app-custom-card>
-    </div>
-  </section>
+      <!-- Companies Pipeline -->
+      <section class="dashboard-page__section">
+        <h2 class="dashboard-page__section-title">Pipeline de Empresas</h2>
+        <div class="dashboard-page__kpi-grid">
+          @for (kpi of dashboardData()?.companyKpis; track kpi.label) {
+            <app-kpi-card
+              [label]="kpi.label"
+              [value]="kpi.value"
+              [icon]="kpi.icon"
+              [iconColor]="$any(kpi.color)"
+            />
+          }
+        </div>
+      </section>
+    }
+  </div>
 </div>

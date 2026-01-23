@@ -7,7 +7,22 @@
 
 .dashboard-page {
   &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: vars.$spacing-8;
+  }
+
+  &__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$spacing-1;
+  }
+
+  &__last-updated {
+    font-size: vars.$font-size-label-small;
+    color: var(--mat-sys-on-surface-variant);
+    opacity: 0.8;
   }
 
   &__title {
@@ -15,43 +30,79 @@
     font-weight: vars.$font-weight-medium;
     color: var(--mat-sys-on-surface);
     margin: 0;
-    margin-bottom: vars.$spacing-2;
-  }
-
-  &__subtitle {
-    font-size: vars.$font-size-body-large;
-    color: var(--mat-sys-on-surface-variant);
-    margin: 0;
   }
 
   &__section {
     margin-bottom: vars.$spacing-8;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &__section-title {
-    font-size: vars.$font-size-title-large;
-    font-weight: vars.$font-weight-medium;
-    color: var(--mat-sys-on-surface);
+    font-size: vars.$font-size-label-large;
+    font-weight: vars.$font-weight-bold;
+    color: var(--mat-sys-on-surface-variant);
     margin: 0;
     margin-bottom: vars.$spacing-4;
-    padding-bottom: vars.$spacing-2;
-    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  &__button-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: vars.$spacing-4;
-    align-items: flex-start;
-  }
-
-  &__card-grid {
+  &__kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: vars.$spacing-4;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: vars.$spacing-6;
 
     @include mixins.breakpoint-down(sm) {
       grid-template-columns: 1fr;
     }
+  }
+
+  &__loading,
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: vars.$spacing-10;
+    text-align: center;
+    gap: vars.$spacing-4;
+  }
+}
+
+.spinner {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.skeleton-grid {
+  display: flex;
+  gap: vars.$spacing-4;
+  margin-bottom: vars.$spacing-4;
+}
+
+.skeleton-card {
+  width: 100px;
+  height: 80px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: vars.$radius-sm;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }
