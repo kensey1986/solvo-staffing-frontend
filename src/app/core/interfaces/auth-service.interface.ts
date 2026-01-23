@@ -6,7 +6,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { LoginDto, LoginResponseDto } from '../dtos/auth.dto';
+import { LoginDto, LoginResponseDto, SsoProvider, SsoInitResponseDto } from '../dtos/auth.dto';
 import { User } from '../models/user.model';
 
 /**
@@ -49,4 +49,18 @@ export interface IAuthService {
    * Restores the session from localStorage on app initialization.
    */
   restoreSession(): void;
+
+  /**
+   * Initiates SSO login flow.
+   * @param provider - SSO provider (e.g., 'microsoft')
+   * @returns Observable with authorization URL
+   */
+  initSsoLogin(provider: SsoProvider): Observable<SsoInitResponseDto>;
+
+  /**
+   * Handles SSO callback and establishes session.
+   * @param token - Token received from callback
+   * @returns Observable of login response
+   */
+  handleSsoCallback(token: string): Observable<LoginResponseDto>;
 }

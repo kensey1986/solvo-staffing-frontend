@@ -8,8 +8,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, tap, switchMap } from 'rxjs';
-import { ENV } from '../../config/env.config';
-import { LoginDto, LoginResponseDto } from '../../dtos/auth.dto';
+import { API_ENDPOINTS, ENV } from '../../config/env.config';
+import { LoginDto, LoginResponseDto, SsoProvider, SsoInitResponseDto } from '../../dtos/auth.dto';
 import { IAuthService } from '../../interfaces/auth-service.interface';
 import { User } from '../../models/user.model';
 
@@ -97,5 +97,26 @@ export class AuthApiService implements IAuthService {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     console.log('[AuthApiService] Session cleared');
+  }
+
+  initSsoLogin(provider: SsoProvider): Observable<SsoInitResponseDto> {
+    const url = `${ENV.apiUrl}${API_ENDPOINTS.auth.microsoftInit}`;
+    const redirectUri = `${window.location.origin}/auth/callback`;
+    return this.http.get<SsoInitResponseDto>(url, {
+      params: { redirectUri, provider },
+    });
+  }
+
+  handleSsoCallback(token: string): Observable<LoginResponseDto> {
+    const url = `${ENV.apiUrl}${API_ENDPOINTS.auth.microsoftCallback}`;
+    return this.http.post<LoginResponseDto>(url, { token }).pipe(
+      tap(response => {
+        this.accessToken.set(response.accessToken);
+        this.currentUser.set(response.user);
+        localStorage.setItem(TOKEN_KEY, response.accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(response.user));
+        console.log('[AuthApiService] SSO session established');
+      })
+    );
   }
 }

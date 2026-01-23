@@ -8,7 +8,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, switchMap } from 'rxjs/operators';
-import { LoginDto, LoginResponseDto } from '../../dtos/auth.dto';
+import { LoginDto, LoginResponseDto, SsoProvider, SsoInitResponseDto } from '../../dtos/auth.dto';
 import { IAuthService } from '../../interfaces/auth-service.interface';
 import { User } from '../../models/user.model';
 
@@ -124,5 +124,47 @@ export class AuthMockService implements IAuthService {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     console.log('[AuthMockService] Session cleared');
+  }
+
+  /** Mock SSO token for testing */
+  private readonly MOCK_SSO_TOKEN = 'mock-sso-token-microsoft';
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  initSsoLogin(_provider: SsoProvider): Observable<SsoInitResponseDto> {
+    return of(null).pipe(
+      delay(MOCK_DELAY),
+      switchMap(() =>
+        of({
+          // En mock, redirige directamente al callback local con token simulado
+          authUrl: `${window.location.origin}/auth/callback?token=${this.MOCK_SSO_TOKEN}`,
+        })
+      )
+    );
+  }
+
+  handleSsoCallback(token: string): Observable<LoginResponseDto> {
+    return of(null).pipe(
+      delay(MOCK_DELAY),
+      switchMap(() => {
+        if (token === this.MOCK_SSO_TOKEN) {
+          const ssoUser: User = {
+            ...this.MOCK_USER,
+            email: 'sso.user@microsoft.com',
+            firstName: 'SSO',
+            lastName: 'User',
+          };
+          const jwtToken = 'mock-jwt-sso-' + Date.now();
+
+          this.accessToken.set(jwtToken);
+          this.currentUser.set(ssoUser);
+          localStorage.setItem(TOKEN_KEY, jwtToken);
+          localStorage.setItem(USER_KEY, JSON.stringify(ssoUser));
+          console.log('[AuthMockService] SSO session established');
+
+          return of({ user: ssoUser, accessToken: jwtToken });
+        }
+        return throwError(() => new Error('Token SSO inválido'));
+      })
+    );
   }
 }
