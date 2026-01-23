@@ -24,3 +24,4 @@ export * from './services/theme.service';
 export * from './services/vacancy';
 export * from './services/company';
 export * from './services/auth';
+export * from './services/dashboard';
