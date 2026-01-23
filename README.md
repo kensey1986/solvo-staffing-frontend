@@ -23,6 +23,10 @@ npm run lint
 
 Open [http://localhost:4200](http://localhost:4200) in your browser.
 
+## Repository
+
+- **URL**: `https://devops.softgic.co/DevOps_SE/OP.Solvo.CelulaIA2/_git/solvo_platform_front`
+
 ## Tech Stack
 
 - **Angular 21** - Standalone components, Signals, Control Flow

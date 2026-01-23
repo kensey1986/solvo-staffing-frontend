@@ -1,8 +1,12 @@
-# Solvo Staffing Frontend - Architecture Documentation
+# Solvo Platform Frontend - Architecture Documentation
 
 ## Overview
 
-This document defines the technical architecture for the Solvo Staffing Frontend application, built with Angular 18+ using modern patterns and best practices.
+This document defines the technical architecture for the Solvo Platform Frontend application, built with Angular 21 using modern patterns and best practices.
+
+## Repository
+
+- **URL**: `https://devops.softgic.co/DevOps_SE/OP.Solvo.CelulaIA2/_git/solvo_platform_front`
 
 ---
 
@@ -10,7 +14,7 @@ This document defines the technical architecture for the Solvo Staffing Frontend
 
 | Category | Technology |
 |----------|------------|
-| Framework | Angular 18+ (LTS) |
+| Framework | Angular 21 (LTS) |
 | Components | Standalone Components |
 | State Management | Signals |
 | UI Library | Angular Material (M3) |
