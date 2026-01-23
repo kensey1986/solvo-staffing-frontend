@@ -99,6 +99,8 @@ export class CompaniesListComponent implements OnInit {
   readonly searchFilter = signal('');
   readonly relationshipTypeFilter = signal<CompanyRelationshipType | ''>('');
   readonly pipelineFilter = signal<CompanyPipelineStage | ''>('');
+  readonly assignedFilter = signal('');
+  readonly myAssignmentsActive = signal(false);
 
   // Data
   readonly companies = signal<Company[]>([]);
@@ -136,6 +138,7 @@ export class CompaniesListComponent implements OnInit {
     'location',
     'relationshipType',
     'pipelineStage',
+    'assignedTo',
     'actions',
   ];
 
@@ -153,8 +156,8 @@ export class CompaniesListComponent implements OnInit {
     { value: 'lead', label: 'Lead' },
     { value: 'prospecting', label: 'Prospecting' },
     { value: 'engaged', label: 'Engaged' },
-    { value: 'proposal', label: 'Proposal' },
-    { value: 'client', label: 'Client' },
+    { value: 'initial_appointment_held', label: 'Initial Appointment Held' },
+    { value: 'onboarding_started', label: 'Onboarding Started' },
     { value: 'lost', label: 'Lost' },
   ];
 
@@ -218,6 +221,7 @@ export class CompaniesListComponent implements OnInit {
       search: this.searchFilter() || undefined,
       relationshipType: this.relationshipTypeFilter() || undefined,
       pipelineStage: this.pipelineFilter() || undefined,
+      assignedTo: this.assignedFilter() || (this.myAssignmentsActive() ? 'Carlos M.' : undefined),
     };
 
     this.companyService.getAll(params).subscribe({
@@ -249,6 +253,20 @@ export class CompaniesListComponent implements OnInit {
     this.searchFilter.set('');
     this.relationshipTypeFilter.set('');
     this.pipelineFilter.set('');
+    this.assignedFilter.set('');
+    this.myAssignmentsActive.set(false);
+    this.applyFilters();
+  }
+
+  /**
+   * Toggles "My Assignments" filter.
+   */
+  toggleMyAssignments(): void {
+    const newState = !this.myAssignmentsActive();
+    this.myAssignmentsActive.set(newState);
+    if (newState) {
+      this.assignedFilter.set('');
+    }
     this.applyFilters();
   }
 

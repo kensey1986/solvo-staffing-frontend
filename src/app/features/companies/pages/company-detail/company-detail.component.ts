@@ -51,8 +51,8 @@ const PIPELINE_STAGES: CompanyPipelineStage[] = [
   'lead',
   'prospecting',
   'engaged',
-  'proposal',
-  'client',
+  'initial_appointment_held',
+  'onboarding_started',
   'lost',
 ];
 
@@ -143,6 +143,9 @@ export class CompanyDetailComponent implements OnInit {
 
   /** State change modal state */
   readonly showStateModal = signal(false);
+
+  /** Add contact modal state */
+  readonly showAddContactModal = signal(false);
 
   /** State options for state change modal */
   readonly stateOptions = computed<StateOption<CompanyPipelineStage>[]>(() =>
@@ -348,6 +351,59 @@ export class CompanyDetailComponent implements OnInit {
         this.snackBar.open('Error changing state', 'Close', { duration: 3000 });
       },
     });
+  }
+
+  // ============= Commercial Actions =============
+
+  /**
+   * Assigns the current company to the logged-in user.
+   */
+  assignMe(): void {
+    const id = this.companyId();
+    if (!id) return;
+
+    if (confirm('¿Deseas asignarte esta empresa?')) {
+      const updateDto = {
+        assignedTo: 'Carlos M.', // Mock current user
+      };
+
+      this.companyService.update(id, updateDto).subscribe({
+        next: updated => {
+          this.company.set(updated);
+          this.snackBar.open('Empresa asignada exitosamente', 'Cerrar', { duration: 3000 });
+        },
+        error: err => {
+          console.error('Error assigning company:', err);
+          this.snackBar.open('Error al asignar la empresa', 'Cerrar', { duration: 3000 });
+        },
+      });
+    }
+  }
+
+  // ============= Contact Actions =============
+
+  /**
+   * Opens the add contact modal.
+   */
+  openAddContactModal(): void {
+    this.showAddContactModal.set(true);
+  }
+
+  /**
+   * Closes the add contact modal.
+   */
+  closeAddContactModal(): void {
+    this.showAddContactModal.set(false);
+  }
+
+  /**
+   * Mock implementation of adding a contact.
+   */
+  addContact(): void {
+    this.snackBar.open('Funcionalidad de agregar contacto próximamente', 'Cerrar', {
+      duration: 3000,
+    });
+    this.closeAddContactModal();
   }
 
   // ============= Utility Methods =============

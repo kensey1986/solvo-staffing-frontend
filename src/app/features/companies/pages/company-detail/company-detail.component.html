@@ -21,8 +21,20 @@
           (click)="openStateModal()"
         />
         <app-relationship-type-badge [type]="comp.relationshipType" />
+        @if (comp.assignedTo) {
+          <div class="assigned-badge">
+            <mat-icon>person</mat-icon>
+            <span>{{ comp.assignedTo }}</span>
+          </div>
+        }
       </div>
       <div class="page-header-actions">
+        @if (!comp.assignedTo) {
+          <button mat-flat-button color="primary" (click)="assignMe()">
+            <mat-icon>person_add</mat-icon>
+            Asignarme
+          </button>
+        }
         <button mat-stroked-button (click)="openEditModal()">
           <mat-icon>edit</mat-icon>
           Editar
@@ -90,6 +102,10 @@
           <div class="info-card">
             <div class="card-header">
               <h3 class="card-title">Contactos</h3>
+              <button mat-stroked-button color="primary" (click)="openAddContactModal()">
+                <mat-icon>add</mat-icon>
+                Agregar Contacto
+              </button>
             </div>
 
             @if (comp.contacts.length === 0) {
@@ -544,3 +560,49 @@
   (submitChange)="onStateChange($event)"
   (closeModal)="closeStateModal()"
 />
+
+<!-- Add Contact Modal -->
+@if (showAddContactModal()) {
+  <div
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+    (click)="closeAddContactModal()"
+    (keydown.escape)="closeAddContactModal()"
+  >
+    <div
+      class="modal modal-sm"
+      role="document"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+      (keydown.escape)="$event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">Agregar Contacto</h2>
+        <button class="modal-close" (click)="closeAddContactModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Formulario de contacto para <strong>{{ company()?.name }}</strong>
+        </p>
+        <p class="modal-description">Ingrese los datos del nuevo contacto comercial.</p>
+        <!-- Mock form for now -->
+        <div class="form-field">
+          <label class="form-label" for="contact-name">Nombre Completo</label>
+          <input type="text" id="contact-name" class="form-input" placeholder="Nombre completo" />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="contact-title">Cargo</label>
+          <input type="text" id="contact-title" class="form-input" placeholder="Cargo" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeAddContactModal()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="addContact()">Guardar Contacto</button>
+      </div>
+    </div>
+  </div>
+}

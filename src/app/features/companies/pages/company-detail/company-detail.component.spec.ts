@@ -26,7 +26,7 @@ const mockCompany: Company = {
   industry: 'technology',
   location: 'Miami, FL',
   relationshipType: 'client',
-  pipelineStage: 'client',
+  pipelineStage: 'engaged',
   website: 'https://test.com',
   phone: '+1234567890',
   country: 'USA',
@@ -462,31 +462,31 @@ describe('CompanyDetailComponent', () => {
     });
 
     it('should handle state change', fakeAsync(() => {
-      const updatedCompany = { ...mockCompany, pipelineStage: 'proposal' as const };
+      const updatedCompany = { ...mockCompany, pipelineStage: 'initial_appointment_held' as const };
       mockCompanyService.changeState.mockReturnValue(of(updatedCompany));
 
       component.onStateChange({
-        newState: 'proposal',
+        newState: 'initial_appointment_held',
         note: 'Test note',
         tags: ['urgent'],
       });
       tick();
 
       expect(mockCompanyService.changeState).toHaveBeenCalledWith(1, {
-        newState: 'proposal',
+        newState: 'initial_appointment_held',
         note: 'Test note',
         tags: ['urgent'],
       });
-      expect(component.company()?.pipelineStage).toBe('proposal');
+      expect(component.company()?.pipelineStage).toBe('initial_appointment_held');
       expect(component.showStateModal()).toBe(false);
     }));
 
     it('should reload history after state change', fakeAsync(() => {
-      const updatedCompany = { ...mockCompany, pipelineStage: 'proposal' as const };
+      const updatedCompany = { ...mockCompany, pipelineStage: 'initial_appointment_held' as const };
       mockCompanyService.changeState.mockReturnValue(of(updatedCompany));
       mockCompanyService.getStateHistory.mockClear();
 
-      component.onStateChange({ newState: 'proposal', note: '', tags: [] });
+      component.onStateChange({ newState: 'initial_appointment_held', note: '', tags: [] });
       tick();
 
       expect(mockCompanyService.getStateHistory).toHaveBeenCalledWith(1, {});
@@ -495,7 +495,7 @@ describe('CompanyDetailComponent', () => {
     it('should handle state change error', fakeAsync(() => {
       mockCompanyService.changeState.mockReturnValue(throwError(() => new Error('Change failed')));
 
-      component.onStateChange({ newState: 'proposal', note: '', tags: [] });
+      component.onStateChange({ newState: 'initial_appointment_held', note: '', tags: [] });
       tick();
 
       expect(mockCompanyService.changeState).toHaveBeenCalled();
@@ -530,7 +530,7 @@ describe('CompanyDetailComponent', () => {
 
     it('should get pipeline label', () => {
       expect(component.getPipelineLabel('lead')).toBe('Lead');
-      expect(component.getPipelineLabel('client')).toBe('Client');
+      expect(component.getPipelineLabel('onboarding_started')).toBe('Onboarding Started');
     });
 
     it('should return raw value for unknown pipeline stage', () => {

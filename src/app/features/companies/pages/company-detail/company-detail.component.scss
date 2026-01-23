@@ -66,6 +66,28 @@
   gap: vars.$spacing-2;
 }
 
+.assigned-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: vars.$font-size-label-medium;
+  font-weight: vars.$font-weight-medium;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.clickable-badge {
+  cursor: pointer;
+}
+
 // Clickable badge
 .clickable-badge {
   cursor: pointer;
