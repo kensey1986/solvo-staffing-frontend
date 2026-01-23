@@ -55,6 +55,14 @@ const envConfig = {
       contactDetail: process.env.API_ENDPOINT_COMPANY_CONTACT_DETAIL || '/companies/:companyId/contacts/:contactId',
       investigate: process.env.API_ENDPOINT_COMPANY_INVESTIGATE || '/companies/investigate',
     },
+    auth: {
+      login: process.env.API_ENDPOINT_AUTH_LOGIN || '/auth/login',
+      logout: process.env.API_ENDPOINT_AUTH_LOGOUT || '/auth/logout',
+      me: process.env.API_ENDPOINT_AUTH_ME || '/auth/me',
+      refresh: process.env.API_ENDPOINT_AUTH_REFRESH || '/auth/refresh',
+      microsoftInit: process.env.API_ENDPOINT_AUTH_MICROSOFT_INIT || '/auth/microsoft/init',
+      microsoftCallback: process.env.API_ENDPOINT_AUTH_MICROSOFT_CALLBACK || '/auth/microsoft/callback',
+    },
   },
 };
 

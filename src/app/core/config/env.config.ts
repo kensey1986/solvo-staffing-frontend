@@ -30,6 +30,8 @@ export interface AuthEndpoints {
   logout: string;
   me: string;
   refresh: string;
+  microsoftInit: string;
+  microsoftCallback: string;
 }
 
 export interface ApiEndpoints {
@@ -84,6 +86,8 @@ export const API_ENDPOINTS: ApiEndpoints = {
     logout: '/auth/logout',
     me: '/auth/me',
     refresh: '/auth/refresh',
+    microsoftInit: '/auth/microsoft/init',
+    microsoftCallback: '/auth/microsoft/callback',
   },
 };
 
