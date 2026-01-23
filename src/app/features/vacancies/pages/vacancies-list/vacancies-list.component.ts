@@ -32,12 +32,7 @@ import {
   PaginatedResponse,
   CreateVacancyDto,
 } from '@core';
-import {
-  PipelineBadgeComponent,
-  StatusBadgeComponent,
-  CreateVacancyModalComponent,
-  CreateVacancyFormData,
-} from '@shared';
+import { StatusBadgeComponent, CreateVacancyModalComponent, CreateVacancyFormData } from '@shared';
 
 /**
  * VacanciesListComponent
@@ -62,7 +57,7 @@ import {
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
-    PipelineBadgeComponent,
+
     StatusBadgeComponent,
     CreateVacancyModalComponent,
   ],
@@ -97,6 +92,8 @@ export class VacanciesListComponent implements OnInit {
   readonly companyFilter = signal('');
   readonly dateFrom = signal('');
   readonly dateTo = signal('');
+  readonly assignedFilter = signal('');
+  readonly myAssignmentsActive = signal(false);
 
   // Data
   readonly vacancies = signal<Vacancy[]>([]);
@@ -107,7 +104,7 @@ export class VacanciesListComponent implements OnInit {
     'companyName',
     'location',
     'status',
-    'pipelineStage',
+    'assignedTo',
     'source',
     'publishedDate',
     'actions',
@@ -179,6 +176,7 @@ export class VacanciesListComponent implements OnInit {
       company: this.companyFilter() || undefined,
       dateFrom: this.dateFrom() || undefined,
       dateTo: this.dateTo() || undefined,
+      assignedTo: this.assignedFilter() || (this.myAssignmentsActive() ? 'Carlos M.' : undefined),
     };
 
     this.vacancyService.getAll(params).subscribe({
@@ -215,6 +213,20 @@ export class VacanciesListComponent implements OnInit {
     this.companyFilter.set('');
     this.dateFrom.set('');
     this.dateTo.set('');
+    this.assignedFilter.set('');
+    this.myAssignmentsActive.set(false);
+    this.applyFilters();
+  }
+
+  /**
+   * Toggles "My Assignments" filter.
+   */
+  toggleMyAssignments(): void {
+    const newState = !this.myAssignmentsActive();
+    this.myAssignmentsActive.set(newState);
+    if (newState) {
+      this.assignedFilter.set(''); // Clear specific assigned search if "Mine" is active
+    }
     this.applyFilters();
   }
 

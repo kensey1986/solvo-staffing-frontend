@@ -65,6 +65,24 @@
   gap: vars.$spacing-2;
 }
 
+.assigned-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: vars.$font-size-label-medium;
+  font-weight: vars.$font-weight-medium;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
 // Tabs
 .detail-tabs {
   ::ng-deep {
@@ -175,6 +193,17 @@
   background-color: var(--mat-sys-surface-container-highest);
   padding: vars.$spacing-4;
   border-radius: vars.$radius-sm;
+  max-height: 100px;
+  overflow: hidden;
+  transition: max-height vars.$transition-normal ease-in-out;
+
+  &.expanded {
+    max-height: 1000px;
+  }
+}
+
+.expand-btn {
+  margin-top: vars.$spacing-2;
 }
 
 // Empty State

@@ -92,6 +92,7 @@ export class VacancyDetailComponent implements OnInit {
   readonly selectedTabIndex = signal(0);
   readonly showStateModal = signal(false);
   readonly showEditModal = signal(false);
+  readonly isNotesExpanded = signal(false);
 
   // History table columns
   readonly historyColumns = ['date', 'user', 'change', 'note', 'tags'];
@@ -277,6 +278,31 @@ export class VacancyDetailComponent implements OnInit {
    */
   getPipelineLabel(stage: string): string {
     return PIPELINE_STAGE_LABELS[stage as keyof typeof PIPELINE_STAGE_LABELS] || stage;
+  }
+
+  /**
+   * Assigns the current vacancy to the logged-in user.
+   */
+  assignMe(): void {
+    const id = this.vacancyId();
+    if (!id) return;
+
+    if (confirm('¿Deseas asignarte esta vacante?')) {
+      const updateDto: UpdateVacancyDto = {
+        assignedTo: 'Carlos M.', // Mock current user
+      };
+
+      this.vacancyService.update(id, updateDto).subscribe({
+        next: updated => {
+          this.vacancy.set(updated);
+          this.snackBar.open('Vacante asignada exitosamente', 'Cerrar', { duration: 3000 });
+        },
+        error: err => {
+          console.error('Error assigning vacancy:', err);
+          this.snackBar.open('Error al asignar la vacante', 'Cerrar', { duration: 3000 });
+        },
+      });
+    }
   }
 
   /**

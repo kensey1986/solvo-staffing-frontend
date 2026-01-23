@@ -11,7 +11,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError, delay } from 'rxjs';
 
 import { VacanciesListComponent } from './vacancies-list.component';
-import { VACANCY_SERVICE, Vacancy, PaginatedResponse } from '@core';
+import { VACANCY_SERVICE, COMPANY_SERVICE, Vacancy, PaginatedResponse } from '@core';
+import { ThemeService } from '@core/services/theme.service';
+import { signal, PLATFORM_ID } from '@angular/core';
 
 const mockVacancies: Vacancy[] = [
   {
@@ -68,11 +70,24 @@ describe('VacanciesListComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [VacanciesListComponent, NoopAnimationsModule],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ThemeService,
+          useValue: { theme: signal('light'), toggleTheme: jest.fn() },
+        },
+        { provide: PLATFORM_ID, useValue: 'browser' },
+      ],
     })
       .overrideComponent(VacanciesListComponent, {
         set: {
-          providers: [{ provide: VACANCY_SERVICE, useValue: mockVacancyService }],
+          providers: [
+            { provide: VACANCY_SERVICE, useValue: mockVacancyService },
+            {
+              provide: COMPANY_SERVICE,
+              useValue: { getAll: jest.fn().mockReturnValue(of({ data: [], total: 0 })) },
+            },
+          ],
         },
       })
       .compileComponents();
