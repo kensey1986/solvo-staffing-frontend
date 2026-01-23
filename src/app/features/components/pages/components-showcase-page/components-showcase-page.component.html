@@ -1,0 +1,94 @@
+<div class="components-showcase-page">
+  <header class="components-showcase-page__header">
+    <h1 class="components-showcase-page__title">Componentes</h1>
+    <p class="components-showcase-page__subtitle">
+      Showcase of reusable components in Solvo Staffing Platform
+    </p>
+  </header>
+
+  <section class="components-showcase-page__section">
+    <h2 class="components-showcase-page__section-title">Button Components</h2>
+    <div class="components-showcase-page__button-grid">
+      <app-custom-button
+        label="Primary Button"
+        variant="primary"
+        size="medium"
+        icon="add"
+        (buttonClick)="onPrimaryClick()"
+      />
+
+      <app-custom-button
+        label="Secondary Button"
+        variant="secondary"
+        size="medium"
+        icon="edit"
+        (buttonClick)="onSecondaryClick()"
+      />
+
+      <app-custom-button label="Warning Action" variant="warn" size="medium" icon="delete" />
+
+      <app-custom-button label="Text Button" variant="text" size="medium" />
+
+      <app-custom-button label="Small Button" variant="primary" size="small" />
+
+      <app-custom-button label="Large Button" variant="primary" size="large" />
+
+      <app-custom-button label="Disabled" variant="primary" [disabled]="true" />
+
+      <app-custom-button label="Loading..." variant="primary" [loading]="true" />
+
+      <app-custom-button label="Full Width Button" variant="secondary" [fullWidth]="true" />
+    </div>
+  </section>
+
+  <section class="components-showcase-page__section">
+    <h2 class="components-showcase-page__section-title">Card Components</h2>
+    <div class="components-showcase-page__card-grid">
+      <app-custom-card
+        title="Flat Card"
+        subtitle="No shadow, bordered"
+        icon="dashboard"
+        elevation="flat"
+      >
+        <p>This card uses the flat elevation variant with a subtle border.</p>
+      </app-custom-card>
+
+      <app-custom-card
+        title="Raised Card"
+        subtitle="Default elevation"
+        icon="bar_chart"
+        elevation="raised"
+      >
+        <p>This card uses the raised elevation variant with medium shadow.</p>
+      </app-custom-card>
+
+      <app-custom-card
+        title="Elevated Card"
+        subtitle="Higher elevation"
+        icon="trending_up"
+        elevation="elevated"
+      >
+        <p>This card uses the elevated variant with a larger shadow.</p>
+      </app-custom-card>
+
+      <app-custom-card
+        title="Clickable Card"
+        subtitle="Interactive card"
+        icon="touch_app"
+        [clickable]="true"
+        (cardClick)="onCardClick()"
+      >
+        <p>Click this card to trigger an action.</p>
+      </app-custom-card>
+
+      <app-custom-card
+        title="Selected Card"
+        subtitle="Highlighted state"
+        icon="check_circle"
+        [selected]="true"
+      >
+        <p>This card is in a selected state.</p>
+      </app-custom-card>
+    </div>
+  </section>
+</div>
