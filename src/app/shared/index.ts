@@ -5,6 +5,7 @@
 export * from './components/custom-button/custom-button.component';
 export * from './components/custom-card/custom-card.component';
 export * from './components/theme-toggle/theme-toggle.component';
+export * from './components/kpi-card/kpi-card.component';
 export * from './components/pipeline-badge/pipeline-badge.component';
 export * from './components/status-badge/status-badge.component';
 export * from './components/tags-input/tags-input.component';
