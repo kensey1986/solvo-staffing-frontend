@@ -1,0 +1,264 @@
+@use 'styles/variables' as vars;
+
+.companies-list-container {
+  padding: vars.$spacing-6;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: vars.$spacing-6;
+}
+
+.page-title {
+  font-size: vars.$font-size-headline-medium;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+}
+
+.page-actions {
+  display: flex;
+  gap: vars.$spacing-2;
+}
+
+// Filters Card
+.filters-card {
+  background-color: var(--mat-sys-surface-container);
+  border-radius: vars.$radius-md;
+  padding: vars.$spacing-4;
+  margin-bottom: vars.$spacing-6;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: vars.$spacing-2;
+}
+
+.filter-field {
+  min-width: 140px;
+  flex: 0 0 auto;
+
+  &.filter-search {
+    min-width: 240px;
+  }
+
+  ::ng-deep {
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-text-field--outlined {
+      --mdc-outlined-text-field-container-shape: #{vars.$radius-sm};
+    }
+  }
+}
+
+.clear-btn {
+  margin-bottom: vars.$spacing-2;
+}
+
+// Table Card
+.table-card {
+  background-color: var(--mat-sys-surface-container);
+  border-radius: vars.$radius-md;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: vars.$spacing-4;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.table-count {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: vars.$spacing-8;
+}
+
+// Table
+.companies-table {
+  width: 100%;
+
+  th.mat-mdc-header-cell {
+    font-size: vars.$font-size-label-small;
+    font-weight: vars.$font-weight-medium;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background-color: transparent;
+  }
+
+  td.mat-mdc-cell {
+    font-size: vars.$font-size-body-small;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .company-row {
+    cursor: pointer;
+    transition: background-color vars.$transition-fast;
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-high);
+
+      td.mat-mdc-cell {
+        color: var(--mat-sys-on-surface);
+      }
+    }
+  }
+}
+
+.company-name {
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+}
+
+// Paginator
+::ng-deep .mat-mdc-paginator {
+  background-color: transparent;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: vars.$spacing-4;
+}
+
+.modal {
+  background-color: var(--mat-sys-surface-container);
+  border-radius: vars.$radius-lg;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--mat-sys-level5);
+
+  &.modal-sm {
+    max-width: 450px;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: vars.$spacing-4 vars.$spacing-6;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.modal-title {
+  font-size: vars.$font-size-title-large;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+  margin: 0;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--mat-sys-on-surface-variant);
+  transition: background-color vars.$transition-fast;
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-high);
+  }
+}
+
+.modal-body {
+  padding: vars.$spacing-6;
+}
+
+.modal-description {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 vars.$spacing-4;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: vars.$spacing-2;
+  padding: vars.$spacing-4 vars.$spacing-6;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+// Form Styles
+.form-group {
+  margin-bottom: vars.$spacing-4;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: vars.$spacing-4;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-label {
+  display: block;
+  font-size: vars.$font-size-body-small;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+  margin-bottom: vars.$spacing-1;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: vars.$spacing-2 vars.$spacing-3;
+  font-size: vars.$font-size-body-medium;
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: vars.$radius-sm;
+  transition:
+    border-color vars.$transition-fast,
+    box-shadow vars.$transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 0 2px rgba(var(--mat-sys-primary-rgb), 0.2);
+  }
+
+  &::placeholder {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right vars.$spacing-2 center;
+  padding-right: vars.$spacing-8;
+}

@@ -1,0 +1,27 @@
+<div class="auth-layout">
+  <div class="auth-layout__background">
+    <div class="auth-layout__gradient"></div>
+  </div>
+
+  <main class="auth-layout__main">
+    <div class="auth-layout__branding">
+      <img
+        src="assets/logo/SolvoLogo-2025.svg"
+        alt="Solvo Global Logo"
+        class="auth-layout__logo"
+        width="180"
+        height="40"
+      />
+      <h1 class="auth-layout__tagline">Staffing Solutions Platform</h1>
+      <h2>¡Welcome solver!</h2>
+    </div>
+
+    <div class="auth-layout__content">
+      <router-outlet />
+    </div>
+  </main>
+
+  <footer class="auth-layout__footer">
+    <p class="auth-layout__copyright">© {{ currentYear }} Solvo Global. All rights reserved.</p>
+  </footer>
+</div>

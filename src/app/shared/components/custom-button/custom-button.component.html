@@ -1,0 +1,39 @@
+<button
+  mat-flat-button
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  [color]="variant() === 'warn' ? 'warn' : variant() === 'text' ? undefined : 'primary'"
+  [class.custom-button]="true"
+  [class.custom-button--primary]="variant() === 'primary'"
+  [class.custom-button--secondary]="variant() === 'secondary'"
+  [class.custom-button--warn]="variant() === 'warn'"
+  [class.custom-button--text]="variant() === 'text'"
+  [class.custom-button--small]="size() === 'small'"
+  [class.custom-button--medium]="size() === 'medium'"
+  [class.custom-button--large]="size() === 'large'"
+  [class.custom-button--full-width]="fullWidth()"
+  [class.custom-button--loading]="loading()"
+  (click)="onClick($event)"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+>
+  @if (loading()) {
+    <mat-spinner diameter="20" class="custom-button__spinner" />
+  }
+
+  @if (icon() && iconPosition() === 'start' && !loading()) {
+    <mat-icon class="custom-button__icon custom-button__icon--start">
+      {{ icon() }}
+    </mat-icon>
+  }
+
+  <span class="custom-button__label" [class.custom-button__label--hidden]="loading()">
+    {{ label() }}
+  </span>
+
+  @if (icon() && iconPosition() === 'end' && !loading()) {
+    <mat-icon class="custom-button__icon custom-button__icon--end">
+      {{ icon() }}
+    </mat-icon>
+  }
+</button>

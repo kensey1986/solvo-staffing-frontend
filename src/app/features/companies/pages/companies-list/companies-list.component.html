@@ -1,0 +1,315 @@
+<div class="companies-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Empresas</h1>
+    <div class="page-actions">
+      <button mat-stroked-button color="primary" (click)="openInvestigateModal()">
+        <mat-icon>search</mat-icon>
+        Investigar Empresa
+      </button>
+      <button mat-flat-button color="primary" (click)="openCreateModal()">
+        <mat-icon>add</mat-icon>
+        Nueva Empresa
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-card">
+    <div class="filters-row">
+      <!-- Search -->
+      <mat-form-field appearance="outline" class="filter-field filter-search">
+        <mat-label>Buscar</mat-label>
+        <input
+          matInput
+          placeholder="Nombre de empresa..."
+          [ngModel]="searchFilter()"
+          (ngModelChange)="searchFilter.set($event)"
+          (keyup.enter)="applyFilters()"
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Relationship Type -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Tipo</mat-label>
+        <mat-select
+          [ngModel]="relationshipTypeFilter()"
+          (ngModelChange)="relationshipTypeFilter.set($event); applyFilters()"
+        >
+          @for (option of relationshipTypeOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Pipeline -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Pipeline</mat-label>
+        <mat-select
+          [ngModel]="pipelineFilter()"
+          (ngModelChange)="pipelineFilter.set($event); applyFilters()"
+        >
+          @for (option of pipelineOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Clear Filters -->
+      <button mat-stroked-button (click)="clearFilters()" class="clear-btn">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <!-- Table Header -->
+    <div class="table-header">
+      <span class="table-count">{{ paginationInfo() }}</span>
+    </div>
+
+    <!-- Loading Spinner -->
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else {
+      <!-- Data Table -->
+      <table mat-table [dataSource]="companies()" class="companies-table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let company">
+            <span class="company-name">{{ company.name }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Industry Column -->
+        <ng-container matColumnDef="industry">
+          <th mat-header-cell *matHeaderCellDef>Industria</th>
+          <td mat-cell *matCellDef="let company">{{ getIndustryLabel(company.industry) }}</td>
+        </ng-container>
+
+        <!-- Location Column -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Ubicación</th>
+          <td mat-cell *matCellDef="let company">{{ company.location || '-' }}</td>
+        </ng-container>
+
+        <!-- Relationship Type Column -->
+        <ng-container matColumnDef="relationshipType">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let company">
+            <app-relationship-type-badge [type]="company.relationshipType" />
+          </td>
+        </ng-container>
+
+        <!-- Pipeline Column -->
+        <ng-container matColumnDef="pipelineStage">
+          <th mat-header-cell *matHeaderCellDef>Pipeline</th>
+          <td mat-cell *matCellDef="let company">
+            <app-company-pipeline-badge [stage]="company.pipelineStage" />
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let company">
+            <button
+              mat-button
+              color="primary"
+              (click)="goToDetail(company); $event.stopPropagation()"
+            >
+              Ver
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let company; columns: displayedColumns"
+          (click)="goToDetail(company)"
+          class="company-row"
+        ></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator
+        [length]="totalItems()"
+        [pageSize]="pageSize()"
+        [pageIndex]="currentPage() - 1"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    }
+  </div>
+</div>
+
+<!-- Create Company Modal -->
+@if (showCreateModal()) {
+  <div
+    class="modal-overlay"
+    (click)="onModalOverlayClick($event, 'create')"
+    (keydown)="onModalKeydown($event, 'create')"
+    tabindex="0"
+  >
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Nueva Empresa</h2>
+        <button class="modal-close" (click)="closeCreateModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="create-name">Nombre *</label>
+          <input
+            id="create-name"
+            type="text"
+            class="form-input"
+            placeholder="Nombre de la empresa"
+            [ngModel]="createForm().name"
+            (ngModelChange)="updateCreateForm('name', $event)"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="create-website">Website</label>
+            <input
+              id="create-website"
+              type="url"
+              class="form-input"
+              placeholder="https://ejemplo.com"
+              [ngModel]="createForm().website"
+              (ngModelChange)="updateCreateForm('website', $event)"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="create-industry">Industria</label>
+            <select
+              id="create-industry"
+              class="form-select"
+              [ngModel]="createForm().industry"
+              (ngModelChange)="updateCreateForm('industry', $event)"
+            >
+              @for (option of industryOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="create-location">Ubicación</label>
+            <input
+              id="create-location"
+              type="text"
+              class="form-input"
+              placeholder="Ciudad, Estado"
+              [ngModel]="createForm().location"
+              (ngModelChange)="updateCreateForm('location', $event)"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="create-employees">Empleados</label>
+            <select
+              id="create-employees"
+              class="form-select"
+              [ngModel]="createForm().employees"
+              (ngModelChange)="updateCreateForm('employees', $event)"
+            >
+              @for (option of employeeSizeOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeCreateModal()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="createCompany()">Crear Empresa</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Investigate Company Modal -->
+@if (showInvestigateModal()) {
+  <div
+    class="modal-overlay"
+    (click)="onModalOverlayClick($event, 'investigate')"
+    (keydown)="onModalKeydown($event, 'investigate')"
+    tabindex="0"
+  >
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Investigar Empresa</h2>
+        <button class="modal-close" (click)="closeInvestigateModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-description">
+          El Motor de Prospección investigará la empresa y generará información de research
+          automáticamente.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-name">Nombre de Empresa *</label>
+          <input
+            id="investigate-name"
+            type="text"
+            class="form-input"
+            placeholder="Nombre de la empresa"
+            [ngModel]="investigateForm().name"
+            (ngModelChange)="updateInvestigateForm('name', $event)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-country">País *</label>
+          <select
+            id="investigate-country"
+            class="form-select"
+            [ngModel]="investigateForm().country"
+            (ngModelChange)="updateInvestigateForm('country', $event)"
+          >
+            <option value="">Seleccionar país...</option>
+            @for (option of countryOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-website">Website (opcional)</label>
+          <input
+            id="investigate-website"
+            type="url"
+            class="form-input"
+            placeholder="https://ejemplo.com"
+            [ngModel]="investigateForm().website"
+            (ngModelChange)="updateInvestigateForm('website', $event)"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeInvestigateModal()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="investigateCompany()">
+          <mat-icon>search</mat-icon>
+          Iniciar Investigación
+        </button>
+      </div>
+    </div>
+  </div>
+}

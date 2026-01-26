@@ -1,0 +1,57 @@
+@use '../../../../../styles/variables' as vars;
+@use '../../../../../styles/mixins' as mixins;
+
+// ==========================================================================
+// DASHBOARD PAGE STYLES
+// ==========================================================================
+
+.dashboard-page {
+  &__header {
+    margin-bottom: vars.$spacing-8;
+  }
+
+  &__title {
+    font-size: vars.$font-size-headline-large;
+    font-weight: vars.$font-weight-medium;
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+    margin-bottom: vars.$spacing-2;
+  }
+
+  &__subtitle {
+    font-size: vars.$font-size-body-large;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0;
+  }
+
+  &__section {
+    margin-bottom: vars.$spacing-8;
+  }
+
+  &__section-title {
+    font-size: vars.$font-size-title-large;
+    font-weight: vars.$font-weight-medium;
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+    margin-bottom: vars.$spacing-4;
+    padding-bottom: vars.$spacing-2;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: vars.$spacing-4;
+    align-items: flex-start;
+  }
+
+  &__card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: vars.$spacing-4;
+
+    @include mixins.breakpoint-down(sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

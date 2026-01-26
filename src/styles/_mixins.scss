@@ -1,0 +1,250 @@
+// Solvo Global - SCSS Mixins
+// Reusable style patterns and utilities
+
+@use 'variables' as vars;
+
+// ==========================================================================
+// RESPONSIVE MIXINS
+// ==========================================================================
+
+/// Applies styles for screens wider than the specified breakpoint
+/// @param {String} $breakpoint - xs, sm, md, lg, xl
+@mixin breakpoint-up($breakpoint) {
+  @if $breakpoint ==xs {
+    @media (min-width: vars.$breakpoint-xs) {
+      @content;
+    }
+  } @else if $breakpoint ==sm {
+    @media (min-width: vars.$breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint ==md {
+    @media (min-width: vars.$breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint ==lg {
+    @media (min-width: vars.$breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint ==xl {
+    @media (min-width: vars.$breakpoint-xl) {
+      @content;
+    }
+  }
+}
+
+/// Applies styles for screens narrower than the specified breakpoint
+/// @param {String} $breakpoint - sm, md, lg, xl
+@mixin breakpoint-down($breakpoint) {
+  @if $breakpoint ==sm {
+    @media (max-width: vars.$breakpoint-sm - 1) {
+      @content;
+    }
+  } @else if $breakpoint ==md {
+    @media (max-width: vars.$breakpoint-md - 1) {
+      @content;
+    }
+  } @else if $breakpoint ==lg {
+    @media (max-width: vars.$breakpoint-lg - 1) {
+      @content;
+    }
+  } @else if $breakpoint ==xl {
+    @media (max-width: vars.$breakpoint-xl - 1) {
+      @content;
+    }
+  }
+}
+
+// ==========================================================================
+// FLEXBOX MIXINS
+// ==========================================================================
+
+/// Center content using flexbox
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Flex column layout
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/// Space between flex items
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/// Flex row with gap
+/// @param {Length} $gap - Gap between items
+@mixin flex-row($gap: vars.$spacing-4) {
+  display: flex;
+  flex-direction: row;
+  gap: $gap;
+}
+
+// ==========================================================================
+// TYPOGRAPHY MIXINS
+// ==========================================================================
+
+/// Apply heading styles
+/// @param {String} $size - display-large, display-medium, headline-large, etc.
+@mixin heading($size: headline-medium) {
+  font-family: vars.$font-family-primary;
+  font-weight: vars.$font-weight-medium;
+  line-height: vars.$line-height-tight;
+
+  @if $size ==display-large {
+    font-size: vars.$font-size-display-large;
+  } @else if $size ==display-medium {
+    font-size: vars.$font-size-display-medium;
+  } @else if $size ==display-small {
+    font-size: vars.$font-size-display-small;
+  } @else if $size ==headline-large {
+    font-size: vars.$font-size-headline-large;
+  } @else if $size ==headline-medium {
+    font-size: vars.$font-size-headline-medium;
+  } @else if $size ==headline-small {
+    font-size: vars.$font-size-headline-small;
+  }
+}
+
+/// Apply body text styles
+/// @param {String} $size - large, medium, small
+@mixin body-text($size: medium) {
+  font-family: vars.$font-family-primary;
+  font-weight: vars.$font-weight-regular;
+  line-height: vars.$line-height-normal;
+
+  @if $size ==large {
+    font-size: vars.$font-size-body-large;
+  } @else if $size ==medium {
+    font-size: vars.$font-size-body-medium;
+  } @else if $size ==small {
+    font-size: vars.$font-size-body-small;
+  }
+}
+
+/// Truncate text with ellipsis
+/// @param {Number} $lines - Number of lines to show before truncating
+@mixin truncate($lines: 1) {
+  @if $lines ==1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// ==========================================================================
+// VISUAL EFFECT MIXINS
+// ==========================================================================
+
+/// Apply card styles
+/// @param {String} $elevation - sm, md, lg, xl
+@mixin card($elevation: md) {
+  background-color: var(--mat-sys-surface);
+  border-radius: vars.$radius-lg;
+
+  @if $elevation ==sm {
+    box-shadow: vars.$shadow-sm;
+  } @else if $elevation ==md {
+    box-shadow: vars.$shadow-md;
+  } @else if $elevation ==lg {
+    box-shadow: vars.$shadow-lg;
+  } @else if $elevation ==xl {
+    box-shadow: vars.$shadow-xl;
+  }
+}
+
+/// Apply focus ring for accessibility
+@mixin focus-ring {
+  outline: 2px solid vars.$primary-color;
+  outline-offset: 2px;
+}
+
+/// Remove default button styles
+@mixin button-reset {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+/// Interactive element hover/active states
+/// @param {Color} $base-color - Base background color
+@mixin interactive-states($base-color: vars.$primary-color) {
+  transition: all vars.$transition-fast;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  &:active:not(:disabled) {
+    filter: brightness(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ==========================================================================
+// LAYOUT MIXINS
+// ==========================================================================
+
+/// Container with max-width and padding
+/// @param {Length} $max-width - Maximum width of container
+@mixin container($max-width: 1200px) {
+  width: 100%;
+  max-width: $max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: vars.$spacing-4;
+  padding-right: vars.$spacing-4;
+
+  @include breakpoint-up(md) {
+    padding-left: vars.$spacing-6;
+    padding-right: vars.$spacing-6;
+  }
+}
+
+/// Full viewport height minus header
+/// @param {Length} $header-height - Height of fixed header
+@mixin full-height($header-height: 64px) {
+  min-height: calc(100vh - $header-height);
+}
+
+/// Visually hide element but keep it accessible
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

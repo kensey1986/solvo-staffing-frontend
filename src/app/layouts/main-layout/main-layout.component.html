@@ -1,0 +1,78 @@
+<mat-sidenav-container class="main-layout">
+  <mat-sidenav
+    #sidenav
+    class="main-layout__sidenav"
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="isMobile() ? sidenavOpened() : true"
+    (closed)="sidenavOpened.set(false)"
+  >
+    <div class="main-layout__sidenav-header">
+      <img
+        src="assets/logo/SolvoLogo-2025.svg"
+        alt="Solvo Global Logo"
+        class="main-layout__logo"
+        width="140"
+        height="40"
+      />
+    </div>
+
+    <mat-nav-list class="main-layout__nav">
+      @for (item of navItems; track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="main-layout__nav-item--active"
+          class="main-layout__nav-item"
+          (click)="onNavItemClick()"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-layout__content">
+    <mat-toolbar class="main-layout__toolbar" color="primary">
+      @if (isMobile()) {
+        <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle navigation menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+
+      <span class="main-layout__toolbar-title">Solvo Staffing</span>
+
+      <span class="main-layout__toolbar-spacer"></span>
+
+      <app-theme-toggle />
+
+      <button mat-icon-button aria-label="Notifications">
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </button>
+        <mat-divider />
+        <button mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <main class="main-layout__main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

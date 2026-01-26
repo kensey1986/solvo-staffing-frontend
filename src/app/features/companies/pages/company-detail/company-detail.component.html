@@ -1,0 +1,546 @@
+<div class="company-detail-container">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (company(); as comp) {
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/companies" class="breadcrumb-link">Empresas</a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">{{ comp.name }}</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">{{ comp.name }}</h1>
+        <app-company-pipeline-badge
+          [stage]="comp.pipelineStage"
+          class="clickable-badge"
+          (click)="openStateModal()"
+        />
+        <app-relationship-type-badge [type]="comp.relationshipType" />
+      </div>
+      <div class="page-header-actions">
+        <button mat-stroked-button (click)="openEditModal()">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group
+      [(selectedIndex)]="selectedTabIndex"
+      class="detail-tabs"
+      animationDuration="200ms"
+    >
+      <!-- General Tab -->
+      <mat-tab label="General">
+        <div class="tab-content">
+          <!-- Company Info Card -->
+          <div class="info-card">
+            <h3 class="card-title">Información de la Empresa</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Industria</span>
+                <span class="info-value">{{ industryLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ubicación</span>
+                <span class="info-value">{{ comp.location || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">País</span>
+                <span class="info-value">{{ countryLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Empleados</span>
+                <span class="info-value">{{ sizeLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Teléfono</span>
+                <span class="info-value">{{ comp.phone || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Sitio Web</span>
+                <span class="info-value">
+                  @if (comp.website) {
+                    <a [href]="comp.website" target="_blank" class="external-link">
+                      {{ comp.website }} ↗
+                    </a>
+                  } @else {
+                    N/A
+                  }
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Creado</span>
+                <span class="info-value">{{ formatDate(comp.createdAt) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Actualizado</span>
+                <span class="info-value">{{ formatDate(comp.updatedAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts Card -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">Contactos</h3>
+            </div>
+
+            @if (comp.contacts.length === 0) {
+              <div class="empty-state">
+                <p>No hay contactos registrados.</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="comp.contacts" class="contacts-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.fullName }}</td>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef>Cargo</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.jobTitle }}</td>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.email) {
+                      <a [href]="'mailto:' + contact.email" class="contact-link">
+                        {{ contact.email }}
+                      </a>
+                    } @else {
+                      N/A
+                    }
+                  </td>
+                </ng-container>
+
+                <!-- Phone Column -->
+                <ng-container matColumnDef="phone">
+                  <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.phone || 'N/A' }}</td>
+                </ng-container>
+
+                <!-- LinkedIn Column -->
+                <ng-container matColumnDef="linkedin">
+                  <th mat-header-cell *matHeaderCellDef>LinkedIn</th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.linkedinUrl) {
+                      <a [href]="contact.linkedinUrl" target="_blank" class="external-link">
+                        Ver perfil ↗
+                      </a>
+                    } @else {
+                      N/A
+                    }
+                  </td>
+                </ng-container>
+
+                <!-- Primary Column -->
+                <ng-container matColumnDef="primary">
+                  <th mat-header-cell *matHeaderCellDef>Principal</th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.isPrimary) {
+                      <span class="primary-badge">✓</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="contactsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: contactsColumns"></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Research Tab -->
+      <mat-tab label="Investigación">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">Datos de Investigación</h3>
+              <div class="research-header-right">
+                <div class="completeness-indicator">
+                  <span class="completeness-label">Completitud:</span>
+                  <div class="completeness-bar">
+                    <div
+                      class="completeness-fill"
+                      [style.width.%]="getResearchCompleteness()"
+                    ></div>
+                  </div>
+                  <span class="completeness-percent">{{ getResearchCompleteness() }}%</span>
+                </div>
+                <button mat-flat-button color="primary" (click)="openResearchModal()">
+                  Editar
+                </button>
+              </div>
+            </div>
+
+            <div class="research-grid">
+              <div class="research-item">
+                <h4 class="research-label">Propuesta de Valor</h4>
+                <p class="research-content">
+                  {{ comp.research?.valueProposition || 'Sin información.' }}
+                </p>
+              </div>
+              <div class="research-item">
+                <h4 class="research-label">Misión</h4>
+                <p class="research-content">
+                  {{ comp.research?.mission || 'Sin información.' }}
+                </p>
+              </div>
+              <div class="research-item">
+                <h4 class="research-label">Visión</h4>
+                <p class="research-content">
+                  {{ comp.research?.vision || 'Sin información.' }}
+                </p>
+              </div>
+              <div class="research-item full-width">
+                <h4 class="research-label">Pitch de Ventas</h4>
+                <p class="research-content">
+                  {{ comp.research?.salesPitch || 'Sin información.' }}
+                </p>
+              </div>
+            </div>
+
+            @if (comp.research?.lastResearchDate) {
+              <p class="last-research-date">
+                Última actualización: {{ formatDate(comp.research!.lastResearchDate) }}
+              </p>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tracking Tab -->
+      <mat-tab label="Seguimiento">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">Historial de Estados</h3>
+              <button mat-flat-button color="primary" (click)="openStateModal()">
+                Cambiar Estado
+              </button>
+            </div>
+
+            @if (stateHistory().length === 0) {
+              <div class="empty-state">
+                <p>No hay cambios de estado registrados.</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="stateHistory()" class="history-table">
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                  <td mat-cell *matCellDef="let entry">{{ formatDate(entry.date) }}</td>
+                </ng-container>
+
+                <!-- User Column -->
+                <ng-container matColumnDef="user">
+                  <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                  <td mat-cell *matCellDef="let entry">{{ entry.user }}</td>
+                </ng-container>
+
+                <!-- Change Column -->
+                <ng-container matColumnDef="change">
+                  <th mat-header-cell *matHeaderCellDef>Cambio</th>
+                  <td mat-cell *matCellDef="let entry" class="change-cell">
+                    @if (entry.fromState) {
+                      <app-company-pipeline-badge [stage]="entry.fromState" />
+                      <span class="arrow">→</span>
+                    }
+                    <app-company-pipeline-badge [stage]="entry.toState" />
+                  </td>
+                </ng-container>
+
+                <!-- Note Column -->
+                <ng-container matColumnDef="note">
+                  <th mat-header-cell *matHeaderCellDef>Nota</th>
+                  <td mat-cell *matCellDef="let entry" class="note-cell">{{ entry.note }}</td>
+                </ng-container>
+
+                <!-- Tags Column -->
+                <ng-container matColumnDef="tags">
+                  <th mat-header-cell *matHeaderCellDef>Etiquetas</th>
+                  <td mat-cell *matCellDef="let entry">
+                    <div class="tags-container">
+                      @for (tag of entry.tags; track tag) {
+                        <span class="tag-chip">{{ tag }}</span>
+                      }
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: historyColumns"></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Vacancies Tab -->
+      <mat-tab label="Vacantes">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">Vacantes Asociadas</h3>
+              <span class="vacancies-count">{{ vacancies().length }} vacantes</span>
+            </div>
+
+            @if (vacancies().length === 0) {
+              <div class="empty-state">
+                <p>No hay vacantes asociadas a esta empresa.</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="vacancies()" class="vacancies-table">
+                <!-- Job Title Column -->
+                <ng-container matColumnDef="jobTitle">
+                  <th mat-header-cell *matHeaderCellDef>Puesto</th>
+                  <td mat-cell *matCellDef="let vac">
+                    <a [routerLink]="['/vacancies', vac.id]" class="vacancy-link">
+                      {{ vac.jobTitle }}
+                    </a>
+                  </td>
+                </ng-container>
+
+                <!-- Location Column -->
+                <ng-container matColumnDef="location">
+                  <th mat-header-cell *matHeaderCellDef>Ubicación</th>
+                  <td mat-cell *matCellDef="let vac">{{ vac.location }}</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let vac">
+                    <span class="status-chip" [class]="'status-' + vac.status">
+                      {{ vac.status }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <!-- Pipeline Column -->
+                <ng-container matColumnDef="pipeline">
+                  <th mat-header-cell *matHeaderCellDef>Pipeline</th>
+                  <td mat-cell *matCellDef="let vac">
+                    {{ getVacancyPipelineLabel(vac.pipelineStage) }}
+                  </td>
+                </ng-container>
+
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                  <td mat-cell *matCellDef="let vac">{{ formatDate(vac.publishedDate) }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="vacanciesColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: vacanciesColumns"
+                  class="clickable-row"
+                  (click)="navigateToVacancy(row.id)"
+                  (keydown.enter)="navigateToVacancy(row.id)"
+                  (keydown.space)="navigateToVacancy(row.id)"
+                  tabindex="0"
+                  role="button"
+                ></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  } @else {
+    <div class="error-state">
+      <p>No se encontró la empresa.</p>
+      <a routerLink="/companies" mat-flat-button color="primary">Volver a Empresas</a>
+    </div>
+  }
+</div>
+
+<!-- Edit Company Modal -->
+@if (showEditModal()) {
+  <div
+    class="modal-overlay"
+    (click)="closeEditModal()"
+    (keydown.enter)="closeEditModal()"
+    (keydown.space)="closeEditModal()"
+    tabindex="0"
+    role="button"
+  >
+    <div
+      class="modal-container"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+      tabindex="0"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">Editar Empresa</h2>
+        <button mat-icon-button (click)="closeEditModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label" for="edit-name">Nombre *</label>
+          <input
+            id="edit-name"
+            type="text"
+            class="form-input"
+            [ngModel]="editName()"
+            (ngModelChange)="editName.set($event)"
+            placeholder="Nombre de la empresa"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-website">Sitio Web</label>
+          <input
+            id="edit-website"
+            type="url"
+            class="form-input"
+            [ngModel]="editWebsite()"
+            (ngModelChange)="editWebsite.set($event)"
+            placeholder="https://example.com"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-phone">Teléfono</label>
+          <input
+            id="edit-phone"
+            type="tel"
+            class="form-input"
+            [ngModel]="editPhone()"
+            (ngModelChange)="editPhone.set($event)"
+            placeholder="+1 (555) 123-4567"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-location">Ubicación</label>
+          <input
+            id="edit-location"
+            type="text"
+            class="form-input"
+            [ngModel]="editLocation()"
+            (ngModelChange)="editLocation.set($event)"
+            placeholder="Miami, FL"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeEditModal()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="saveCompany()" [disabled]="!editName()">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit Research Modal -->
+@if (showResearchModal()) {
+  <div
+    class="modal-overlay"
+    (click)="closeResearchModal()"
+    (keydown.enter)="closeResearchModal()"
+    (keydown.space)="closeResearchModal()"
+    tabindex="0"
+    role="button"
+  >
+    <div
+      class="modal-container modal-large"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+      tabindex="0"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">Editar Investigación</h2>
+        <button mat-icon-button (click)="closeResearchModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label" for="research-value">Propuesta de Valor</label>
+          <textarea
+            id="research-value"
+            class="form-textarea"
+            rows="3"
+            [ngModel]="editValueProposition()"
+            (ngModelChange)="editValueProposition.set($event)"
+            placeholder="¿Qué valor único ofrece esta empresa?"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-mission">Misión</label>
+          <textarea
+            id="research-mission"
+            class="form-textarea"
+            rows="2"
+            [ngModel]="editMission()"
+            (ngModelChange)="editMission.set($event)"
+            placeholder="Misión de la empresa"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-vision">Visión</label>
+          <textarea
+            id="research-vision"
+            class="form-textarea"
+            rows="2"
+            [ngModel]="editVision()"
+            (ngModelChange)="editVision.set($event)"
+            placeholder="Visión de la empresa"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-pitch">Pitch de Ventas</label>
+          <textarea
+            id="research-pitch"
+            class="form-textarea"
+            rows="4"
+            [ngModel]="editSalesPitch()"
+            (ngModelChange)="editSalesPitch.set($event)"
+            placeholder="Pitch de ventas preparado para esta empresa"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeResearchModal()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="saveResearch()">Guardar</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- State Change Modal (shared component) -->
+<app-state-change-modal
+  [isOpen]="showStateModal()"
+  [title]="'Cambiar Estado de Empresa'"
+  [currentState]="company()?.pipelineStage ?? null"
+  [states]="stateOptions()"
+  [stateLabel]="'Nuevo Estado'"
+  [noteLabel]="'Nota'"
+  [notePlaceholder]="'Describe el motivo del cambio de estado...'"
+  [minNoteLength]="10"
+  [showTags]="true"
+  [tagsLabel]="'Etiquetas'"
+  [tagsPlaceholder]="'Agregar etiqueta...'"
+  (submitChange)="onStateChange($event)"
+  (closeModal)="closeStateModal()"
+/>

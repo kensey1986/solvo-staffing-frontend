@@ -1,0 +1,151 @@
+// Solvo Global - SCSS Variables
+// Brand Identity Colors and Design Tokens
+
+// ==========================================================================
+// BRAND COLORS
+// ==========================================================================
+
+// Primary - Sandy Orange
+$primary-color: #f09f54;
+$primary-light: #ffd19f;
+$primary-dark: #b86d25;
+$primary-contrast: #ffffff;
+
+// Secondary/Accent - Malibu Blue
+$secondary-color: #74e1f5;
+$secondary-light: #aff4ff;
+$secondary-dark: #3eaec2;
+$secondary-contrast: #000000;
+
+// Warn/Error
+$warn-color: #b00020;
+$warn-light: #ff5252;
+$warn-dark: #7f0015;
+$warn-contrast: #ffffff;
+
+// ==========================================================================
+// NEUTRAL COLORS
+// ==========================================================================
+
+$neutral-50: #fafafa;
+$neutral-100: #f5f5f5;
+$neutral-200: #eeeeee;
+$neutral-300: #e0e0e0;
+$neutral-400: #bdbdbd;
+$neutral-500: #9e9e9e;
+$neutral-600: #757575;
+$neutral-700: #616161;
+$neutral-800: #424242;
+$neutral-900: #212121;
+
+// ==========================================================================
+// TYPOGRAPHY
+// ==========================================================================
+
+$font-family-primary: 'Roboto', sans-serif;
+$font-family-secondary: 'Roboto', sans-serif;
+
+// Font weights
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Font sizes (Material Design type scale)
+$font-size-display-large: 3.5625rem; // 57px
+$font-size-display-medium: 2.8125rem; // 45px
+$font-size-display-small: 2.25rem; // 36px
+$font-size-headline-large: 2rem; // 32px
+$font-size-headline-medium: 1.75rem; // 28px
+$font-size-headline-small: 1.5rem; // 24px
+$font-size-title-large: 1.375rem; // 22px
+$font-size-title-medium: 1rem; // 16px
+$font-size-title-small: 0.875rem; // 14px
+$font-size-body-large: 1rem; // 16px
+$font-size-body-medium: 0.875rem; // 14px
+$font-size-body-small: 0.75rem; // 12px
+$font-size-label-large: 0.875rem; // 14px
+$font-size-label-medium: 0.75rem; // 12px
+$font-size-label-small: 0.6875rem; // 11px
+
+// Line heights
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// ==========================================================================
+// SPACING
+// ==========================================================================
+
+$spacing-0: 0;
+$spacing-1: 0.25rem; // 4px
+$spacing-2: 0.5rem; // 8px
+$spacing-3: 0.75rem; // 12px
+$spacing-4: 1rem; // 16px
+$spacing-5: 1.25rem; // 20px
+$spacing-6: 1.5rem; // 24px
+$spacing-8: 2rem; // 32px
+$spacing-10: 2.5rem; // 40px
+$spacing-12: 3rem; // 48px
+$spacing-16: 4rem; // 64px
+$spacing-20: 5rem; // 80px
+$spacing-24: 6rem; // 96px
+
+// ==========================================================================
+// BORDER RADIUS
+// ==========================================================================
+
+$radius-none: 0;
+$radius-sm: 0.125rem; // 2px
+$radius-md: 0.25rem; // 4px
+$radius-lg: 0.5rem; // 8px
+$radius-xl: 0.75rem; // 12px
+$radius-2xl: 1rem; // 16px
+$radius-3xl: 1.5rem; // 24px
+$radius-full: 9999px;
+
+// ==========================================================================
+// SHADOWS
+// ==========================================================================
+
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md:
+  0 4px 6px -1px rgb(0 0 0 / 0.1),
+  0 2px 4px -2px rgb(0 0 0 / 0.1);
+$shadow-lg:
+  0 10px 15px -3px rgb(0 0 0 / 0.1),
+  0 4px 6px -4px rgb(0 0 0 / 0.1);
+$shadow-xl:
+  0 20px 25px -5px rgb(0 0 0 / 0.1),
+  0 8px 10px -6px rgb(0 0 0 / 0.1);
+$shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+// ==========================================================================
+// BREAKPOINTS
+// ==========================================================================
+
+$breakpoint-xs: 0;
+$breakpoint-sm: 600px;
+$breakpoint-md: 960px;
+$breakpoint-lg: 1280px;
+$breakpoint-xl: 1920px;
+
+// ==========================================================================
+// Z-INDEX
+// ==========================================================================
+
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// ==========================================================================
+// TRANSITIONS
+// ==========================================================================
+
+$transition-fast: 150ms ease-in-out;
+$transition-normal: 250ms ease-in-out;
+$transition-slow: 350ms ease-in-out;
