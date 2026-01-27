@@ -191,3 +191,36 @@ a {
   --mat-tab-header-active-focus-indicator-color: #{vars.$primary-color};
   --mat-tab-header-active-ripple-color: #{vars.$primary-color};
 }
+
+// ==========================================================================
+// GLOBAL CUSTOM BUTTON SECONDARY OVERRIDE
+// Ensures secondary buttons are visually distinct from primary everywhere
+// ==========================================================================
+
+.custom-button--secondary {
+  --mdc-filled-button-container-color: transparent !important;
+  --mdc-filled-button-label-text-color: var(--mat-sys-on-surface) !important;
+  --mat-filled-button-state-layer-color: var(--mat-sys-on-surface) !important;
+  --mat-filled-button-ripple-color: rgba(0, 0, 0, 0.1) !important;
+  
+  background-color: transparent !important;
+  color: var(--mat-sys-on-surface) !important;
+  border: 1.5px solid var(--mat-sys-outline) !important;
+  box-shadow: none !important;
+
+  &:hover:not(:disabled) {
+    --mdc-filled-button-container-color: var(--mat-sys-surface-container-high) !important;
+    background-color: var(--mat-sys-surface-container-high) !important;
+    border-color: var(--mat-sys-on-surface-variant) !important;
+  }
+
+  &:active:not(:disabled) {
+    --mdc-filled-button-container-color: var(--mat-sys-surface-container-highest) !important;
+    background-color: var(--mat-sys-surface-container-highest) !important;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
