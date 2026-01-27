@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import {
   ChangeCompanyStateDto,
@@ -22,13 +22,241 @@ import {
 import { ICompanyService } from '../../interfaces/company-service.interface';
 import { PaginatedResponse } from '../../models/pagination.model';
 import { Company, CompanyStateChange, Contact, Research } from '../../models/company.model';
-import { Vacancy } from '../../models/vacancy.model';
+import {
+  JobType,
+  SeniorityLevel,
+  Vacancy,
+  VacancySource,
+  WorkModality,
+} from '../../models/vacancy.model';
 
 /** Simulated network delay in milliseconds */
 const MOCK_DELAY = 300;
 
+const COMPANY_NAME_TO_ID: Record<string, number> = {
+  'TechCorp Solutions': 1,
+  'Global Manufacturing Inc': 2,
+  'HealthFirst Medical': 3,
+  'Financial Partners LLC': 4,
+  'Retail Masters Group': 5,
+  'CloudScale Technologies': 6,
+  'Logistics Pro': 7,
+  'EduTech Learning': 8,
+  'Green Energy Corp': 9,
+  'Construction Plus': 10,
+  'SalesForce Pro': 13,
+  'SecureNet Systems': 14,
+  'Industrial Dynamics': 15,
+  'AppVenture Studios': 16,
+};
+
+const SOURCE_DOMAIN: Record<VacancySource, string> = {
+  indeed: 'https://www.indeed.com/viewjob?jk=',
+  linkedin: 'https://www.linkedin.com/jobs/view/',
+  company_website: 'https://careers.',
+  manual: 'https://solvo.local/mock/',
+};
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+}
+
+function inferDepartment(title: string): string {
+  const normalized = title.toLowerCase();
+  if (/(nurse|medical|clinical|health|pharmacist|therapist)/.test(normalized)) return 'Healthcare';
+  if (/(engineer|developer|software|devops|data|security|qa|sre|it|network)/.test(normalized))
+    return 'Engineering';
+  if (/(product|ux|ui|designer|design|scrum)/.test(normalized)) return 'Product';
+  if (/(sales|account|business development|sdr)/.test(normalized)) return 'Sales';
+  if (/(marketing|content|brand|growth)/.test(normalized)) return 'Marketing';
+  if (/(finance|financial|analyst|banker|accountant|risk|tax)/.test(normalized)) return 'Finance';
+  if (/(hr|human|talent|recruit|people)/.test(normalized)) return 'Human Resources';
+  if (/(operations|manager|supervisor|coordinator|director|lead)/.test(normalized))
+    return 'Operations';
+  return 'General';
+}
+
+function inferSeniority(title: string): SeniorityLevel {
+  const normalized = title.toLowerCase();
+  if (/(intern|trainee|entry)/.test(normalized)) return 'entry_level';
+  if (/(junior)/.test(normalized)) return 'entry_level';
+  if (/(mid|associate)/.test(normalized)) return 'mid_level';
+  if (/(senior)/.test(normalized)) return 'senior';
+  if (/(lead|principal)/.test(normalized)) return 'lead';
+  if (/(manager)/.test(normalized)) return 'manager';
+  if (/(director|vp|vice president)/.test(normalized)) return 'director';
+  return 'mid_level';
+}
+
+function inferJobType(title: string): JobType {
+  const normalized = title.toLowerCase();
+  if (/(intern)/.test(normalized)) return 'internship';
+  if (/(contract|freelance)/.test(normalized)) return 'contract';
+  if (/(part[-\s]?time)/.test(normalized)) return 'part_time';
+  return 'full_time';
+}
+
+function inferWorkModality(title: string, location: string): WorkModality {
+  const normalized = `${title} ${location}`.toLowerCase();
+  if (/remote|remoto/.test(normalized)) return 'remote';
+  if (/hybrid|hibrid/.test(normalized)) return 'hybrid';
+  return 'on_site';
+}
+
+function inferSalaryRange(department: string, seniority: SeniorityLevel): string {
+  const baseRanges: Record<string, Record<SeniorityLevel, string>> = {
+    Engineering: {
+      entry_level: '$60,000 - $80,000',
+      mid_level: '$85,000 - $115,000',
+      mid_senior: '$100,000 - $130,000',
+      senior: '$120,000 - $160,000',
+      lead: '$140,000 - $180,000',
+      manager: '$150,000 - $190,000',
+      director: '$170,000 - $210,000',
+      executive: '$190,000 - $240,000',
+    },
+    Product: {
+      entry_level: '$55,000 - $75,000',
+      mid_level: '$80,000 - $110,000',
+      mid_senior: '$95,000 - $125,000',
+      senior: '$115,000 - $150,000',
+      lead: '$130,000 - $170,000',
+      manager: '$140,000 - $180,000',
+      director: '$160,000 - $200,000',
+      executive: '$180,000 - $220,000',
+    },
+    Finance: {
+      entry_level: '$50,000 - $70,000',
+      mid_level: '$70,000 - $95,000',
+      mid_senior: '$85,000 - $110,000',
+      senior: '$100,000 - $140,000',
+      lead: '$120,000 - $160,000',
+      manager: '$130,000 - $170,000',
+      director: '$150,000 - $190,000',
+      executive: '$170,000 - $210,000',
+    },
+    Sales: {
+      entry_level: '$45,000 - $65,000',
+      mid_level: '$60,000 - $90,000',
+      mid_senior: '$75,000 - $105,000',
+      senior: '$90,000 - $130,000',
+      lead: '$100,000 - $140,000',
+      manager: '$110,000 - $150,000',
+      director: '$130,000 - $170,000',
+      executive: '$150,000 - $190,000',
+    },
+    Healthcare: {
+      entry_level: '$45,000 - $65,000',
+      mid_level: '$60,000 - $85,000',
+      mid_senior: '$70,000 - $95,000',
+      senior: '$80,000 - $110,000',
+      lead: '$95,000 - $125,000',
+      manager: '$100,000 - $130,000',
+      director: '$120,000 - $150,000',
+      executive: '$130,000 - $170,000',
+    },
+    Marketing: {
+      entry_level: '$40,000 - $60,000',
+      mid_level: '$55,000 - $80,000',
+      mid_senior: '$65,000 - $90,000',
+      senior: '$80,000 - $110,000',
+      lead: '$95,000 - $125,000',
+      manager: '$105,000 - $135,000',
+      director: '$120,000 - $150,000',
+      executive: '$140,000 - $170,000',
+    },
+    Operations: {
+      entry_level: '$40,000 - $60,000',
+      mid_level: '$55,000 - $80,000',
+      mid_senior: '$65,000 - $90,000',
+      senior: '$80,000 - $110,000',
+      lead: '$95,000 - $125,000',
+      manager: '$105,000 - $135,000',
+      director: '$120,000 - $150,000',
+      executive: '$140,000 - $170,000',
+    },
+    General: {
+      entry_level: '$38,000 - $55,000',
+      mid_level: '$50,000 - $70,000',
+      mid_senior: '$60,000 - $80,000',
+      senior: '$70,000 - $95,000',
+      lead: '$80,000 - $105,000',
+      manager: '$90,000 - $115,000',
+      director: '$105,000 - $135,000',
+      executive: '$120,000 - $150,000',
+    },
+  };
+
+  return baseRanges[department]?.[seniority] || baseRanges['General'].mid_level;
+}
+
+function buildDescription(title: string, companyName: string, department: string): string {
+  const summary =
+    department === 'Engineering'
+      ? 'building scalable systems and modern web services'
+      : 'delivering outstanding results in a fast-paced environment';
+  return `We are hiring a ${title} to join ${companyName}. The ideal candidate will be focused on ${summary}.\n\n<strong>Responsibilities:</strong>\n• Own key deliverables and collaborate across teams\n• Maintain high standards for quality and execution\n\n<strong>Requirements:</strong>\n• Relevant experience for the role\n• Strong communication and problem-solving skills`;
+}
+
+function buildNotes(stage: string): string {
+  switch (stage) {
+    case 'detected':
+      return 'Pendiente de contacto inicial y validación con el cliente.';
+    case 'contacted':
+      return 'Contacto inicial enviado. En espera de respuesta.';
+    case 'proposal':
+      return 'Propuesta comercial en revisión por parte del cliente.';
+    case 'won':
+      return 'Vacante cerrada exitosamente. Preparar onboarding.';
+    case 'lost':
+      return 'Vacante perdida. Registrar motivo en seguimiento.';
+    default:
+      return 'Seguimiento en curso.';
+  }
+}
+
+function hydrateVacancy(vacancy: Vacancy): Vacancy {
+  const resolvedCompanyId = COMPANY_NAME_TO_ID[vacancy.companyName] || vacancy.companyId;
+  const department = vacancy.department || inferDepartment(vacancy.jobTitle);
+  const seniorityLevel = vacancy.seniorityLevel || inferSeniority(vacancy.jobTitle);
+  const jobType = vacancy.jobType || inferJobType(vacancy.jobTitle);
+  const workModality = vacancy.workModality || inferWorkModality(vacancy.jobTitle, vacancy.location);
+  const isRemoteViable = vacancy.isRemoteViable ?? workModality !== 'on_site';
+  const salaryRange = vacancy.salaryRange || inferSalaryRange(department, seniorityLevel);
+  const scrapedAt =
+    vacancy.scrapedAt || `${vacancy.publishedDate}T14:30:00Z`;
+  const jobUrl =
+    vacancy.jobUrl ||
+    (vacancy.source === 'company_website'
+      ? `${SOURCE_DOMAIN.company_website}${slugify(vacancy.companyName)}.com/jobs/${slugify(
+          vacancy.jobTitle
+        )}`
+      : `${SOURCE_DOMAIN[vacancy.source]}${slugify(vacancy.jobTitle)}-${resolvedCompanyId}`);
+  const description =
+    vacancy.description || buildDescription(vacancy.jobTitle, vacancy.companyName, department);
+  const notes = vacancy.notes || buildNotes(vacancy.pipelineStage);
+
+  return {
+    ...vacancy,
+    companyId: resolvedCompanyId,
+    department,
+    seniorityLevel,
+    jobType,
+    workModality,
+    isRemoteViable,
+    salaryRange,
+    jobUrl,
+    scrapedAt,
+    description,
+    notes,
+  };
+}
+
 /** Mock company data - IDs match companyId in MOCK_VACANCIES */
-const MOCK_COMPANIES: Company[] = [
+export const MOCK_COMPANIES: Company[] = [
   {
     id: 1,
     name: 'TechCorp Solutions',
@@ -328,6 +556,86 @@ const MOCK_COMPANIES: Company[] = [
     assignedTo: 'Juan P.',
     researchStatus: 'pending',
   },
+  {
+    id: 13,
+    name: 'SalesForce Pro',
+    industry: 'technology',
+    location: 'Austin, TX',
+    relationshipType: 'prospect',
+    pipelineStage: 'prospecting',
+    website: 'https://salesforcepro.com',
+    phone: '+1 (512) 555-1100',
+    employees: '200-500',
+    country: 'USA',
+    contacts: [],
+    research: {
+      completenessPercent: 25,
+    },
+    createdAt: '2025-09-05',
+    updatedAt: '2025-12-10',
+    assignedTo: 'Carlos M.',
+    researchStatus: 'pending',
+  },
+  {
+    id: 14,
+    name: 'SecureNet Systems',
+    industry: 'technology',
+    location: 'Seattle, WA',
+    relationshipType: 'lead',
+    pipelineStage: 'lead',
+    website: 'https://securenetsystems.com',
+    phone: '+1 (206) 555-1200',
+    employees: '100-200',
+    country: 'USA',
+    contacts: [],
+    research: {
+      completenessPercent: 15,
+    },
+    createdAt: '2025-10-01',
+    updatedAt: '2025-12-01',
+    assignedTo: undefined,
+    researchStatus: 'pending',
+  },
+  {
+    id: 15,
+    name: 'Industrial Dynamics',
+    industry: 'manufacturing',
+    location: 'Detroit, MI',
+    relationshipType: 'prospect',
+    pipelineStage: 'prospecting',
+    website: 'https://industrialdynamics.com',
+    phone: '+1 (313) 555-1300',
+    employees: '500-1000',
+    country: 'USA',
+    contacts: [],
+    research: {
+      completenessPercent: 35,
+    },
+    createdAt: '2025-07-12',
+    updatedAt: '2025-12-03',
+    assignedTo: 'Juan P.',
+    researchStatus: 'pending',
+  },
+  {
+    id: 16,
+    name: 'AppVenture Studios',
+    industry: 'technology',
+    location: 'Los Angeles, CA',
+    relationshipType: 'lead',
+    pipelineStage: 'lead',
+    website: 'https://appventurestudios.com',
+    phone: '+1 (213) 555-1400',
+    employees: '50-100',
+    country: 'USA',
+    contacts: [],
+    research: {
+      completenessPercent: 20,
+    },
+    createdAt: '2025-08-22',
+    updatedAt: '2025-12-02',
+    assignedTo: undefined,
+    researchStatus: 'pending',
+  },
 ];
 
 /** Mock state change history */
@@ -503,7 +811,7 @@ export class CompanyMockService implements ICompanyService {
   getById(id: number): Observable<Company> {
     const company = this.companies.find(c => c.id === id);
     if (!company) {
-      throw new Error(`Company with id ${id} not found`);
+      return throwError(() => new Error(`Company with id ${id} not found`)).pipe(delay(MOCK_DELAY));
     }
     return of(company).pipe(delay(MOCK_DELAY));
   }
@@ -534,7 +842,7 @@ export class CompanyMockService implements ICompanyService {
   update(id: number, data: UpdateCompanyDto): Observable<Company> {
     const index = this.companies.findIndex(c => c.id === id);
     if (index === -1) {
-      throw new Error(`Company with id ${id} not found`);
+      return throwError(() => new Error(`Company with id ${id} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     this.companies[index] = {
@@ -556,7 +864,7 @@ export class CompanyMockService implements ICompanyService {
   changeState(id: number, data: ChangeCompanyStateDto): Observable<Company> {
     const company = this.companies.find(c => c.id === id);
     if (!company) {
-      throw new Error(`Company with id ${id} not found`);
+      return throwError(() => new Error(`Company with id ${id} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     const previousState = company.pipelineStage;
@@ -615,14 +923,14 @@ export class CompanyMockService implements ICompanyService {
   }
 
   getVacancies(id: number): Observable<Vacancy[]> {
-    const vacancies = this.companyVacancies[id] || [];
+    const vacancies = (this.companyVacancies[id] || []).map(hydrateVacancy);
     return of(vacancies).pipe(delay(MOCK_DELAY));
   }
 
   updateResearch(id: number, data: UpdateResearchDto): Observable<Research> {
     const company = this.companies.find(c => c.id === id);
     if (!company) {
-      throw new Error(`Company with id ${id} not found`);
+      return throwError(() => new Error(`Company with id ${id} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     const updatedResearch: Research = {
@@ -671,7 +979,7 @@ export class CompanyMockService implements ICompanyService {
   createContact(companyId: number, data: CreateContactDto): Observable<Contact> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      throw new Error(`Company with id ${companyId} not found`);
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     // If new contact is primary, demote others
@@ -698,12 +1006,12 @@ export class CompanyMockService implements ICompanyService {
   updateContact(companyId: number, contactId: number, data: UpdateContactDto): Observable<Contact> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      throw new Error(`Company with id ${companyId} not found`);
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     const contactIndex = company.contacts.findIndex(c => c.id === contactId);
     if (contactIndex === -1) {
-      throw new Error(`Contact with id ${contactId} not found`);
+      return throwError(() => new Error(`Contact with id ${contactId} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     // If updating to primary, demote others
@@ -723,7 +1031,7 @@ export class CompanyMockService implements ICompanyService {
   deleteContact(companyId: number, contactId: number): Observable<void> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      throw new Error(`Company with id ${companyId} not found`);
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
     }
 
     const contactIndex = company.contacts.findIndex(c => c.id === contactId);

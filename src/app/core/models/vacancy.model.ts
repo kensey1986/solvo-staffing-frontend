@@ -69,6 +69,8 @@ export interface Vacancy {
   publishedDate: string;
   /** Date when vacancy was scraped/detected */
   scrapedAt?: string;
+  /** Job description */
+  description?: string;
   /** Internal notes about the vacancy */
   notes?: string;
   /** Commercial assigned to this vacancy */
