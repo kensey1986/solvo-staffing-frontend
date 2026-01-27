@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { Company, SeniorityLevel, SENIORITY_LEVEL_LABELS, COMPANY_SERVICE } from '@core';
+import { CustomButtonComponent } from '../custom-button/custom-button.component';
 
 /**
  * Form data for creating a new vacancy.
@@ -69,6 +70,7 @@ export interface CreateVacancyFormErrors {
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    CustomButtonComponent,
   ],
   template: `
     @if (isOpen()) {
@@ -228,16 +230,19 @@ export interface CreateVacancyFormErrors {
 
           <!-- Modal Footer -->
           <div class="modal-footer">
-            <button mat-stroked-button type="button" (click)="close()">Cancelar</button>
-            <button
-              mat-flat-button
-              color="primary"
-              type="submit"
-              (click)="submit()"
+            <app-custom-button
+              label="Cancelar"
+              variant="secondary"
+              [type]="'button'"
+              (buttonClick)="close()"
+            />
+            <app-custom-button
+              label="Crear Vacante"
+              variant="primary"
+              [type]="'submit'"
               [disabled]="!isValid()"
-            >
-              Crear Vacante
-            </button>
+              (buttonClick)="submit()"
+            />
           </div>
         </div>
       </div>

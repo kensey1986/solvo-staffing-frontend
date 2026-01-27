@@ -104,7 +104,7 @@ describe('StateChangeModalComponent', () => {
 
       const closeEmitSpy = jest.spyOn(component.closeModal, 'emit');
       const cancelBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-stroked-button]'
+        '.modal-footer app-custom-button:first-of-type button'
       );
       cancelBtn.click();
 
@@ -297,7 +297,7 @@ describe('StateChangeModalComponent', () => {
 
       // With state selected and minNoteLength=0, form should be valid
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       expect(submitBtn.disabled).toBe(false);
     });
@@ -376,7 +376,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       expect(submitBtn.disabled).toBe(true);
     });
@@ -389,7 +389,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       expect(submitBtn.disabled).toBe(false);
     });
@@ -405,7 +405,7 @@ describe('StateChangeModalComponent', () => {
 
       // Click submit without entering note (minNoteLength is 0)
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       submitBtn.click();
 
@@ -482,7 +482,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       expect(submitBtn.textContent.trim()).toBe('Confirm Change');
     });
@@ -494,7 +494,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const cancelBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-stroked-button]'
+        '.modal-footer app-custom-button:first-of-type button'
       );
       expect(cancelBtn.textContent.trim()).toBe('Dismiss');
     });
@@ -505,7 +505,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const submitBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-flat-button]'
+        '.modal-footer app-custom-button:last-of-type button'
       );
       expect(submitBtn.textContent.trim()).toBe('Save');
     });
@@ -516,7 +516,7 @@ describe('StateChangeModalComponent', () => {
       fixture.detectChanges();
 
       const cancelBtn = fixture.nativeElement.querySelector(
-        '.modal-footer button[mat-stroked-button]'
+        '.modal-footer app-custom-button:first-of-type button'
       );
       expect(cancelBtn.textContent.trim()).toBe('Cancel');
     });

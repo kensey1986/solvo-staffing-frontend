@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { TagsInputComponent } from '../tags-input/tags-input.component';
+import { CustomButtonComponent } from '../custom-button/custom-button.component';
 
 /**
  * State option for the dropdown.
@@ -60,6 +61,7 @@ export interface StateChangeResult<T = string> {
     MatIconModule,
     MatSelectModule,
     TagsInputComponent,
+    CustomButtonComponent,
   ],
   template: `
     @if (isOpen()) {
@@ -148,12 +150,19 @@ export interface StateChangeResult<T = string> {
           </div>
 
           <div class="modal-footer">
-            <button mat-stroked-button (click)="close()">
-              {{ cancelLabel() }}
-            </button>
-            <button mat-flat-button color="primary" (click)="submit()" [disabled]="!isValid()">
-              {{ submitLabel() }}
-            </button>
+            <app-custom-button
+              [label]="cancelLabel()"
+              variant="secondary"
+              [type]="'button'"
+              (buttonClick)="close()"
+            />
+            <app-custom-button
+              [label]="submitLabel()"
+              variant="primary"
+              [type]="'button'"
+              [disabled]="!isValid()"
+              (buttonClick)="submit()"
+            />
           </div>
         </div>
       </div>
