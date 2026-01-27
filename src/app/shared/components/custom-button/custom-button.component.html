@@ -2,7 +2,7 @@
   mat-flat-button
   [type]="type()"
   [disabled]="disabled() || loading()"
-  [color]="variant() === 'warn' ? 'warn' : variant() === 'text' ? undefined : 'primary'"
+  [color]="variant() === 'warn' ? 'warn' : variant() === 'secondary' ? undefined : variant() === 'text' ? undefined : 'primary'"
   [class.custom-button]="true"
   [class.custom-button--primary]="variant() === 'primary'"
   [class.custom-button--secondary]="variant() === 'secondary'"

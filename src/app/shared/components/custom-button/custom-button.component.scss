@@ -68,37 +68,54 @@
   &--primary {
     --mdc-filled-button-container-color: #{vars.$primary-color};
     --mdc-filled-button-label-text-color: #{vars.$primary-contrast};
+    background-color: vars.$primary-color;
+    color: vars.$primary-contrast;
 
     &:hover:not(:disabled) {
       --mdc-filled-button-container-color: #{vars.$primary-dark};
+      background-color: vars.$primary-dark;
     }
 
     &:active:not(:disabled) {
       --mdc-filled-button-container-color: #{vars.$primary-dark};
+      background-color: vars.$primary-dark;
       filter: brightness(0.95);
     }
   }
 
   &--secondary {
-    --mdc-filled-button-container-color: #{vars.$secondary-color};
-    --mdc-filled-button-label-text-color: #{vars.$secondary-contrast};
+    // Reset ALL Material button tokens to prevent theme override
+    --mdc-filled-button-container-color: transparent !important;
+    --mdc-filled-button-label-text-color: var(--mat-sys-on-surface) !important;
+    --mat-filled-button-state-layer-color: var(--mat-sys-on-surface);
+    --mat-filled-button-ripple-color: rgba(0, 0, 0, 0.1);
+    
+    background-color: transparent !important;
+    color: var(--mat-sys-on-surface) !important;
+    border: 1.5px solid var(--mat-sys-outline) !important;
+    box-shadow: none !important;
 
     &:hover:not(:disabled) {
-      --mdc-filled-button-container-color: #{vars.$secondary-dark};
+      --mdc-filled-button-container-color: var(--mat-sys-surface-container-high) !important;
+      background-color: var(--mat-sys-surface-container-high) !important;
+      border-color: var(--mat-sys-on-surface-variant) !important;
     }
 
     &:active:not(:disabled) {
-      --mdc-filled-button-container-color: #{vars.$secondary-dark};
-      filter: brightness(0.95);
+      --mdc-filled-button-container-color: var(--mat-sys-surface-container-highest) !important;
+      background-color: var(--mat-sys-surface-container-highest) !important;
     }
   }
 
   &--warn {
     --mdc-filled-button-container-color: #{vars.$warn-color};
     --mdc-filled-button-label-text-color: #{vars.$warn-contrast};
+    background-color: vars.$warn-color;
+    color: vars.$warn-contrast;
 
     &:hover:not(:disabled) {
       --mdc-filled-button-container-color: #{vars.$warn-dark};
+      background-color: vars.$warn-dark;
     }
   }
 
