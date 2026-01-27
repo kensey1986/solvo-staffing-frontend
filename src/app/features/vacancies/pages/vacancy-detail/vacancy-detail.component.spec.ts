@@ -95,12 +95,12 @@ describe('VacancyDetailComponent', () => {
       expect(component.isLoading()).toBe(false);
     }));
 
-    it('should load state history after vacancy loads', fakeAsync(() => {
+    it('should not load state history on init', fakeAsync(() => {
       fixture.detectChanges();
       tick();
 
-      expect(mockVacancyService.getStateHistory).toHaveBeenCalledWith(1);
-      expect(component.stateHistory()).toEqual(mockStateHistory);
+      expect(mockVacancyService.getStateHistory).not.toHaveBeenCalled();
+      expect(component.stateHistory()).toEqual([]);
     }));
 
     it('should not load when no id', fakeAsync(() => {
@@ -167,6 +167,21 @@ describe('VacancyDetailComponent', () => {
       tick();
 
       expect(mockVacancyService.changeState).not.toHaveBeenCalled();
+    }));
+  });
+
+  describe('Tracking tab lazy loading', () => {
+    beforeEach(fakeAsync(() => {
+      fixture.detectChanges();
+      tick();
+    }));
+
+    it('should load state history when tracking tab is selected', fakeAsync(() => {
+      component.onTabChange(1);
+      tick();
+
+      expect(mockVacancyService.getStateHistory).toHaveBeenCalledWith(1);
+      expect(component.stateHistory()).toEqual(mockStateHistory);
     }));
   });
 
@@ -293,6 +308,9 @@ describe('VacancyDetailComponent', () => {
       );
 
       fixture.detectChanges();
+      tick();
+
+      component.onTabChange(1);
       tick();
 
       expect(component.stateHistory()).toEqual([]);

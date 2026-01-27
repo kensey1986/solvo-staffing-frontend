@@ -20,30 +20,22 @@
           [clickable]="true"
           (click)="openStateChangeDialog()"
         />
-        @if (vac.assignedTo) {
-          <div class="assigned-badge">
-            <mat-icon>person</mat-icon>
-            <span>{{ vac.assignedTo }}</span>
-          </div>
-        }
       </div>
       <div class="page-header-actions">
-        @if (!vac.assignedTo) {
-          <button mat-flat-button color="primary" (click)="assignMe()">
-            <mat-icon>person_add</mat-icon>
-            Asignarme
-          </button>
-        }
-        <button mat-stroked-button (click)="openEditDialog()">
-          <mat-icon>edit</mat-icon>
-          Editar
-        </button>
+        <app-custom-button
+          label="Asignarme"
+          variant="secondary"
+          icon="person_add"
+          (buttonClick)="assignMe()"
+        />
+        <app-custom-button label="Editar" variant="primary" icon="edit" (buttonClick)="openEditDialog()" />
       </div>
     </div>
 
     <!-- Tabs -->
     <mat-tab-group
-      [(selectedIndex)]="selectedTabIndex"
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="onTabChange($event)"
       class="detail-tabs"
       animationDuration="200ms"
     >
@@ -100,6 +92,25 @@
             </div>
           </div>
 
+          <!-- Job Description Card -->
+          <div class="info-card">
+            <h3 class="card-title">Descripción del Puesto</h3>
+            <div class="description-wrapper">
+              <div
+                #descriptionEl
+                class="description-content"
+                [class.expanded]="isDescriptionExpanded()"
+                [class.empty]="!vac.description"
+                [innerHTML]="vac.description || 'Sin descripción disponible.'"
+              ></div>
+              @if (shouldShowDescriptionToggle()) {
+                <button mat-button color="primary" (click)="toggleDescription()" class="toggle-btn">
+                  {{ isDescriptionExpanded() ? 'Ver menos ↑' : 'Ver más ↓' }}
+                </button>
+              }
+            </div>
+          </div>
+
           <!-- Source Info Card -->
           <div class="info-card">
             <h3 class="card-title">Información de Origen</h3>
@@ -136,7 +147,7 @@
           <!-- Notes Card -->
           <div class="info-card">
             <h3 class="card-title">Notas</h3>
-            <div class="notes-content" [class.expanded]="isNotesExpanded()">
+            <div class="notes-content" [class.expanded]="isNotesExpanded()" [class.empty]="!vac.notes">
               {{ vac.notes || 'Sin notas disponibles.' }}
             </div>
             @if (vac.notes && vac.notes.length > 200) {
@@ -159,12 +170,22 @@
           <div class="info-card">
             <div class="card-header">
               <h3 class="card-title">Historial de Estados</h3>
-              <button mat-flat-button color="primary" (click)="openStateChangeDialog()">
-                Cambiar Estado
-              </button>
+              <app-custom-button
+                label="Cambiar Estado"
+                variant="primary"
+                (buttonClick)="openStateChangeDialog()"
+              />
             </div>
 
-            @if (stateHistory().length === 0) {
+            @if (isHistoryLoading()) {
+              <div class="loading-container">
+                <mat-spinner diameter="32"></mat-spinner>
+              </div>
+            } @else if (!isHistoryLoaded()) {
+              <div class="empty-state">
+                <p>Selecciona esta pestaña para cargar el historial.</p>
+              </div>
+            } @else if (stateHistory().length === 0) {
               <div class="empty-state">
                 <p>No hay cambios de estado registrados.</p>
               </div>
@@ -237,6 +258,17 @@
       [vacancy]="vacancy()"
       (submitEdit)="onEditSubmit($event)"
       (closeModal)="closeEditModal()"
+    />
+
+    <app-confirmation-modal
+      [isOpen]="showAssignModal()"
+      [title]="'Confirmar Asignación'"
+      [message]="assignMessage()"
+      [icon]="'work'"
+      [cancelLabel]="'Cancelar'"
+      [confirmLabel]="'Confirmar'"
+      (confirmAction)="confirmAssign()"
+      (cancelAction)="closeAssignModal()"
     />
   }
 </div>

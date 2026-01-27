@@ -1,9 +1,12 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
   inject,
   OnInit,
+  ViewChild,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -38,11 +41,15 @@ import {
   EditVacancyFormData,
   StateOption,
   StateChangeResult,
+  CustomButtonComponent,
+  ConfirmationModalComponent,
 } from '@shared';
 import { UpdateVacancyDto } from '@core';
 
 /** Pipeline stage options for state change */
 const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', 'won', 'lost'];
+const TRACKING_TAB_INDEX = 1;
+const DESCRIPTION_COLLAPSED_HEIGHT = 120;
 
 /**
  * VacancyDetailComponent
@@ -72,13 +79,15 @@ const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', '
     StatusBadgeComponent,
     StateChangeModalComponent,
     EditVacancyModalComponent,
+    CustomButtonComponent,
+    ConfirmationModalComponent,
   ],
   providers: [VACANCY_SERVICE_PROVIDER],
   templateUrl: './vacancy-detail.component.html',
   styleUrl: './vacancy-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VacancyDetailComponent implements OnInit {
+export class VacancyDetailComponent implements OnInit, AfterViewInit {
   private readonly vacancyService = inject(VACANCY_SERVICE);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -89,10 +98,24 @@ export class VacancyDetailComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly vacancy = signal<Vacancy | null>(null);
   readonly stateHistory = signal<VacancyStateChange[]>([]);
+  readonly isHistoryLoading = signal(false);
+  readonly isHistoryLoaded = signal(false);
+  readonly historyLoadError = signal<string | null>(null);
   readonly selectedTabIndex = signal(0);
   readonly showStateModal = signal(false);
   readonly showEditModal = signal(false);
+  readonly showAssignModal = signal(false);
   readonly isNotesExpanded = signal(false);
+  readonly isDescriptionExpanded = signal(false);
+  readonly shouldShowDescriptionToggle = signal(false);
+
+  readonly assignMessage = computed(() => {
+    const vac = this.vacancy();
+    if (!vac) return '';
+    return `¿Deseas asignarte la vacante <strong>${vac.jobTitle}</strong> de <strong class="company-name">${vac.companyName}</strong>?`;
+  });
+
+  @ViewChild('descriptionEl') descriptionEl?: ElementRef<HTMLElement>;
 
   // History table columns
   readonly historyColumns = ['date', 'user', 'change', 'note', 'tags'];
@@ -122,7 +145,24 @@ export class VacancyDetailComponent implements OnInit {
     const id = this.vacancyId();
     if (id) {
       this.loadVacancy(id);
-      this.loadStateHistory(id);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.scheduleDescriptionTruncationCheck();
+  }
+
+  /**
+   * Handles tab selection changes.
+   */
+  onTabChange(index: number): void {
+    this.selectedTabIndex.set(index);
+
+    if (index === TRACKING_TAB_INDEX) {
+      const id = this.vacancyId();
+      if (id) {
+        this.loadStateHistory(id);
+      }
     }
   }
 
@@ -134,6 +174,8 @@ export class VacancyDetailComponent implements OnInit {
     this.vacancyService.getById(id).subscribe({
       next: vacancy => {
         this.vacancy.set(vacancy);
+        this.isDescriptionExpanded.set(false);
+        this.scheduleDescriptionTruncationCheck();
         this.isLoading.set(false);
       },
       error: err => {
@@ -148,13 +190,23 @@ export class VacancyDetailComponent implements OnInit {
   /**
    * Loads the state change history.
    */
-  loadStateHistory(id: number): void {
+  loadStateHistory(id: number, force = false): void {
+    if (this.isHistoryLoading()) return;
+    if (this.isHistoryLoaded() && !force) return;
+
+    this.isHistoryLoading.set(true);
+    this.historyLoadError.set(null);
+
     this.vacancyService.getStateHistory(id).subscribe({
       next: history => {
         this.stateHistory.set(history);
+        this.isHistoryLoaded.set(true);
+        this.isHistoryLoading.set(false);
       },
       error: err => {
         console.error('Error loading state history:', err);
+        this.historyLoadError.set('Error loading state history');
+        this.isHistoryLoading.set(false);
       },
     });
   }
@@ -166,6 +218,34 @@ export class VacancyDetailComponent implements OnInit {
     if (this.vacancy()) {
       this.showEditModal.set(true);
     }
+  }
+
+  /**
+   * Toggles job description expand/collapse.
+   */
+  toggleDescription(): void {
+    this.isDescriptionExpanded.update(value => !value);
+  }
+
+  /**
+   * Checks if the description needs truncation and updates toggle visibility.
+   */
+  private scheduleDescriptionTruncationCheck(): void {
+    setTimeout(() => {
+      const el = this.descriptionEl?.nativeElement;
+      if (!el) {
+        this.shouldShowDescriptionToggle.set(false);
+        return;
+      }
+
+      const hasContent = (this.vacancy()?.description || '').trim().length > 0;
+      if (!hasContent) {
+        this.shouldShowDescriptionToggle.set(false);
+        return;
+      }
+
+      this.shouldShowDescriptionToggle.set(el.scrollHeight > DESCRIPTION_COLLAPSED_HEIGHT);
+    }, 0);
   }
 
   /**
@@ -184,7 +264,6 @@ export class VacancyDetailComponent implements OnInit {
 
     const updateDto: UpdateVacancyDto = {
       jobTitle: formData.jobTitle,
-      status: formData.status,
       department: formData.department || undefined,
       seniorityLevel: formData.seniorityLevel || undefined,
       salaryRange: formData.salaryRange || undefined,
@@ -237,7 +316,9 @@ export class VacancyDetailComponent implements OnInit {
       next: updated => {
         this.vacancy.set(updated);
         this.closeStateModal();
-        this.loadStateHistory(id);
+        if (this.selectedTabIndex() === TRACKING_TAB_INDEX || this.isHistoryLoaded()) {
+          this.loadStateHistory(id, true);
+        }
         this.snackBar.open('State changed successfully', 'Close', { duration: 3000 });
       },
       error: err => {
@@ -284,25 +365,33 @@ export class VacancyDetailComponent implements OnInit {
    * Assigns the current vacancy to the logged-in user.
    */
   assignMe(): void {
+    this.showAssignModal.set(true);
+  }
+
+  closeAssignModal(): void {
+    this.showAssignModal.set(false);
+  }
+
+  confirmAssign(): void {
     const id = this.vacancyId();
     if (!id) return;
 
-    if (confirm('¿Deseas asignarte esta vacante?')) {
-      const updateDto: UpdateVacancyDto = {
-        assignedTo: 'Carlos M.', // Mock current user
-      };
+    this.showAssignModal.set(false);
 
-      this.vacancyService.update(id, updateDto).subscribe({
-        next: updated => {
-          this.vacancy.set(updated);
-          this.snackBar.open('Vacante asignada exitosamente', 'Cerrar', { duration: 3000 });
-        },
-        error: err => {
-          console.error('Error assigning vacancy:', err);
-          this.snackBar.open('Error al asignar la vacante', 'Cerrar', { duration: 3000 });
-        },
-      });
-    }
+    const updateDto: UpdateVacancyDto = {
+      assignedTo: 'Carlos M.', // Mock current user
+    };
+
+    this.vacancyService.update(id, updateDto).subscribe({
+      next: updated => {
+        this.vacancy.set(updated);
+        this.snackBar.open('Vacante asignada exitosamente', 'Cerrar', { duration: 3000 });
+      },
+      error: err => {
+        console.error('Error assigning vacancy:', err);
+        this.snackBar.open('Error al asignar la vacante', 'Cerrar', { duration: 3000 });
+      },
+    });
   }
 
   /**

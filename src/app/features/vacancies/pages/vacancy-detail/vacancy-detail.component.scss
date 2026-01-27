@@ -185,20 +185,68 @@
   }
 }
 
+// Job Description
+.description-wrapper {
+  position: relative;
+}
+
+.description-content {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  background-color: var(--mat-sys-surface-container);
+  padding: vars.$spacing-4;
+  border-radius: vars.$radius-sm;
+  border: 1px solid var(--mat-sys-outline-variant);
+  max-height: 120px;
+  overflow: hidden;
+  transition: max-height vars.$transition-normal ease-in-out;
+
+  &.expanded {
+    max-height: none;
+  }
+
+  strong {
+    font-weight: vars.$font-weight-medium;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &.empty {
+    background-color: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface-variant);
+    font-style: italic;
+    border: 1px dashed var(--mat-sys-outline-variant);
+  }
+}
+
+.toggle-btn {
+  margin-top: vars.$spacing-2;
+  font-size: vars.$font-size-body-small;
+}
+
 // Notes
 .notes-content {
   font-size: vars.$font-size-body-small;
   color: var(--mat-sys-on-surface-variant);
   line-height: 1.6;
-  background-color: var(--mat-sys-surface-container-highest);
+  background-color: var(--mat-sys-surface-container);
   padding: vars.$spacing-4;
   border-radius: vars.$radius-sm;
+  border: 1px solid var(--mat-sys-outline-variant);
   max-height: 100px;
   overflow: hidden;
   transition: max-height vars.$transition-normal ease-in-out;
 
   &.expanded {
     max-height: 1000px;
+  }
+
+  &.empty {
+    background-color: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface-variant);
+    font-style: italic;
+    border: 1px dashed var(--mat-sys-outline-variant);
   }
 }
 
