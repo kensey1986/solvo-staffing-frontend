@@ -12,8 +12,10 @@ export * from './components/tags-input/tags-input.component';
 export * from './components/state-change-modal/state-change-modal.component';
 export * from './components/edit-vacancy-modal/edit-vacancy-modal.component';
 export * from './components/create-vacancy-modal/create-vacancy-modal.component';
+export * from './components/confirmation-modal/confirmation-modal.component';
 export * from './components/company-pipeline-badge/company-pipeline-badge.component';
 export * from './components/relationship-type-badge/relationship-type-badge.component';
+export * from './components/custom-paginator/custom-paginator.component';
 
 // Directives (add exports as created)
 // export * from './directives';
