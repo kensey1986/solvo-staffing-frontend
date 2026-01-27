@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
@@ -10,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,20 +19,27 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 
 import {
   VACANCY_SERVICE,
   VACANCY_SERVICE_PROVIDER,
   COMPANY_SERVICE_PROVIDER,
   Vacancy,
-  PipelineStage,
   VacancyStatus,
   VacancySource,
   VacancyFilterParams,
   PaginatedResponse,
   CreateVacancyDto,
 } from '@core';
-import { StatusBadgeComponent, CreateVacancyModalComponent, CreateVacancyFormData } from '@shared';
+import {
+  PipelineBadgeComponent,
+  CreateVacancyModalComponent,
+  CreateVacancyFormData,
+  CustomPaginatorComponent,
+  PageChangeEvent,
+  CustomButtonComponent,
+} from '@shared';
 
 /**
  * VacanciesListComponent
@@ -48,7 +55,6 @@ import { StatusBadgeComponent, CreateVacancyModalComponent, CreateVacancyFormDat
     FormsModule,
     RouterLink,
     MatTableModule,
-    MatPaginatorModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -58,15 +64,17 @@ import { StatusBadgeComponent, CreateVacancyModalComponent, CreateVacancyFormDat
     MatDialogModule,
     MatSnackBarModule,
 
-    StatusBadgeComponent,
+    PipelineBadgeComponent,
     CreateVacancyModalComponent,
+    CustomPaginatorComponent,
+    CustomButtonComponent,
   ],
   providers: [VACANCY_SERVICE_PROVIDER, COMPANY_SERVICE_PROVIDER],
   templateUrl: './vacancies-list.component.html',
   styleUrl: './vacancies-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VacanciesListComponent implements OnInit {
+export class VacanciesListComponent implements OnInit, OnDestroy {
   private readonly vacancyService = inject(VACANCY_SERVICE);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -82,11 +90,12 @@ export class VacanciesListComponent implements OnInit {
   readonly currentPage = signal(1);
   readonly pageSize = signal(50);
   readonly totalItems = signal(0);
+  readonly totalPages = signal(0);
+  readonly pageSizeOptions = [25, 50, 100];
 
   // Filter state
   readonly searchFilter = signal('');
   readonly statusFilter = signal<VacancyStatus | ''>('');
-  readonly pipelineFilter = signal<PipelineStage | ''>('');
   readonly sourceFilter = signal<VacancySource | ''>('');
   readonly stateFilter = signal('');
   readonly companyFilter = signal('');
@@ -94,6 +103,16 @@ export class VacanciesListComponent implements OnInit {
   readonly dateTo = signal('');
   readonly assignedFilter = signal('');
   readonly myAssignmentsActive = signal(false);
+
+  // Search debounce
+  readonly isSearchingTitle = signal(false);
+  readonly isSearchingCompany = signal(false);
+  readonly isSearchingAssigned = signal(false);
+
+  private readonly searchTitle$ = new Subject<string>();
+  private readonly companySearch$ = new Subject<string>();
+  private readonly assignedSearch$ = new Subject<string>();
+  private readonly subscriptions = new Subscription();
 
   // Data
   readonly vacancies = signal<Vacancy[]>([]);
@@ -116,15 +135,6 @@ export class VacanciesListComponent implements OnInit {
     { value: 'active', label: 'Active' },
     { value: 'filled', label: 'Filled' },
     { value: 'expired', label: 'Expired' },
-  ];
-
-  readonly pipelineOptions: { value: PipelineStage | ''; label: string }[] = [
-    { value: '', label: 'All' },
-    { value: 'detected', label: 'Detected' },
-    { value: 'contacted', label: 'Contacted' },
-    { value: 'proposal', label: 'Proposal' },
-    { value: 'won', label: 'Won' },
-    { value: 'lost', label: 'Lost' },
   ];
 
   readonly sourceOptions: { value: VacancySource | ''; label: string }[] = [
@@ -150,13 +160,39 @@ export class VacanciesListComponent implements OnInit {
 
   // Computed pagination info
   readonly paginationInfo = computed(() => {
-    const start = (this.currentPage() - 1) * this.pageSize() + 1;
-    const end = Math.min(this.currentPage() * this.pageSize(), this.totalItems());
-    return `Showing ${start.toLocaleString()}-${end.toLocaleString()} of ${this.totalItems().toLocaleString()}`;
+    const total = this.totalItems();
+    const current = this.currentPage();
+    const pages = this.totalPages();
+    return `${total.toLocaleString()} vacantes encontradas · Página ${current} de ${pages}`;
   });
 
   ngOnInit(): void {
+    this.subscriptions.add(
+      this.searchTitle$.pipe(debounceTime(400), distinctUntilChanged()).subscribe(() => {
+        this.isSearchingTitle.set(false);
+        this.applyFilters();
+      })
+    );
+
+    this.subscriptions.add(
+      this.companySearch$.pipe(debounceTime(400), distinctUntilChanged()).subscribe(() => {
+        this.isSearchingCompany.set(false);
+        this.applyFilters();
+      })
+    );
+
+    this.subscriptions.add(
+      this.assignedSearch$.pipe(debounceTime(400), distinctUntilChanged()).subscribe(() => {
+        this.isSearchingAssigned.set(false);
+        this.applyFilters();
+      })
+    );
+
     this.loadVacancies();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   /**
@@ -170,7 +206,6 @@ export class VacanciesListComponent implements OnInit {
       pageSize: this.pageSize(),
       search: this.searchFilter() || undefined,
       status: this.statusFilter() || undefined,
-      pipelineStage: this.pipelineFilter() || undefined,
       source: this.sourceFilter() || undefined,
       state: this.stateFilter() || undefined,
       company: this.companyFilter() || undefined,
@@ -183,6 +218,7 @@ export class VacanciesListComponent implements OnInit {
       next: (response: PaginatedResponse<Vacancy>) => {
         this.vacancies.set(response.data);
         this.totalItems.set(response.total);
+        this.totalPages.set(response.totalPages);
         this.isLoading.set(false);
       },
       error: err => {
@@ -201,13 +237,30 @@ export class VacanciesListComponent implements OnInit {
     this.loadVacancies();
   }
 
+  onSearchTitleChange(value: string): void {
+    this.searchFilter.set(value);
+    this.isSearchingTitle.set(true);
+    this.searchTitle$.next(value);
+  }
+
+  onCompanySearchChange(value: string): void {
+    this.companyFilter.set(value);
+    this.isSearchingCompany.set(true);
+    this.companySearch$.next(value);
+  }
+
+  onAssignedSearchChange(value: string): void {
+    this.assignedFilter.set(value);
+    this.isSearchingAssigned.set(true);
+    this.assignedSearch$.next(value);
+  }
+
   /**
    * Clears all filters.
    */
   clearFilters(): void {
     this.searchFilter.set('');
     this.statusFilter.set('');
-    this.pipelineFilter.set('');
     this.sourceFilter.set('');
     this.stateFilter.set('');
     this.companyFilter.set('');
@@ -215,6 +268,9 @@ export class VacanciesListComponent implements OnInit {
     this.dateTo.set('');
     this.assignedFilter.set('');
     this.myAssignmentsActive.set(false);
+    this.isSearchingTitle.set(false);
+    this.isSearchingCompany.set(false);
+    this.isSearchingAssigned.set(false);
     this.applyFilters();
   }
 
@@ -226,6 +282,7 @@ export class VacanciesListComponent implements OnInit {
     this.myAssignmentsActive.set(newState);
     if (newState) {
       this.assignedFilter.set(''); // Clear specific assigned search if "Mine" is active
+      this.isSearchingAssigned.set(false);
     }
     this.applyFilters();
   }
@@ -233,8 +290,8 @@ export class VacanciesListComponent implements OnInit {
   /**
    * Handles page change event.
    */
-  onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex + 1);
+  onPageChange(event: PageChangeEvent): void {
+    this.currentPage.set(event.page);
     this.pageSize.set(event.pageSize);
     this.loadVacancies();
   }
