@@ -25,7 +25,9 @@ import { PIPELINE_STAGE_LABELS, PipelineStage } from '@core/models/vacancy.model
     .pipeline-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 4px 10px;
+      min-width: 90px;
       font-size: 11px;
       font-weight: 500;
       border-radius: 4px;
