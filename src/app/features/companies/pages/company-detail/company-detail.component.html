@@ -30,15 +30,19 @@
       </div>
       <div class="page-header-actions">
         @if (!comp.assignedTo) {
-          <button mat-flat-button color="primary" (click)="assignMe()">
-            <mat-icon>person_add</mat-icon>
-            Asignarme
-          </button>
+          <app-custom-button
+            label="Asignarme"
+            variant="primary"
+            icon="person_add"
+            (buttonClick)="assignMe()"
+          />
         }
-        <button mat-stroked-button (click)="openEditModal()">
-          <mat-icon>edit</mat-icon>
-          Editar
-        </button>
+        <app-custom-button
+          label="Editar"
+          variant="secondary"
+          icon="edit"
+          (buttonClick)="openEditModal()"
+        />
       </div>
     </div>
 
@@ -102,10 +106,12 @@
           <div class="info-card">
             <div class="card-header">
               <h3 class="card-title">Contactos</h3>
-              <button mat-stroked-button color="primary" (click)="openAddContactModal()">
-                <mat-icon>add</mat-icon>
-                Agregar Contacto
-              </button>
+              <app-custom-button
+                label="Agregar Contacto"
+                variant="secondary"
+                icon="add"
+                (buttonClick)="openAddContactModal()"
+              />
             </div>
 
             @if (comp.contacts.length === 0) {
@@ -195,9 +201,11 @@
                   </div>
                   <span class="completeness-percent">{{ getResearchCompleteness() }}%</span>
                 </div>
-                <button mat-flat-button color="primary" (click)="openResearchModal()">
-                  Editar
-                </button>
+                <app-custom-button
+                  label="Editar"
+                  variant="secondary"
+                  (buttonClick)="openResearchModal()"
+                />
               </div>
             </div>
 
@@ -243,9 +251,11 @@
           <div class="info-card">
             <div class="card-header">
               <h3 class="card-title">Historial de Estados</h3>
-              <button mat-flat-button color="primary" (click)="openStateModal()">
-                Cambiar Estado
-              </button>
+              <app-custom-button
+                label="Cambiar Estado"
+                variant="primary"
+                (buttonClick)="openStateModal()"
+              />
             </div>
 
             @if (stateHistory().length === 0) {
@@ -379,7 +389,11 @@
   } @else {
     <div class="error-state">
       <p>No se encontró la empresa.</p>
-      <a routerLink="/companies" mat-flat-button color="primary">Volver a Empresas</a>
+      <app-custom-button
+        label="Volver a Empresas"
+        variant="primary"
+        (buttonClick)="goToCompanies()"
+      />
     </div>
   }
 </div>
@@ -456,10 +470,19 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button mat-stroked-button (click)="closeEditModal()">Cancelar</button>
-        <button mat-flat-button color="primary" (click)="saveCompany()" [disabled]="!editName()">
-          Guardar
-        </button>
+        <app-custom-button
+          label="Cancelar"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeEditModal()"
+        />
+        <app-custom-button
+          label="Guardar"
+          variant="primary"
+          [type]="'button'"
+          [disabled]="!editName()"
+          (buttonClick)="saveCompany()"
+        />
       </div>
     </div>
   </div>
@@ -537,8 +560,18 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button mat-stroked-button (click)="closeResearchModal()">Cancelar</button>
-        <button mat-flat-button color="primary" (click)="saveResearch()">Guardar</button>
+        <app-custom-button
+          label="Cancelar"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeResearchModal()"
+        />
+        <app-custom-button
+          label="Guardar"
+          variant="primary"
+          [type]="'button'"
+          (buttonClick)="saveResearch()"
+        />
       </div>
     </div>
   </div>
@@ -600,8 +633,18 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button mat-stroked-button (click)="closeAddContactModal()">Cancelar</button>
-        <button mat-flat-button color="primary" (click)="addContact()">Guardar Contacto</button>
+        <app-custom-button
+          label="Cancelar"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeAddContactModal()"
+        />
+        <app-custom-button
+          label="Guardar Contacto"
+          variant="primary"
+          [type]="'button'"
+          (buttonClick)="addContact()"
+        />
       </div>
     </div>
   </div>

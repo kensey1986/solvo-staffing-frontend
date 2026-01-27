@@ -34,7 +34,7 @@ import {
   Industry,
   CompanySize,
 } from '@core';
-import { CompanyPipelineBadgeComponent, RelationshipTypeBadgeComponent } from '@shared';
+import { CompanyPipelineBadgeComponent, RelationshipTypeBadgeComponent, CustomButtonComponent } from '@shared';
 
 /**
  * Interface for create company form validation errors
@@ -71,6 +71,7 @@ export interface CreateCompanyFormErrors {
     MatSnackBarModule,
     CompanyPipelineBadgeComponent,
     RelationshipTypeBadgeComponent,
+    CustomButtonComponent,
   ],
   providers: [COMPANY_SERVICE_PROVIDER],
   templateUrl: './companies-list.component.html',

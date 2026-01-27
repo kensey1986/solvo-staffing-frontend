@@ -44,6 +44,7 @@ import {
   StateChangeResult,
   CompanyPipelineBadgeComponent,
   RelationshipTypeBadgeComponent,
+  CustomButtonComponent,
 } from '@shared';
 
 /** Pipeline stage options for state change */
@@ -73,6 +74,7 @@ const PIPELINE_STAGES: CompanyPipelineStage[] = [
     CompanyPipelineBadgeComponent,
     RelationshipTypeBadgeComponent,
     StateChangeModalComponent,
+    CustomButtonComponent,
   ],
   providers: [COMPANY_SERVICE_PROVIDER],
   templateUrl: './company-detail.component.html',
@@ -103,6 +105,10 @@ export class CompanyDetailComponent implements OnInit {
 
   /** Page title computed from company name */
   readonly pageTitle = computed(() => this.company()?.name || 'Company Detail');
+
+  goToCompanies(): void {
+    this.router.navigate(['/companies']);
+  }
 
   /** Industry label */
   readonly industryLabel = computed(() => {
