@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { KpiCardComponent } from '@shared';
+import { KpiCardComponent, CustomButtonComponent } from '@shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { DASHBOARD_SERVICE, DASHBOARD_SERVICE_PROVIDER } from '@core';
@@ -15,7 +15,7 @@ import { DashboardData } from '@core/models/dashboard.model';
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, KpiCardComponent, MatButtonModule, MatIconModule],
+  imports: [CommonModule, KpiCardComponent, CustomButtonComponent, MatButtonModule, MatIconModule],
   providers: [DASHBOARD_SERVICE_PROVIDER],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',

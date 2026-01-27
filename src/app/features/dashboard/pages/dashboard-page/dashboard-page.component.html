@@ -32,7 +32,7 @@
       <div class="dashboard-page__error">
         <mat-icon color="error">error_outline</mat-icon>
         <p>Error al cargar los datos del dashboard.</p>
-        <button mat-flat-button color="primary" (click)="loadData()">Reintentar</button>
+        <app-custom-button label="Reintentar" variant="primary" (buttonClick)="loadData()" />
       </div>
     } @else {
       <!-- Vacancies Pipeline -->
