@@ -310,3 +310,84 @@
   border-radius: vars.$radius-sm;
   color: var(--mat-sys-on-surface-variant);
 }
+
+// Filters Bar
+.filters-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: vars.$spacing-3;
+  padding: vars.$spacing-3;
+  margin-bottom: vars.$spacing-4;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: vars.$radius-md;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-1;
+}
+
+.filter-label {
+  font-size: vars.$font-size-label-small;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.filter-input,
+.filter-select {
+  height: 36px;
+  padding: 0 vars.$spacing-3;
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface-container-high);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$radius-sm;
+  outline: none;
+  transition: border-color vars.$transition-fast;
+
+  &:focus {
+    border-color: var(--mat-sys-primary);
+  }
+
+  &:hover:not(:focus) {
+    border-color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.filter-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: vars.$spacing-6;
+}
+
+.filter-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$spacing-1;
+  height: 36px;
+  padding: 0 vars.$spacing-3;
+  font-size: vars.$font-size-body-small;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-error);
+  background-color: transparent;
+  border: 1px solid var(--mat-sys-error);
+  border-radius: vars.$radius-sm;
+  cursor: pointer;
+  transition: background-color vars.$transition-fast;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background-color: rgba(var(--mat-sys-error-rgb, 176, 0, 32), 0.08);
+  }
+}

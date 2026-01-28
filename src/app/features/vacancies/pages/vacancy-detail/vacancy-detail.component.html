@@ -177,6 +177,62 @@
               />
             </div>
 
+            <!-- Filters Bar -->
+            @if (isHistoryLoaded() && stateHistory().length > 0) {
+              <div class="filters-bar">
+                <div class="filter-group">
+                  <label class="filter-label">Desde</label>
+                  <input
+                    type="date"
+                    class="filter-input"
+                    [value]="historyFilters().dateFrom"
+                    (change)="updateFilter('dateFrom', $any($event.target).value)"
+                  />
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">Hasta</label>
+                  <input
+                    type="date"
+                    class="filter-input"
+                    [value]="historyFilters().dateTo"
+                    (change)="updateFilter('dateTo', $any($event.target).value)"
+                  />
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">Comercial</label>
+                  <select
+                    class="filter-select"
+                    [value]="historyFilters().user"
+                    (change)="updateFilter('user', $any($event.target).value)"
+                  >
+                    <option value="">Todos</option>
+                    @for (user of availableUsers(); track user) {
+                      <option [value]="user">{{ user }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">Estado</label>
+                  <select
+                    class="filter-select"
+                    [value]="historyFilters().state"
+                    (change)="updateFilter('state', $any($event.target).value)"
+                  >
+                    <option value="">Todos</option>
+                    @for (stage of pipelineStages; track stage) {
+                      <option [value]="stage">{{ pipelineLabels[stage] }}</option>
+                    }
+                  </select>
+                </div>
+                @if (hasActiveFilters()) {
+                  <button class="filter-clear-btn" (click)="clearFilters()">
+                    <mat-icon>clear</mat-icon>
+                    Limpiar
+                  </button>
+                }
+              </div>
+            }
+
             @if (isHistoryLoading()) {
               <div class="loading-container">
                 <mat-spinner diameter="32"></mat-spinner>
@@ -189,8 +245,13 @@
               <div class="empty-state">
                 <p>No hay cambios de estado registrados.</p>
               </div>
+            } @else if (filteredHistory().length === 0) {
+              <div class="empty-state">
+                <p>No hay resultados con los filtros seleccionados.</p>
+                <button mat-button color="primary" (click)="clearFilters()">Limpiar filtros</button>
+              </div>
             } @else {
-              <table mat-table [dataSource]="stateHistory()" class="history-table">
+              <table mat-table [dataSource]="filteredHistory()" class="history-table">
                 <!-- Date Column -->
                 <ng-container matColumnDef="date">
                   <th mat-header-cell *matHeaderCellDef>Fecha</th>

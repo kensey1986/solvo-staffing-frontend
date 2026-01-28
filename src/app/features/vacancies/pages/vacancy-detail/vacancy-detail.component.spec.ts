@@ -186,6 +186,22 @@ describe('VacancyDetailComponent', () => {
   });
 
   describe('Edit vacancy modal', () => {
+    const editFormData = {
+      jobTitle: 'Updated Title',
+      description: 'Updated description',
+      location: 'Remote',
+      department: 'Engineering',
+      seniorityLevel: 'senior',
+      workModality: 'remote',
+      isRemoteViable: true,
+      salaryMin: 100000,
+      salaryMax: 120000,
+      source: 'linkedin',
+      jobUrl: 'https://example.com/job',
+      publishedDate: '2025-01-15',
+      notes: 'Updated notes',
+    };
+
     it('should open edit modal when vacancy exists', () => {
       component.vacancy.set(mockVacancy);
       component.openEditDialog();
@@ -208,22 +224,14 @@ describe('VacancyDetailComponent', () => {
       mockVacancyService.update.mockReturnValue(of({ ...mockVacancy, jobTitle: 'Updated Title' }));
 
       component.showEditModal.set(true);
-      component.onEditSubmit({
-        jobTitle: 'Updated Title',
-        status: 'active',
-        department: 'Engineering',
-        seniorityLevel: 'senior',
-        salaryRange: '$100k-$120k',
-        notes: 'Updated notes',
-      });
+      component.onEditSubmit({ ...editFormData });
       tick();
 
       expect(mockVacancyService.update).toHaveBeenCalledWith(1, {
         jobTitle: 'Updated Title',
-        status: 'active',
         department: 'Engineering',
         seniorityLevel: 'senior',
-        salaryRange: '$100k-$120k',
+        salaryRange: '$100,000 - $120,000',
         notes: 'Updated notes',
       });
       expect(component.vacancy()?.jobTitle).toBe('Updated Title');
@@ -234,14 +242,7 @@ describe('VacancyDetailComponent', () => {
       mockVacancyService.update.mockReturnValue(throwError(() => new Error('Update failed')));
 
       component.showEditModal.set(true);
-      component.onEditSubmit({
-        jobTitle: 'Updated Title',
-        status: 'active',
-        department: 'Engineering',
-        seniorityLevel: 'senior',
-        salaryRange: '$100k-$120k',
-        notes: 'Updated notes',
-      });
+      component.onEditSubmit({ ...editFormData });
       tick();
 
       expect(mockVacancyService.update).toHaveBeenCalled();
@@ -252,14 +253,7 @@ describe('VacancyDetailComponent', () => {
       mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
       mockVacancyService.update.mockClear();
 
-      component.onEditSubmit({
-        jobTitle: 'Updated Title',
-        status: 'active',
-        department: 'Engineering',
-        seniorityLevel: 'senior',
-        salaryRange: '$100k-$120k',
-        notes: 'Updated notes',
-      });
+      component.onEditSubmit({ ...editFormData });
       tick();
 
       expect(mockVacancyService.update).not.toHaveBeenCalled();

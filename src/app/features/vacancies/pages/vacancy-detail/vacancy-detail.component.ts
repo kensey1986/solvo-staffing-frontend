@@ -51,6 +51,14 @@ const PIPELINE_STAGES: PipelineStage[] = ['detected', 'contacted', 'proposal', '
 const TRACKING_TAB_INDEX = 1;
 const DESCRIPTION_COLLAPSED_HEIGHT = 120;
 
+/** History filter interface */
+interface HistoryFilters {
+  dateFrom: string;
+  dateTo: string;
+  user: string;
+  state: PipelineStage | '';
+}
+
 /**
  * VacancyDetailComponent
  *
@@ -108,6 +116,68 @@ export class VacancyDetailComponent implements OnInit, AfterViewInit {
   readonly isNotesExpanded = signal(false);
   readonly isDescriptionExpanded = signal(false);
   readonly shouldShowDescriptionToggle = signal(false);
+
+  // History filters
+  readonly historyFilters = signal<HistoryFilters>({
+    dateFrom: '',
+    dateTo: '',
+    user: '',
+    state: '',
+  });
+
+  /** Available pipeline stages for filter dropdown */
+  readonly pipelineStages = PIPELINE_STAGES;
+
+  /** Pipeline stage labels for display */
+  readonly pipelineLabels = PIPELINE_STAGE_LABELS;
+
+  /** Extract unique users from loaded history */
+  readonly availableUsers = computed(() => {
+    const users = this.stateHistory().map(h => h.user);
+    return [...new Set(users)].sort();
+  });
+
+  /** Check if any filter is active */
+  readonly hasActiveFilters = computed(() => {
+    const f = this.historyFilters();
+    return !!(f.dateFrom || f.dateTo || f.user || f.state);
+  });
+
+  /** Filtered history based on active filters */
+  readonly filteredHistory = computed(() => {
+    const history = this.stateHistory();
+    const filters = this.historyFilters();
+
+    if (!this.hasActiveFilters()) {
+      return history;
+    }
+
+    return history.filter(entry => {
+      // Date from filter
+      if (filters.dateFrom) {
+        const entryDate = entry.date.split('T')[0];
+        if (entryDate < filters.dateFrom) return false;
+      }
+
+      // Date to filter
+      if (filters.dateTo) {
+        const entryDate = entry.date.split('T')[0];
+        if (entryDate > filters.dateTo) return false;
+      }
+
+      // User filter
+      if (filters.user && entry.user !== filters.user) {
+        return false;
+      }
+
+      // State filter (matches toState)
+      if (filters.state && entry.toState !== filters.state) {
+        return false;
+      }
+
+      return true;
+    });
+  });
 
   readonly assignMessage = computed(() => {
     const vac = this.vacancy();
@@ -262,11 +332,16 @@ export class VacancyDetailComponent implements OnInit, AfterViewInit {
     const id = this.vacancyId();
     if (!id) return;
 
+    const salaryRange =
+      formData.salaryMin !== null && formData.salaryMax !== null
+        ? `$${new Intl.NumberFormat('en-US').format(formData.salaryMin)} - $${new Intl.NumberFormat('en-US').format(formData.salaryMax)}`
+        : undefined;
+
     const updateDto: UpdateVacancyDto = {
       jobTitle: formData.jobTitle,
       department: formData.department || undefined,
       seniorityLevel: formData.seniorityLevel || undefined,
-      salaryRange: formData.salaryRange || undefined,
+      salaryRange,
       notes: formData.notes || undefined,
     };
 
@@ -400,5 +475,24 @@ export class VacancyDetailComponent implements OnInit, AfterViewInit {
   getRemoteViableText(value?: boolean): string {
     if (value === undefined) return 'N/A';
     return value ? 'Yes' : 'No';
+  }
+
+  /**
+   * Updates a single history filter.
+   */
+  updateFilter(key: keyof HistoryFilters, value: string): void {
+    this.historyFilters.update(f => ({ ...f, [key]: value }));
+  }
+
+  /**
+   * Clears all history filters.
+   */
+  clearFilters(): void {
+    this.historyFilters.set({
+      dateFrom: '',
+      dateTo: '',
+      user: '',
+      state: '',
+    });
   }
 }
