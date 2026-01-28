@@ -2,8 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build:prod",
   "outputDirectory": "dist/solvo-staffing-frontend/browser",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "framework": "angular",
+  "env": {
+    "USE_MOCK_SERVICES": "true",
+    "PRODUCTION": "false"
+  },
   "rewrites": [
     {
       "source": "/(.*)",
