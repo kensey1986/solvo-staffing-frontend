@@ -10,6 +10,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
+import {
+  getTranslateTestingModule,
+  initializeTranslations,
+} from '@app/testing/translate-test-helper';
+import { TranslateService } from '@ngx-translate/core';
 
 import { LoginComponent } from './login.component';
 import { AUTH_SERVICE } from '@core/providers/auth-service.provider';
@@ -43,7 +48,7 @@ describe('LoginComponent', () => {
     } as unknown as jest.Mocked<MatSnackBar>;
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, NoopAnimationsModule],
+      imports: [LoginComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: MatSnackBar, useValue: mockSnackBar },
@@ -61,6 +66,11 @@ describe('LoginComponent', () => {
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+
+    // Initialize translations
+    const translateService = TestBed.inject(TranslateService);
+    initializeTranslations(translateService);
+
     fixture.detectChanges();
   });
 
@@ -92,13 +102,13 @@ describe('LoginComponent', () => {
     }));
 
     it('should show error snackbar on failure', () => {
-      const errorMessage = 'Error de conexión';
+      const errorMessage = 'Connection failed';
       mockAuthService.initSsoLogin.mockReturnValue(throwError(() => new Error(errorMessage)));
 
       component.loginWithMicrosoft();
 
       expect(mockSnackBar.open).toHaveBeenCalledWith(
-        expect.stringContaining(errorMessage),
+        'Error de conexión' + errorMessage,
         'Cerrar',
         expect.any(Object)
       );

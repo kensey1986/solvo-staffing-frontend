@@ -9,12 +9,13 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AUTH_SERVICE, AUTH_SERVICE_PROVIDER } from '@core/providers/auth-service.provider';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [MatSnackBarModule, MatProgressSpinnerModule],
+  imports: [MatSnackBarModule, MatProgressSpinnerModule, TranslateModule],
   providers: [AUTH_SERVICE_PROVIDER],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -24,6 +25,7 @@ export class LoginComponent {
   private readonly authService = inject(AUTH_SERVICE);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   /** Whether SSO login is in progress */
   readonly isSsoLoading = signal(false);
@@ -40,12 +42,16 @@ export class LoginComponent {
       },
       error: (err: Error) => {
         this.isSsoLoading.set(false);
-        this.snackBar.open('Error al iniciar sesión con Microsoft: ' + err.message, 'Cerrar', {
-          duration: 5000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          panelClass: ['snackbar-error'],
-        });
+        this.snackBar.open(
+          this.translate.instant('AUTH.LOGIN_ERROR') + err.message,
+          this.translate.instant('AUTH.CLOSE'),
+          {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snackbar-error'],
+          }
+        );
       },
     });
   }
