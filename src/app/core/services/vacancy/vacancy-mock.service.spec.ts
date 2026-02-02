@@ -137,9 +137,14 @@ describe('VacancyMockService', () => {
     }));
 
     it('should throw error for non-existent id', fakeAsync(() => {
-      expect(() => {
-        service.getById(99999);
-      }).toThrow();
+      let errorOccurred = false;
+      service.getById(99999).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -171,9 +176,14 @@ describe('VacancyMockService', () => {
     }));
 
     it('should throw error for non-existent id', fakeAsync(() => {
-      expect(() => {
-        service.update(99999, { status: 'filled' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.update(99999, { status: 'filled' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -182,9 +192,14 @@ describe('VacancyMockService', () => {
       service.delete(1).subscribe();
       tick(300);
 
-      expect(() => {
-        service.getById(1);
-      }).toThrow();
+      let errorOccurred = false;
+      service.getById(1).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -214,9 +229,14 @@ describe('VacancyMockService', () => {
     }));
 
     it('should throw error for non-existent id', fakeAsync(() => {
-      expect(() => {
-        service.changeState(99999, { newState: 'proposal', note: 'test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.changeState(99999, { newState: 'proposal', note: 'test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 

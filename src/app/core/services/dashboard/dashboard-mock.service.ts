@@ -41,31 +41,31 @@ export class DashboardMockService implements IDashboardService {
     const mockData: DashboardData = {
       vacancyKpis: [
         {
-          label: 'Detectadas',
+          label: 'DASHBOARD.KPI_DETECTED',
           value: toCount(vacancyStageCounts['detected'] || 0),
           icon: 'schedule',
           color: 'purple',
         },
         {
-          label: 'Contactadas',
+          label: 'DASHBOARD.KPI_CONTACTED',
           value: toCount(vacancyStageCounts['contacted'] || 0),
           icon: 'phone',
           color: 'blue',
         },
         {
-          label: 'Propuesta',
+          label: 'DASHBOARD.KPI_PROPOSAL',
           value: toCount(vacancyStageCounts['proposal'] || 0),
           icon: 'description',
           color: 'orange',
         },
         {
-          label: 'Ganadas',
+          label: 'DASHBOARD.KPI_WON',
           value: toCount(vacancyStageCounts['won'] || 0),
           icon: 'check_circle',
           color: 'green',
         },
         {
-          label: 'Perdidas',
+          label: 'DASHBOARD.KPI_LOST',
           value: toCount(vacancyStageCounts['lost'] || 0),
           icon: 'cancel',
           color: 'orange',
@@ -73,37 +73,37 @@ export class DashboardMockService implements IDashboardService {
       ],
       companyKpis: [
         {
-          label: 'Leads',
+          label: 'DASHBOARD.KPI_LEADS',
           value: toCount(companyStageCounts['lead'] || 0),
           icon: 'group_add',
           color: 'purple',
         },
         {
-          label: 'Prospecting',
+          label: 'DASHBOARD.KPI_PROSPECTING',
           value: toCount(companyStageCounts['prospecting'] || 0),
           icon: 'search',
           color: 'blue',
         },
         {
-          label: 'Engaged',
+          label: 'DASHBOARD.KPI_ENGAGED',
           value: toCount(companyStageCounts['engaged'] || 0),
           icon: 'handshake',
           color: 'blue',
         },
         {
-          label: 'Appt Held',
+          label: 'DASHBOARD.KPI_APPT_HELD',
           value: toCount(companyStageCounts['initial_appointment_held'] || 0),
           icon: 'event',
           color: 'orange',
         },
         {
-          label: 'Client',
+          label: 'DASHBOARD.KPI_CLIENT',
           value: toCount(companyStageCounts['onboarding_started'] || 0),
           icon: 'business',
           color: 'green',
         },
         {
-          label: 'Lost',
+          label: 'DASHBOARD.KPI_LOST',
           value: toCount(companyStageCounts['lost'] || 0),
           icon: 'person_off',
           color: 'orange',

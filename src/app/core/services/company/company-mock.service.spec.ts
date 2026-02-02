@@ -140,9 +140,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent id', fakeAsync(() => {
-      expect(() => {
-        service.getById(99999);
-      }).toThrow();
+      let errorOccurred = false;
+      service.getById(99999).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -208,9 +213,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.update(99999, { name: 'Test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.update(99999, { name: 'Test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -230,9 +240,14 @@ describe('CompanyMockService', () => {
       tick(300);
 
       // Verify it's deleted
-      expect(() => {
-        service.getById(companyId);
-      }).toThrow();
+      let errorOccurred = false;
+      service.getById(companyId).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -310,9 +325,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.changeState(99999, { newState: 'onboarding_started', note: 'test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.changeState(99999, { newState: 'onboarding_started', note: 'test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -425,9 +445,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.updateResearch(99999, { valueProposition: 'test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.updateResearch(99999, { valueProposition: 'test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -517,9 +542,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.createContact(99999, { fullName: 'Test', jobTitle: 'Test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.createContact(99999, { fullName: 'Test', jobTitle: 'Test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -539,15 +569,25 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.updateContact(99999, 1, { fullName: 'Test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.updateContact(99999, 1, { fullName: 'Test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
 
     it('should throw error for non-existent contact', fakeAsync(() => {
-      expect(() => {
-        service.updateContact(1, 99999, { fullName: 'Test' });
-      }).toThrow();
+      let errorOccurred = false;
+      service.updateContact(1, 99999, { fullName: 'Test' }).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 
@@ -573,9 +613,14 @@ describe('CompanyMockService', () => {
     }));
 
     it('should throw error for non-existent company', fakeAsync(() => {
-      expect(() => {
-        service.deleteContact(99999, 1);
-      }).toThrow();
+      let errorOccurred = false;
+      service.deleteContact(99999, 1).subscribe({
+        error: () => {
+          errorOccurred = true;
+        },
+      });
+      tick(300);
+      expect(errorOccurred).toBe(true);
     }));
   });
 });
