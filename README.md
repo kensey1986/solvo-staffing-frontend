@@ -32,6 +32,7 @@ Open [http://localhost:4200](http://localhost:4200) in your browser.
 - **Angular 21** - Standalone components, Signals, Control Flow
 - **Angular Material** - M3 theming with custom brand colors
 - **SCSS** - Modular styling with design tokens
+- **@ngx-translate** - Runtime i18n (English / Spanish)
 - **Jest** - Unit testing
 - **ESLint + Prettier** - Code quality
 - **Husky** - Git hooks
@@ -59,6 +60,7 @@ src/app/
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Components](docs/COMPONENTS.md)
+- [Internationalization (i18n)](docs/I18N.md)
 
 ## Environment Configuration
 
