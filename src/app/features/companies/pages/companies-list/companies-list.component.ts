@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import {
   COMPANY_SERVICE,
@@ -34,7 +35,11 @@ import {
   Industry,
   CompanySize,
 } from '@core';
-import { CompanyPipelineBadgeComponent, RelationshipTypeBadgeComponent, CustomButtonComponent } from '@shared';
+import {
+  CompanyPipelineBadgeComponent,
+  RelationshipTypeBadgeComponent,
+  CustomButtonComponent,
+} from '@shared';
 
 /**
  * Interface for create company form validation errors
@@ -72,6 +77,7 @@ export interface CreateCompanyFormErrors {
     CompanyPipelineBadgeComponent,
     RelationshipTypeBadgeComponent,
     CustomButtonComponent,
+    TranslateModule,
   ],
   providers: [COMPANY_SERVICE_PROVIDER],
   templateUrl: './companies-list.component.html',
@@ -83,6 +89,7 @@ export class CompaniesListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   // Loading state
   readonly isLoading = signal(false);

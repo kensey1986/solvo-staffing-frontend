@@ -23,6 +23,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Core imports
 import {
@@ -71,6 +72,7 @@ const PIPELINE_STAGES: CompanyPipelineStage[] = [
     MatTableModule,
     MatTabsModule,
     MatSelectModule,
+    TranslateModule,
     CompanyPipelineBadgeComponent,
     RelationshipTypeBadgeComponent,
     StateChangeModalComponent,
@@ -85,6 +87,7 @@ export class CompanyDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly companyService = inject(COMPANY_SERVICE);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   /** Loading states */
   readonly isLoading = signal(true);
@@ -187,7 +190,11 @@ export class CompanyDetailComponent implements OnInit {
       },
       error: err => {
         console.error('Error loading company:', err);
-        this.snackBar.open('Error loading company', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('COMMON.ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
         this.isLoading.set(false);
       },
     });
@@ -254,11 +261,19 @@ export class CompanyDetailComponent implements OnInit {
       next: updated => {
         this.company.set(updated);
         this.closeEditModal();
-        this.snackBar.open('Company updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('EDIT_COMPANY.SUCCESS'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
       error: err => {
         console.error('Error updating company:', err);
-        this.snackBar.open('Error updating company', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('EDIT_COMPANY.ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
     });
   }
@@ -305,11 +320,19 @@ export class CompanyDetailComponent implements OnInit {
           this.company.set({ ...comp, research: updatedResearch });
         }
         this.closeResearchModal();
-        this.snackBar.open('Research updated successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('EDIT_RESEARCH.SUCCESS'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
       error: err => {
         console.error('Error updating research:', err);
-        this.snackBar.open('Error updating research', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('EDIT_RESEARCH.ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
     });
   }
@@ -350,11 +373,19 @@ export class CompanyDetailComponent implements OnInit {
         this.company.set(updated);
         this.closeStateModal();
         this.loadStateHistory(id);
-        this.snackBar.open('State changed successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('STATE_CHANGE_MODAL.STATE_SUCCESS'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
       error: err => {
         console.error('Error changing state:', err);
-        this.snackBar.open('Error changing state', 'Close', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('STATE_CHANGE_MODAL.STATE_ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
     });
   }
@@ -368,7 +399,7 @@ export class CompanyDetailComponent implements OnInit {
     const id = this.companyId();
     if (!id) return;
 
-    if (confirm('¿Deseas asignarte esta empresa?')) {
+    if (confirm(this.translate.instant('COMPANY_DETAIL.CONFIRM_ASSIGN'))) {
       const updateDto = {
         assignedTo: 'Carlos M.', // Mock current user
       };
@@ -376,11 +407,19 @@ export class CompanyDetailComponent implements OnInit {
       this.companyService.update(id, updateDto).subscribe({
         next: updated => {
           this.company.set(updated);
-          this.snackBar.open('Empresa asignada exitosamente', 'Cerrar', { duration: 3000 });
+          this.snackBar.open(
+            this.translate.instant('COMPANY_DETAIL.ASSIGN_SUCCESS'),
+            this.translate.instant('COMMON.CLOSE'),
+            { duration: 3000 }
+          );
         },
         error: err => {
           console.error('Error assigning company:', err);
-          this.snackBar.open('Error al asignar la empresa', 'Cerrar', { duration: 3000 });
+          this.snackBar.open(
+            this.translate.instant('COMPANY_DETAIL.ASSIGN_ERROR'),
+            this.translate.instant('COMMON.CLOSE'),
+            { duration: 3000 }
+          );
         },
       });
     }
@@ -406,9 +445,13 @@ export class CompanyDetailComponent implements OnInit {
    * Mock implementation of adding a contact.
    */
   addContact(): void {
-    this.snackBar.open('Funcionalidad de agregar contacto próximamente', 'Cerrar', {
-      duration: 3000,
-    });
+    this.snackBar.open(
+      this.translate.instant('ADD_CONTACT.COMING_SOON'),
+      this.translate.instant('COMMON.CLOSE'),
+      {
+        duration: 3000,
+      }
+    );
     this.closeAddContactModal();
   }
 

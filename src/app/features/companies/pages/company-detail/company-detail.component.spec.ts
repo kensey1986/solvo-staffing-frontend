@@ -13,6 +13,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { provideRouter, Router, ActivatedRoute } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 import { CompanyDetailComponent } from './company-detail.component';
 import { COMPANY_SERVICE } from '@core';
@@ -113,7 +114,7 @@ describe('CompanyDetailComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [CompanyDetailComponent, NoopAnimationsModule],
+      imports: [CompanyDetailComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [provideRouter([]), { provide: ActivatedRoute, useValue: mockActivatedRoute }],
     })
       .overrideComponent(CompanyDetailComponent, {

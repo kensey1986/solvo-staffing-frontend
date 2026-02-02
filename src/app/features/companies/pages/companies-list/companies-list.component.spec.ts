@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { provideRouter, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError, delay } from 'rxjs';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 import { CompaniesListComponent } from './companies-list.component';
 import { COMPANY_SERVICE } from '@core';
@@ -81,7 +82,7 @@ describe('CompaniesListComponent', () => {
     mockCompanyService = createMockCompanyService();
 
     await TestBed.configureTestingModule({
-      imports: [CompaniesListComponent, NoopAnimationsModule],
+      imports: [CompaniesListComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [provideRouter([])],
     })
       // Override the component's provider
