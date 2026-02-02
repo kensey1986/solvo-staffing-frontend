@@ -1,9 +1,11 @@
 <div class="dashboard-page">
   <header class="dashboard-page__header">
     <div class="dashboard-page__header-left">
-      <h1 class="dashboard-page__title">Dashboard</h1>
+      <h1 class="dashboard-page__title">{{ 'DASHBOARD.TITLE' | translate }}</h1>
       @if (lastUpdated() && !isLoading() && !hasError()) {
-        <span class="dashboard-page__last-updated">Actualizado: {{ lastUpdated() }}</span>
+        <span class="dashboard-page__last-updated"
+          >{{ 'DASHBOARD.UPDATED' | translate }} {{ lastUpdated() }}</span
+        >
       }
     </div>
     <div class="dashboard-page__header-actions">
@@ -11,7 +13,7 @@
         mat-icon-button
         (click)="loadData()"
         [disabled]="isLoading()"
-        title="Actualizar datos"
+        [title]="'DASHBOARD.REFRESH' | translate"
       >
         <mat-icon [class.spinner]="isLoading()">refresh</mat-icon>
       </button>
@@ -26,18 +28,24 @@
             <div class="skeleton-card"></div>
           }
         </div>
-        <p>Cargando datos del dashboard...</p>
+        <p>{{ 'DASHBOARD.LOADING' | translate }}</p>
       </div>
     } @else if (hasError()) {
       <div class="dashboard-page__error">
         <mat-icon color="error">error_outline</mat-icon>
-        <p>Error al cargar los datos del dashboard.</p>
-        <app-custom-button label="Reintentar" variant="primary" (buttonClick)="loadData()" />
+        <p>{{ 'DASHBOARD.ERROR' | translate }}</p>
+        <app-custom-button
+          [label]="'DASHBOARD.RETRY' | translate"
+          variant="primary"
+          (buttonClick)="loadData()"
+        />
       </div>
     } @else {
       <!-- Vacancies Pipeline -->
       <section class="dashboard-page__section">
-        <h2 class="dashboard-page__section-title">Pipeline de Vacantes</h2>
+        <h2 class="dashboard-page__section-title">
+          {{ 'DASHBOARD.VACANCY_PIPELINE' | translate }}
+        </h2>
         <div class="dashboard-page__kpi-grid">
           @for (kpi of dashboardData()?.vacancyKpis; track kpi.label) {
             <app-kpi-card
@@ -52,7 +60,9 @@
 
       <!-- Companies Pipeline -->
       <section class="dashboard-page__section">
-        <h2 class="dashboard-page__section-title">Pipeline de Empresas</h2>
+        <h2 class="dashboard-page__section-title">
+          {{ 'DASHBOARD.COMPANY_PIPELINE' | translate }}
+        </h2>
         <div class="dashboard-page__kpi-grid">
           @for (kpi of dashboardData()?.companyKpis; track kpi.label) {
             <app-kpi-card

@@ -5,6 +5,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DASHBOARD_SERVICE } from '@core';
 import { of } from 'rxjs';
 import { DashboardData } from '@core/models/dashboard.model';
+import {
+  getTranslateTestingModule,
+  initializeTranslations,
+} from '@app/testing/translate-test-helper';
+import { TranslateService } from '@ngx-translate/core';
 
 // Mock dashboard data
 const mockDashboardData: DashboardData = {
@@ -35,7 +40,12 @@ describe('DashboardPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardPageComponent, KpiCardComponent, NoopAnimationsModule],
+      imports: [
+        DashboardPageComponent,
+        KpiCardComponent,
+        NoopAnimationsModule,
+        getTranslateTestingModule(),
+      ],
     })
       .overrideComponent(DashboardPageComponent, {
         set: {
@@ -46,6 +56,10 @@ describe('DashboardPageComponent', () => {
 
     fixture = TestBed.createComponent(DashboardPageComponent);
     component = fixture.componentInstance;
+
+    // Initialize translations
+    const translateService = TestBed.inject(TranslateService);
+    initializeTranslations(translateService);
   });
 
   it('should create', () => {

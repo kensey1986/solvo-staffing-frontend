@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { KpiCardComponent, CustomButtonComponent } from '@shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 import { DASHBOARD_SERVICE, DASHBOARD_SERVICE_PROVIDER } from '@core';
 import { DashboardData } from '@core/models/dashboard.model';
 
@@ -15,7 +16,14 @@ import { DashboardData } from '@core/models/dashboard.model';
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, KpiCardComponent, CustomButtonComponent, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    KpiCardComponent,
+    CustomButtonComponent,
+    MatButtonModule,
+    MatIconModule,
+    TranslateModule,
+  ],
   providers: [DASHBOARD_SERVICE_PROVIDER],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
