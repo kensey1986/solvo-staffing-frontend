@@ -21,6 +21,7 @@ export * from './guards';
 
 // Services
 export * from './services/theme.service';
+export * from './services/language.service';
 export * from './services/vacancy';
 export * from './services/company';
 export * from './services/auth';
