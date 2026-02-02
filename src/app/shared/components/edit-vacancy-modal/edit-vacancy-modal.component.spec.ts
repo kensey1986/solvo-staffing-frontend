@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { EditVacancyModalComponent } from './edit-vacancy-modal.component';
 import { Vacancy } from '@core';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 describe('EditVacancyModalComponent', () => {
   let component: EditVacancyModalComponent;
@@ -32,7 +33,7 @@ describe('EditVacancyModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditVacancyModalComponent],
+      imports: [EditVacancyModalComponent, getTranslateTestingModule()],
       providers: [provideNoopAnimations()],
     }).compileComponents();
 

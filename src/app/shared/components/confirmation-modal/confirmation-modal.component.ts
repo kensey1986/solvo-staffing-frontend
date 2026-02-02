@@ -2,25 +2,26 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 import { CustomButtonComponent } from '../custom-button/custom-button.component';
 
 @Component({
   selector: 'app-confirmation-modal',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, CustomButtonComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, TranslateModule, CustomButtonComponent],
   template: `
     @if (isOpen()) {
       <div
         class="modal-overlay"
         (click)="onOverlayClick()"
-        (keydown.enter)="onOverlayClick()"
-        (keydown.escape)="cancel()"
+        (keydown)="onOverlayKeydown($event)"
         tabindex="0"
         role="button"
       >
         <div
           class="modal-container"
           (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
           tabindex="0"
           role="dialog"
           aria-modal="true"
@@ -28,7 +29,11 @@ import { CustomButtonComponent } from '../custom-button/custom-button.component'
         >
           <div class="modal-header">
             <h2 class="modal-title" [id]="titleId">{{ title() }}</h2>
-            <button mat-icon-button (click)="cancel()" aria-label="Cerrar">
+            <button
+              mat-icon-button
+              (click)="cancel()"
+              [attr.aria-label]="'CONFIRMATION_MODAL.CLOSE' | translate"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -194,6 +199,19 @@ export class ConfirmationModalComponent {
   readonly cancelAction = output<void>();
 
   readonly titleId = `confirmation-modal-title`;
+
+  onOverlayKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.onOverlayClick();
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.cancel();
+    }
+  }
 
   confirm(): void {
     this.confirmAction.emit();

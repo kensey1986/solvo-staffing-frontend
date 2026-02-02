@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { KpiCardComponent } from './kpi-card.component';
 import { MatIconModule } from '@angular/material/icon';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 describe('KpiCardComponent', () => {
   let component: KpiCardComponent;
@@ -8,7 +9,7 @@ describe('KpiCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [KpiCardComponent, MatIconModule],
+      imports: [KpiCardComponent, MatIconModule, getTranslateTestingModule()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(KpiCardComponent);

@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Vacancy,
   SeniorityLevel,
@@ -58,14 +59,57 @@ export const VACANCY_SOURCE_LABELS: Record<VacancySource, string> = {
 
 /** US States for location datalist */
 export const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
-  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
-  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
-  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
-  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
-  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
-  'Wisconsin', 'Wyoming', 'Remote'
+  'Alabama',
+  'Alaska',
+  'Arizona',
+  'Arkansas',
+  'California',
+  'Colorado',
+  'Connecticut',
+  'Delaware',
+  'Florida',
+  'Georgia',
+  'Hawaii',
+  'Idaho',
+  'Illinois',
+  'Indiana',
+  'Iowa',
+  'Kansas',
+  'Kentucky',
+  'Louisiana',
+  'Maine',
+  'Maryland',
+  'Massachusetts',
+  'Michigan',
+  'Minnesota',
+  'Mississippi',
+  'Missouri',
+  'Montana',
+  'Nebraska',
+  'Nevada',
+  'New Hampshire',
+  'New Jersey',
+  'New Mexico',
+  'New York',
+  'North Carolina',
+  'North Dakota',
+  'Ohio',
+  'Oklahoma',
+  'Oregon',
+  'Pennsylvania',
+  'Rhode Island',
+  'South Carolina',
+  'South Dakota',
+  'Tennessee',
+  'Texas',
+  'Utah',
+  'Vermont',
+  'Virginia',
+  'Washington',
+  'West Virginia',
+  'Wisconsin',
+  'Wyoming',
+  'Remote',
 ] as const;
 
 /**
@@ -116,6 +160,7 @@ export interface EditVacancyFormData {
     MatInputModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    TranslateModule,
     CustomButtonComponent,
   ],
   template: `
@@ -139,12 +184,21 @@ export interface EditVacancyFormData {
           <!-- Modal Header -->
           <div class="modal-header">
             <div class="header-content">
-              <h2 id="edit-vacancy-title" class="modal-title">Editar Vacante</h2>
+              <h2 id="edit-vacancy-title" class="modal-title">
+                {{ 'EDIT_VACANCY_MODAL.TITLE' | translate }}
+              </h2>
               @if (modifiedFieldsCount() > 0) {
-                <span class="modified-badge">{{ modifiedFieldsCount() }} campos modificados</span>
+                <span class="modified-badge"
+                  >{{ modifiedFieldsCount() }}
+                  {{ 'EDIT_VACANCY_MODAL.FIELDS_MODIFIED' | translate }}</span
+                >
               }
             </div>
-            <button mat-icon-button (click)="close()" aria-label="Cerrar modal">
+            <button
+              mat-icon-button
+              (click)="close()"
+              [attr.aria-label]="'EDIT_VACANCY_MODAL.CLOSE' | translate"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -154,11 +208,13 @@ export interface EditVacancyFormData {
             <form (ngSubmit)="submit()">
               <!-- Section: Información Básica -->
               <div class="form-section">
-                <h3 class="section-title">Información Básica</h3>
+                <h3 class="section-title">{{ 'EDIT_VACANCY_MODAL.SECTION_BASIC' | translate }}</h3>
 
                 <!-- Job Title -->
                 <div class="form-field" [class.field-modified]="isFieldModified('jobTitle')">
-                  <label class="form-label" for="edit-title">Título del Puesto *</label>
+                  <label class="form-label" for="edit-title">{{
+                    'EDIT_VACANCY_MODAL.JOB_TITLE_LABEL' | translate
+                  }}</label>
                   <input
                     id="edit-title"
                     type="text"
@@ -166,21 +222,23 @@ export interface EditVacancyFormData {
                     [(ngModel)]="formData.jobTitle"
                     name="jobTitle"
                     required
-                    placeholder="Ej: Senior Software Engineer"
+                    [placeholder]="'EDIT_VACANCY_MODAL.JOB_TITLE_PLACEHOLDER' | translate"
                     (ngModelChange)="onFieldChange()"
                   />
                 </div>
 
                 <!-- Description -->
                 <div class="form-field" [class.field-modified]="isFieldModified('description')">
-                  <label class="form-label" for="edit-description">Descripción del Puesto</label>
+                  <label class="form-label" for="edit-description">{{
+                    'EDIT_VACANCY_MODAL.DESCRIPTION_LABEL' | translate
+                  }}</label>
                   <textarea
                     id="edit-description"
                     class="form-textarea"
                     rows="4"
                     [(ngModel)]="formData.description"
                     name="description"
-                    placeholder="Descripción detallada del puesto, responsabilidades, requisitos..."
+                    [placeholder]="'EDIT_VACANCY_MODAL.DESCRIPTION_PLACEHOLDER' | translate"
                     (ngModelChange)="onFieldChange()"
                   ></textarea>
                 </div>
@@ -188,7 +246,9 @@ export interface EditVacancyFormData {
                 <!-- Location + Department Row -->
                 <div class="form-row">
                   <div class="form-field" [class.field-modified]="isFieldModified('location')">
-                    <label class="form-label" for="edit-location">Ubicación (Estado)</label>
+                    <label class="form-label" for="edit-location">{{
+                      'EDIT_VACANCY_MODAL.LOCATION_LABEL' | translate
+                    }}</label>
                     <input
                       id="edit-location"
                       type="text"
@@ -196,7 +256,7 @@ export interface EditVacancyFormData {
                       [(ngModel)]="formData.location"
                       name="location"
                       list="us-states-list"
-                      placeholder="Seleccione o escriba un estado"
+                      [placeholder]="'EDIT_VACANCY_MODAL.LOCATION_PLACEHOLDER' | translate"
                       (ngModelChange)="onFieldChange()"
                     />
                     <datalist id="us-states-list">
@@ -206,7 +266,9 @@ export interface EditVacancyFormData {
                     </datalist>
                   </div>
                   <div class="form-field" [class.field-modified]="isFieldModified('department')">
-                    <label class="form-label" for="edit-department">Departamento</label>
+                    <label class="form-label" for="edit-department">{{
+                      'EDIT_VACANCY_MODAL.DEPARTMENT_LABEL' | translate
+                    }}</label>
                     <mat-select
                       id="edit-department"
                       class="form-select"
@@ -214,7 +276,9 @@ export interface EditVacancyFormData {
                       name="department"
                       (ngModelChange)="onFieldChange()"
                     >
-                      <mat-option value="">Sin especificar</mat-option>
+                      <mat-option value="">{{
+                        'EDIT_VACANCY_MODAL.UNSPECIFIED' | translate
+                      }}</mat-option>
                       @for (dept of departmentOptions; track dept) {
                         <mat-option [value]="dept">{{ dept }}</mat-option>
                       }
@@ -224,7 +288,9 @@ export interface EditVacancyFormData {
 
                 <!-- Seniority Level -->
                 <div class="form-field" [class.field-modified]="isFieldModified('seniorityLevel')">
-                  <label class="form-label" for="edit-seniority">Nivel de Seniority</label>
+                  <label class="form-label" for="edit-seniority">{{
+                    'EDIT_VACANCY_MODAL.SENIORITY_LABEL' | translate
+                  }}</label>
                   <mat-select
                     id="edit-seniority"
                     class="form-select"
@@ -232,7 +298,9 @@ export interface EditVacancyFormData {
                     name="seniorityLevel"
                     (ngModelChange)="onFieldChange()"
                   >
-                    <mat-option value="">Sin especificar</mat-option>
+                    <mat-option value="">{{
+                      'EDIT_VACANCY_MODAL.UNSPECIFIED' | translate
+                    }}</mat-option>
                     @for (option of seniorityOptions(); track option.value) {
                       <mat-option [value]="option.value">
                         {{ option.label }}
@@ -244,11 +312,15 @@ export interface EditVacancyFormData {
 
               <!-- Section: Tipo de Trabajo -->
               <div class="form-section">
-                <h3 class="section-title">Tipo de Trabajo</h3>
+                <h3 class="section-title">
+                  {{ 'EDIT_VACANCY_MODAL.SECTION_WORK_TYPE' | translate }}
+                </h3>
 
                 <div class="form-row">
                   <div class="form-field" [class.field-modified]="isFieldModified('workModality')">
-                    <label class="form-label" for="edit-modality">Modalidad</label>
+                    <label class="form-label" for="edit-modality">{{
+                      'EDIT_VACANCY_MODAL.MODALITY_LABEL' | translate
+                    }}</label>
                     <mat-select
                       id="edit-modality"
                       class="form-select"
@@ -256,7 +328,9 @@ export interface EditVacancyFormData {
                       name="workModality"
                       (ngModelChange)="onFieldChange()"
                     >
-                      <mat-option value="">Sin especificar</mat-option>
+                      <mat-option value="">{{
+                        'EDIT_VACANCY_MODAL.UNSPECIFIED' | translate
+                      }}</mat-option>
                       @for (option of modalityOptions(); track option.value) {
                         <mat-option [value]="option.value">
                           {{ option.label }}
@@ -264,13 +338,16 @@ export interface EditVacancyFormData {
                       }
                     </mat-select>
                   </div>
-                  <div class="form-field checkbox-field" [class.field-modified]="isFieldModified('isRemoteViable')">
+                  <div
+                    class="form-field checkbox-field"
+                    [class.field-modified]="isFieldModified('isRemoteViable')"
+                  >
                     <mat-checkbox
                       [(ngModel)]="formData.isRemoteViable"
                       name="isRemoteViable"
                       (ngModelChange)="onFieldChange()"
                     >
-                      Viable para trabajo remoto
+                      {{ 'EDIT_VACANCY_MODAL.REMOTE_VIABLE' | translate }}
                     </mat-checkbox>
                   </div>
                 </div>
@@ -278,31 +355,37 @@ export interface EditVacancyFormData {
 
               <!-- Section: Compensación -->
               <div class="form-section">
-                <h3 class="section-title">Compensación</h3>
+                <h3 class="section-title">
+                  {{ 'EDIT_VACANCY_MODAL.SECTION_COMPENSATION' | translate }}
+                </h3>
 
                 <div class="form-row">
                   <div class="form-field" [class.field-modified]="isFieldModified('salaryMin')">
-                    <label class="form-label" for="edit-salary-min">Salario Mínimo (USD)</label>
+                    <label class="form-label" for="edit-salary-min">{{
+                      'EDIT_VACANCY_MODAL.SALARY_MIN_LABEL' | translate
+                    }}</label>
                     <input
                       id="edit-salary-min"
                       type="number"
                       class="form-input"
                       [(ngModel)]="formData.salaryMin"
                       name="salaryMin"
-                      placeholder="Ej: 120000"
+                      [placeholder]="'EDIT_VACANCY_MODAL.SALARY_MIN_PLACEHOLDER' | translate"
                       min="0"
                       (ngModelChange)="onFieldChange()"
                     />
                   </div>
                   <div class="form-field" [class.field-modified]="isFieldModified('salaryMax')">
-                    <label class="form-label" for="edit-salary-max">Salario Máximo (USD)</label>
+                    <label class="form-label" for="edit-salary-max">{{
+                      'EDIT_VACANCY_MODAL.SALARY_MAX_LABEL' | translate
+                    }}</label>
                     <input
                       id="edit-salary-max"
                       type="number"
                       class="form-input"
                       [(ngModel)]="formData.salaryMax"
                       name="salaryMax"
-                      placeholder="Ej: 160000"
+                      [placeholder]="'EDIT_VACANCY_MODAL.SALARY_MAX_PLACEHOLDER' | translate"
                       min="0"
                       (ngModelChange)="onFieldChange()"
                     />
@@ -312,11 +395,13 @@ export interface EditVacancyFormData {
 
               <!-- Section: Información de Origen -->
               <div class="form-section">
-                <h3 class="section-title">Información de Origen</h3>
+                <h3 class="section-title">{{ 'EDIT_VACANCY_MODAL.SECTION_SOURCE' | translate }}</h3>
 
                 <div class="form-row">
                   <div class="form-field" [class.field-modified]="isFieldModified('source')">
-                    <label class="form-label" for="edit-source">Fuente</label>
+                    <label class="form-label" for="edit-source">{{
+                      'EDIT_VACANCY_MODAL.SOURCE_LABEL' | translate
+                    }}</label>
                     <mat-select
                       id="edit-source"
                       class="form-select"
@@ -324,7 +409,9 @@ export interface EditVacancyFormData {
                       name="source"
                       (ngModelChange)="onFieldChange()"
                     >
-                      <mat-option value="">Sin especificar</mat-option>
+                      <mat-option value="">{{
+                        'EDIT_VACANCY_MODAL.UNSPECIFIED' | translate
+                      }}</mat-option>
                       @for (option of sourceOptions(); track option.value) {
                         <mat-option [value]="option.value">
                           {{ option.label }}
@@ -333,7 +420,9 @@ export interface EditVacancyFormData {
                     </mat-select>
                   </div>
                   <div class="form-field" [class.field-modified]="isFieldModified('publishedDate')">
-                    <label class="form-label" for="edit-published-date">Fecha de Publicación</label>
+                    <label class="form-label" for="edit-published-date">{{
+                      'EDIT_VACANCY_MODAL.PUBLISHED_DATE_LABEL' | translate
+                    }}</label>
                     <input
                       id="edit-published-date"
                       type="date"
@@ -346,7 +435,9 @@ export interface EditVacancyFormData {
                 </div>
 
                 <div class="form-field" [class.field-modified]="isFieldModified('jobUrl')">
-                  <label class="form-label" for="edit-job-url">URL Original</label>
+                  <label class="form-label" for="edit-job-url">{{
+                    'EDIT_VACANCY_MODAL.URL_LABEL' | translate
+                  }}</label>
                   <input
                     id="edit-job-url"
                     type="url"
@@ -361,17 +452,19 @@ export interface EditVacancyFormData {
 
               <!-- Section: Notas -->
               <div class="form-section">
-                <h3 class="section-title">Notas</h3>
+                <h3 class="section-title">{{ 'EDIT_VACANCY_MODAL.SECTION_NOTES' | translate }}</h3>
 
                 <div class="form-field" [class.field-modified]="isFieldModified('notes')">
-                  <label class="form-label" for="edit-notes">Notas</label>
+                  <label class="form-label" for="edit-notes">{{
+                    'EDIT_VACANCY_MODAL.NOTES_LABEL' | translate
+                  }}</label>
                   <textarea
                     id="edit-notes"
                     class="form-textarea"
                     rows="3"
                     [(ngModel)]="formData.notes"
                     name="notes"
-                    placeholder="Notas adicionales sobre la vacante..."
+                    [placeholder]="'EDIT_VACANCY_MODAL.NOTES_PLACEHOLDER' | translate"
                     (ngModelChange)="onFieldChange()"
                   ></textarea>
                 </div>
@@ -381,8 +474,8 @@ export interface EditVacancyFormData {
               <div class="info-note">
                 <mat-icon class="info-icon">info</mat-icon>
                 <p>
-                  <strong>Nota:</strong> El status no es editable desde aquí. Use el
-                  botón "Cambiar Estado" que permite agregar una nota de seguimiento.
+                  <strong>{{ 'EDIT_VACANCY_MODAL.NOTE_LABEL' | translate }}</strong>
+                  {{ 'EDIT_VACANCY_MODAL.INFO_NOTE' | translate }}
                 </p>
               </div>
             </form>
@@ -391,13 +484,17 @@ export interface EditVacancyFormData {
           <!-- Modal Footer -->
           <div class="modal-footer">
             <app-custom-button
-              label="Cancelar"
+              [label]="'EDIT_VACANCY_MODAL.CANCEL' | translate"
               variant="secondary"
               [type]="'button'"
               (buttonClick)="close()"
             />
             <app-custom-button
-              [label]="isSaving() ? 'Guardando...' : 'Guardar Cambios'"
+              [label]="
+                isSaving()
+                  ? ('EDIT_VACANCY_MODAL.SAVING' | translate)
+                  : ('EDIT_VACANCY_MODAL.SAVE' | translate)
+              "
               variant="primary"
               [type]="'submit'"
               [disabled]="!isValid() || isSaving()"
@@ -538,7 +635,11 @@ export interface EditVacancyFormData {
         .form-input,
         .form-textarea,
         .form-select ::ng-deep .mat-mdc-select-trigger {
-          background-color: color-mix(in srgb, var(--mat-sys-tertiary-container) 30%, var(--mat-sys-surface-container));
+          background-color: color-mix(
+            in srgb,
+            var(--mat-sys-tertiary-container) 30%,
+            var(--mat-sys-surface-container)
+          );
         }
       }
     }
@@ -583,7 +684,9 @@ export interface EditVacancyFormData {
       border-radius: 8px;
       outline: none;
       box-sizing: border-box;
-      transition: border-color 0.2s, background-color 0.2s;
+      transition:
+        border-color 0.2s,
+        background-color 0.2s;
 
       &:focus {
         border-color: var(--mat-sys-primary);
@@ -594,7 +697,7 @@ export interface EditVacancyFormData {
         opacity: 0.7;
       }
 
-      &[type="number"] {
+      &[type='number'] {
         -moz-appearance: textfield;
 
         &::-webkit-outer-spin-button,
@@ -604,7 +707,7 @@ export interface EditVacancyFormData {
         }
       }
 
-      &[type="date"] {
+      &[type='date'] {
         cursor: pointer;
       }
     }
@@ -636,7 +739,9 @@ export interface EditVacancyFormData {
       resize: vertical;
       min-height: 80px;
       box-sizing: border-box;
-      transition: border-color 0.2s, background-color 0.2s;
+      transition:
+        border-color 0.2s,
+        background-color 0.2s;
 
       &:focus {
         border-color: var(--mat-sys-primary);
@@ -697,6 +802,7 @@ export interface EditVacancyFormData {
 })
 export class EditVacancyModalComponent {
   private readonly document = inject(DOCUMENT);
+  private readonly translateService = inject(TranslateService);
 
   /** Whether the modal is open */
   readonly isOpen = input<boolean>(false);
@@ -747,12 +853,10 @@ export class EditVacancyModalComponent {
 
   /** Source options for select */
   readonly sourceOptions = computed(() =>
-    (Object.entries(VACANCY_SOURCE_LABELS) as [VacancySource, string][]).map(
-      ([value, label]) => ({
-        value,
-        label,
-      })
-    )
+    (Object.entries(VACANCY_SOURCE_LABELS) as [VacancySource, string][]).map(([value, label]) => ({
+      value,
+      label,
+    }))
   );
 
   /** Whether form is valid */
@@ -839,9 +943,19 @@ export class EditVacancyModalComponent {
    */
   private updateModifiedFields(): void {
     const fields: (keyof EditVacancyFormData)[] = [
-      'jobTitle', 'description', 'location', 'department', 'seniorityLevel',
-      'workModality', 'isRemoteViable', 'salaryMin', 'salaryMax', 'source',
-      'jobUrl', 'publishedDate', 'notes'
+      'jobTitle',
+      'description',
+      'location',
+      'department',
+      'seniorityLevel',
+      'workModality',
+      'isRemoteViable',
+      'salaryMin',
+      'salaryMax',
+      'source',
+      'jobUrl',
+      'publishedDate',
+      'notes',
     ];
 
     this.modifiedFields.clear();
@@ -912,7 +1026,7 @@ export class EditVacancyModalComponent {
   private confirmClose(): void {
     if (this.hasUnsavedChanges()) {
       const confirmed = this.document.defaultView?.confirm(
-        '¿Está seguro de que desea cerrar? Los cambios no guardados se perderán.'
+        this.translateService.instant('EDIT_VACANCY_MODAL.CONFIRM_CLOSE')
       );
       if (!confirmed) return;
     }
@@ -925,7 +1039,7 @@ export class EditVacancyModalComponent {
   close(): void {
     if (this.hasUnsavedChanges()) {
       const confirmed = this.document.defaultView?.confirm(
-        '¿Está seguro de que desea cerrar? Los cambios no guardados se perderán.'
+        this.translateService.instant('EDIT_VACANCY_MODAL.CONFIRM_CLOSE')
       );
       if (!confirmed) return;
     }

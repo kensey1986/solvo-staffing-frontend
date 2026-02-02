@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule } from '@ngx-translate/core';
 import { TagsInputComponent } from '../tags-input/tags-input.component';
 import { CustomButtonComponent } from '../custom-button/custom-button.component';
 
@@ -60,6 +61,7 @@ export interface StateChangeResult<T = string> {
     MatButtonModule,
     MatIconModule,
     MatSelectModule,
+    TranslateModule,
     TagsInputComponent,
     CustomButtonComponent,
   ],

@@ -18,6 +18,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Company, SeniorityLevel, SENIORITY_LEVEL_LABELS, COMPANY_SERVICE } from '@core';
 import { CustomButtonComponent } from '../custom-button/custom-button.component';
 
@@ -70,6 +72,7 @@ export interface CreateVacancyFormErrors {
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    TranslateModule,
     CustomButtonComponent,
   ],
   template: `
@@ -92,8 +95,14 @@ export interface CreateVacancyFormErrors {
         >
           <!-- Modal Header -->
           <div class="modal-header">
-            <h2 id="create-vacancy-title" class="modal-title">Nueva Vacante</h2>
-            <button mat-icon-button (click)="close()" aria-label="Cerrar modal">
+            <h2 id="create-vacancy-title" class="modal-title">
+              {{ 'CREATE_VACANCY_MODAL.TITLE' | translate }}
+            </h2>
+            <button
+              mat-icon-button
+              (click)="close()"
+              [attr.aria-label]="'CREATE_VACANCY_MODAL.CLOSE' | translate"
+            >
               <mat-icon>close</mat-icon>
             </button>
           </div>
@@ -103,7 +112,9 @@ export interface CreateVacancyFormErrors {
             <form (ngSubmit)="submit()">
               <!-- Job Title -->
               <div class="form-field">
-                <label class="form-label" for="create-title">Título del Puesto *</label>
+                <label class="form-label" for="create-title">{{
+                  'CREATE_VACANCY_MODAL.JOB_TITLE_LABEL' | translate
+                }}</label>
                 <input
                   id="create-title"
                   type="text"
@@ -112,7 +123,7 @@ export interface CreateVacancyFormErrors {
                   [(ngModel)]="formData.jobTitle"
                   name="jobTitle"
                   required
-                  placeholder="Ej: Senior Software Engineer"
+                  [placeholder]="'CREATE_VACANCY_MODAL.JOB_TITLE_PLACEHOLDER' | translate"
                   (ngModelChange)="validateForm()"
                 />
                 @if (submitted() && formErrors().jobTitle) {
@@ -122,11 +133,13 @@ export interface CreateVacancyFormErrors {
 
               <!-- Company -->
               <div class="form-field">
-                <label class="form-label" for="create-company">Empresa *</label>
+                <label class="form-label" for="create-company">{{
+                  'CREATE_VACANCY_MODAL.COMPANY_LABEL' | translate
+                }}</label>
                 @if (loadingCompanies()) {
                   <div class="loading-select">
                     <mat-spinner diameter="20"></mat-spinner>
-                    <span>Cargando empresas...</span>
+                    <span>{{ 'CREATE_VACANCY_MODAL.LOADING_COMPANIES' | translate }}</span>
                   </div>
                 } @else {
                   <mat-select
@@ -136,7 +149,7 @@ export interface CreateVacancyFormErrors {
                     [(ngModel)]="formData.companyId"
                     name="companyId"
                     required
-                    placeholder="Seleccione una empresa"
+                    [placeholder]="'CREATE_VACANCY_MODAL.SELECT_COMPANY' | translate"
                     (ngModelChange)="validateForm()"
                   >
                     @for (company of companies(); track company.id) {
@@ -154,7 +167,9 @@ export interface CreateVacancyFormErrors {
               <!-- Location + Department Row -->
               <div class="form-row">
                 <div class="form-field">
-                  <label class="form-label" for="create-location">Ubicación</label>
+                  <label class="form-label" for="create-location">{{
+                    'CREATE_VACANCY_MODAL.LOCATION_LABEL' | translate
+                  }}</label>
                   <input
                     id="create-location"
                     type="text"
@@ -162,7 +177,7 @@ export interface CreateVacancyFormErrors {
                     [class.input-error]="submitted() && formErrors().location"
                     [(ngModel)]="formData.location"
                     name="location"
-                    placeholder="Ciudad, Estado"
+                    [placeholder]="'CREATE_VACANCY_MODAL.LOCATION_PLACEHOLDER' | translate"
                     (ngModelChange)="validateForm()"
                   />
                   @if (submitted() && formErrors().location) {
@@ -170,14 +185,16 @@ export interface CreateVacancyFormErrors {
                   }
                 </div>
                 <div class="form-field">
-                  <label class="form-label" for="create-department">Departamento</label>
+                  <label class="form-label" for="create-department">{{
+                    'CREATE_VACANCY_MODAL.DEPARTMENT_LABEL' | translate
+                  }}</label>
                   <input
                     id="create-department"
                     type="text"
                     class="form-input"
                     [(ngModel)]="formData.department"
                     name="department"
-                    placeholder="Ej: Engineering"
+                    [placeholder]="'CREATE_VACANCY_MODAL.DEPARTMENT_PLACEHOLDER' | translate"
                   />
                 </div>
               </div>
@@ -185,14 +202,18 @@ export interface CreateVacancyFormErrors {
               <!-- Seniority + Salary Row -->
               <div class="form-row">
                 <div class="form-field">
-                  <label class="form-label" for="create-seniority">Nivel de Seniority</label>
+                  <label class="form-label" for="create-seniority">{{
+                    'CREATE_VACANCY_MODAL.SENIORITY_LABEL' | translate
+                  }}</label>
                   <mat-select
                     id="create-seniority"
                     class="form-select"
                     [(ngModel)]="formData.seniorityLevel"
                     name="seniorityLevel"
                   >
-                    <mat-option value="">Sin especificar</mat-option>
+                    <mat-option value="">{{
+                      'CREATE_VACANCY_MODAL.UNSPECIFIED' | translate
+                    }}</mat-option>
                     @for (option of seniorityOptions(); track option.value) {
                       <mat-option [value]="option.value">
                         {{ option.label }}
@@ -201,7 +222,9 @@ export interface CreateVacancyFormErrors {
                   </mat-select>
                 </div>
                 <div class="form-field">
-                  <label class="form-label" for="create-salary">Rango Salarial</label>
+                  <label class="form-label" for="create-salary">{{
+                    'CREATE_VACANCY_MODAL.SALARY_LABEL' | translate
+                  }}</label>
                   <input
                     id="create-salary"
                     type="text"
@@ -209,7 +232,7 @@ export interface CreateVacancyFormErrors {
                     [class.input-error]="submitted() && formErrors().salaryRange"
                     [(ngModel)]="formData.salaryRange"
                     name="salaryRange"
-                    placeholder="Ej: $80,000 - $100,000"
+                    [placeholder]="'CREATE_VACANCY_MODAL.SALARY_PLACEHOLDER' | translate"
                     (ngModelChange)="validateForm()"
                   />
                   @if (submitted() && formErrors().salaryRange) {
@@ -221,8 +244,9 @@ export interface CreateVacancyFormErrors {
               <!-- Info Note -->
               <div class="info-note">
                 <p>
-                  La vacante se creará con: <strong>source = 'manual'</strong>,
-                  <strong>status = 'active'</strong>, <strong>pipeline = 'detected'</strong>
+                  {{ 'CREATE_VACANCY_MODAL.INFO_NOTE' | translate }}
+                  <strong>source = 'manual'</strong>, <strong>status = 'active'</strong>,
+                  <strong>pipeline = 'detected'</strong>
                 </p>
               </div>
             </form>
@@ -231,13 +255,13 @@ export interface CreateVacancyFormErrors {
           <!-- Modal Footer -->
           <div class="modal-footer">
             <app-custom-button
-              label="Cancelar"
+              [label]="'CREATE_VACANCY_MODAL.CANCEL' | translate"
               variant="secondary"
               [type]="'button'"
               (buttonClick)="close()"
             />
             <app-custom-button
-              label="Crear Vacante"
+              [label]="'CREATE_VACANCY_MODAL.CREATE' | translate"
               variant="primary"
               [type]="'submit'"
               [disabled]="!isValid()"
@@ -439,6 +463,7 @@ export interface CreateVacancyFormErrors {
 export class CreateVacancyModalComponent implements OnDestroy {
   private readonly companyService = inject(COMPANY_SERVICE);
   private readonly document = inject(DOCUMENT);
+  private readonly translate = inject(TranslateService);
 
   /** Whether the modal is open */
   readonly isOpen = input<boolean>(false);
@@ -551,28 +576,28 @@ export class CreateVacancyModalComponent implements OnDestroy {
     // Job Title validation (required, min 3 chars, valid characters)
     const title = this.formData.jobTitle.trim();
     if (!title) {
-      errors.jobTitle = 'El título es requerido';
+      errors.jobTitle = this.translate.instant('CREATE_VACANCY_MODAL.TITLE_REQUIRED');
     } else if (title.length < 3) {
-      errors.jobTitle = 'El título debe tener al menos 3 caracteres';
+      errors.jobTitle = this.translate.instant('CREATE_VACANCY_MODAL.TITLE_MIN');
     } else if (!/^[a-zA-Z0-9\s\-/.,()+&]+$/.test(title)) {
-      errors.jobTitle = 'El título contiene caracteres no válidos';
+      errors.jobTitle = this.translate.instant('CREATE_VACANCY_MODAL.TITLE_INVALID');
     }
 
     // Company validation (required)
     if (!this.formData.companyId || this.formData.companyId <= 0) {
-      errors.companyId = 'Debe seleccionar una empresa';
+      errors.companyId = this.translate.instant('CREATE_VACANCY_MODAL.COMPANY_REQUIRED');
     }
 
     // Location validation (optional, but if provided must be valid format)
     const location = this.formData.location.trim();
     if (location && !/^[a-zA-Z\s,.\-áéíóúÁÉÍÓÚñÑ]+$/.test(location)) {
-      errors.location = 'La ubicación contiene caracteres no válidos';
+      errors.location = this.translate.instant('CREATE_VACANCY_MODAL.LOCATION_INVALID');
     }
 
     // Salary Range validation (optional, but if provided must match pattern)
     const salary = this.formData.salaryRange.trim();
     if (salary && !/^[$\d,.\s\-kKmM]+$/.test(salary)) {
-      errors.salaryRange = 'Formato inválido (ej: $80,000 - $100,000)';
+      errors.salaryRange = this.translate.instant('CREATE_VACANCY_MODAL.SALARY_INVALID');
     }
 
     this.formErrors.set(errors);

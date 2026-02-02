@@ -4,6 +4,11 @@ import { ThemeToggleComponent } from './theme-toggle.component';
 import { ThemeService } from '@core/services/theme.service';
 import { signal, WritableSignal, PLATFORM_ID } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  getTranslateTestingModule,
+  initializeTranslations,
+} from '@app/testing/translate-test-helper';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('ThemeToggleComponent', () => {
   let component: ThemeToggleComponent;
@@ -21,7 +26,7 @@ describe('ThemeToggleComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ThemeToggleComponent, NoopAnimationsModule],
+      imports: [ThemeToggleComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [
         { provide: ThemeService, useValue: mockThemeService },
         { provide: PLATFORM_ID, useValue: 'browser' },
@@ -30,6 +35,11 @@ describe('ThemeToggleComponent', () => {
 
     fixture = TestBed.createComponent(ThemeToggleComponent);
     component = fixture.componentInstance;
+
+    // Initialize translations for instant() to work
+    const translateService = TestBed.inject(TranslateService);
+    initializeTranslations(translateService);
+
     fixture.detectChanges();
   });
 
