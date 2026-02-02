@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-toggle.component';
+import { LanguageSwitcherComponent } from '@shared/components/language-switcher/language-switcher.component';
 
 /**
  * AuthLayoutComponent
@@ -11,7 +13,7 @@ import { ThemeToggleComponent } from '@shared/components/theme-toggle/theme-togg
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [RouterOutlet, ThemeToggleComponent],
+  imports: [RouterOutlet, TranslateModule, ThemeToggleComponent, LanguageSwitcherComponent],
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

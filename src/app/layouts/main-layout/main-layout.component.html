@@ -26,7 +26,7 @@
           (click)="onNavItemClick()"
         >
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.label }}</span>
+          <span matListItemTitle>{{ item.label | translate }}</span>
         </a>
       }
     </mat-nav-list>
@@ -35,38 +35,48 @@
   <mat-sidenav-content class="main-layout__content">
     <mat-toolbar class="main-layout__toolbar" color="primary">
       @if (isMobile()) {
-        <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle navigation menu">
+        <button
+          mat-icon-button
+          (click)="toggleSidenav()"
+          [attr.aria-label]="'TOOLBAR.TOGGLE_NAV' | translate"
+        >
           <mat-icon>menu</mat-icon>
         </button>
       }
 
-      <span class="main-layout__toolbar-title">Solvo Staffing</span>
+      <span class="main-layout__toolbar-title">{{ 'TOOLBAR.TITLE' | translate }}</span>
 
       <span class="main-layout__toolbar-spacer"></span>
 
       <app-theme-toggle />
 
-      <button mat-icon-button aria-label="Notifications">
+      <app-language-switcher />
+
+      <button mat-icon-button [attr.aria-label]="'TOOLBAR.NOTIFICATIONS' | translate">
         <mat-icon>notifications</mat-icon>
       </button>
 
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        [attr.aria-label]="'TOOLBAR.USER_MENU' | translate"
+      >
         <mat-icon>account_circle</mat-icon>
       </button>
 
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item>
           <mat-icon>person</mat-icon>
-          <span>Profile</span>
+          <span>{{ 'USER_MENU.PROFILE' | translate }}</span>
         </button>
         <button mat-menu-item>
           <mat-icon>settings</mat-icon>
-          <span>Settings</span>
+          <span>{{ 'USER_MENU.SETTINGS' | translate }}</span>
         </button>
         <mat-divider />
         <button mat-menu-item>
           <mat-icon>logout</mat-icon>
-          <span>Logout</span>
+          <span>{{ 'USER_MENU.LOGOUT' | translate }}</span>
         </button>
       </mat-menu>
     </mat-toolbar>

@@ -7,6 +7,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { of } from 'rxjs';
 import { ThemeService } from '@core/services/theme.service';
 import { signal, PLATFORM_ID } from '@angular/core';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
@@ -25,7 +26,12 @@ describe('MainLayoutComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [MainLayoutComponent, RouterTestingModule, NoopAnimationsModule],
+      imports: [
+        MainLayoutComponent,
+        RouterTestingModule,
+        NoopAnimationsModule,
+        getTranslateTestingModule(),
+      ],
       providers: [
         { provide: BreakpointObserver, useValue: mockBreakpointObserver },
         { provide: ThemeService, useValue: mockThemeService },
@@ -55,7 +61,7 @@ describe('MainLayoutComponent', () => {
 
   it('should have default navItems', () => {
     expect(component.navItems.length).toBeGreaterThan(0);
-    expect(component.navItems[0].label).toBe('Dashboard');
+    expect(component.navItems[0].label).toBe('NAV.DASHBOARD');
   });
 
   it('should close sidenav on nav item click if mobile', () => {

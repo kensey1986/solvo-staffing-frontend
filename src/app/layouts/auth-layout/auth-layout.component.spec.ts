@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PLATFORM_ID, signal } from '@angular/core';
 import { ThemeService } from '@core/services/theme.service';
 import { jest } from '@jest/globals';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 describe('AuthLayoutComponent', () => {
   let component: AuthLayoutComponent;
@@ -17,7 +18,7 @@ describe('AuthLayoutComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [AuthLayoutComponent, RouterTestingModule],
+      imports: [AuthLayoutComponent, RouterTestingModule, getTranslateTestingModule()],
       providers: [
         { provide: ThemeService, useValue: mockThemeService },
         { provide: PLATFORM_ID, useValue: 'browser' },

@@ -10,7 +10,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { ThemeToggleComponent } from '@shared';
+import { TranslateModule } from '@ngx-translate/core';
+import { ThemeToggleComponent, LanguageSwitcherComponent } from '@shared';
 
 /**
  * Navigation item interface for sidebar menu.
@@ -41,7 +42,9 @@ interface NavItem {
     MatButtonModule,
     MatListModule,
     MatMenuModule,
+    TranslateModule,
     ThemeToggleComponent,
+    LanguageSwitcherComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
@@ -67,13 +70,9 @@ export class MainLayoutComponent {
    * Navigation items for the sidebar.
    */
   public readonly navItems: NavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
-    { label: 'Vacancies', route: '/vacancies', icon: 'work' },
-    { label: 'Companies', route: '/companies', icon: 'business' },
-    { label: 'Staffing', route: '/staffing', icon: 'people' },
-    { label: 'Reports', route: '/reports', icon: 'bar_chart' },
-    { label: 'Settings', route: '/settings', icon: 'settings' },
-    { label: 'Componentes', route: '/componentes', icon: 'view_module' },
+    { label: 'NAV.DASHBOARD', route: '/dashboard', icon: 'dashboard' },
+    { label: 'NAV.VACANCIES', route: '/vacancies', icon: 'work' },
+    { label: 'NAV.COMPANIES', route: '/companies', icon: 'business' },
   ];
 
   /**
