@@ -240,14 +240,15 @@ describe('CompaniesListComponent', () => {
       component.currentPage.set(1);
       component.pageSize.set(20);
 
-      expect(component.paginationInfo()).toContain('1');
-      expect(component.paginationInfo()).toContain('20');
-      expect(component.paginationInfo()).toContain('100');
+      // The mock TranslateService returns the key, so we check for the translation key
+      const result = component.paginationInfo();
+      expect(result).toContain('COMPANIES.SHOWING_RESULTS');
     }));
 
     it('should show "No companies found" when total is 0', () => {
       component.totalItems.set(0);
-      expect(component.paginationInfo()).toBe('No companies found');
+      // The mock TranslateService returns the key
+      expect(component.paginationInfo()).toBe('COMPANIES.NO_COMPANIES_FOUND');
     });
   });
 
@@ -440,8 +441,9 @@ describe('CompaniesListComponent', () => {
 
   describe('Utility Methods', () => {
     it('should get industry label', () => {
-      expect(component.getIndustryLabel('technology')).toBe('Technology');
-      expect(component.getIndustryLabel('healthcare')).toBe('Healthcare');
+      // The mock TranslateService returns the key
+      expect(component.getIndustryLabel('technology')).toBe('COMPANIES.INDUSTRY_TECHNOLOGY');
+      expect(component.getIndustryLabel('healthcare')).toBe('COMPANIES.INDUSTRY_HEALTHCARE');
       expect(component.getIndustryLabel(undefined)).toBe('-');
       expect(component.getIndustryLabel('unknown')).toBe('unknown');
     });
@@ -507,13 +509,15 @@ describe('CompaniesListComponent', () => {
     it('should have relationship type options', () => {
       expect(component.relationshipTypeOptions.length).toBeGreaterThan(0);
       expect(component.relationshipTypeOptions[0].value).toBe('');
-      expect(component.relationshipTypeOptions[0].label).toBe('Todos');
+      // Now using labelKey instead of label
+      expect(component.relationshipTypeOptions[0].labelKey).toBe('COMPANIES.TYPE_ALL');
     });
 
     it('should have pipeline options', () => {
       expect(component.pipelineOptions.length).toBeGreaterThan(0);
       expect(component.pipelineOptions[0].value).toBe('');
-      expect(component.pipelineOptions[0].label).toBe('Todos');
+      // Now using labelKey instead of label
+      expect(component.pipelineOptions[0].labelKey).toBe('COMPANIES.PIPELINE_ALL');
     });
 
     it('should have industry options', () => {

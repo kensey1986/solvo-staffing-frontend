@@ -155,6 +155,7 @@
     "COL_TYPE": "Tipo",
     "COL_PIPELINE": "Pipeline",
     "COL_ASSIGNED": "Asignado",
+    "COL_ACTIONS": "Acciones",
     "VIEW": "Ver",
     "RESEARCH_COMPLETED": "Research completado",
     "RESEARCH_PENDING": "Research pendiente",
@@ -164,7 +165,33 @@
     "TYPE_CLIENT": "Cliente",
     "TYPE_PROSPECT": "Prospecto",
     "TYPE_LEAD": "Lead",
-    "TYPE_INACTIVE": "Inactivo"
+    "TYPE_INACTIVE": "Inactivo",
+    "PIPELINE_ALL": "Todos",
+    "PIPELINE_LEAD": "Lead",
+    "PIPELINE_PROSPECTING": "Prospecting",
+    "PIPELINE_ENGAGED": "Engaged",
+    "PIPELINE_INITIAL_APPT": "Cita Inicial Realizada",
+    "PIPELINE_ONBOARDING": "Onboarding Iniciado",
+    "PIPELINE_LOST": "Perdido",
+    "INDUSTRY_SELECT": "Seleccionar...",
+    "INDUSTRY_TECHNOLOGY": "Tecnología",
+    "INDUSTRY_HEALTHCARE": "Salud",
+    "INDUSTRY_FINANCIAL": "Servicios Financieros",
+    "INDUSTRY_MANUFACTURING": "Manufactura",
+    "INDUSTRY_RETAIL": "Retail",
+    "INDUSTRY_ENERGY": "Energía",
+    "INDUSTRY_EDUCATION": "Educación",
+    "INDUSTRY_LOGISTICS": "Logística",
+    "INDUSTRY_CONSTRUCTION": "Construcción",
+    "INDUSTRY_OTHER": "Otro",
+    "SIZE_SELECT": "Seleccionar...",
+    "NO_COMPANIES_FOUND": "No se encontraron empresas",
+    "SHOWING_RESULTS": "Mostrando {{start}}-{{end}} de {{total}}",
+    "LOAD_ERROR": "Error al cargar empresas",
+    "CREATE_SUCCESS": "Empresa creada exitosamente",
+    "CREATE_ERROR": "Error al crear empresa",
+    "INVESTIGATE_STARTED": "Investigación iniciada. Tiempo estimado: ~5 min",
+    "INVESTIGATE_ERROR": "Error al iniciar investigación"
   },
   "CREATE_COMPANY": {
     "TITLE": "Nueva Empresa",
@@ -424,5 +451,12 @@
     "INITIAL_APPOINTMENT": "Cita Inicial Realizada",
     "ONBOARDING": "Onboarding Iniciado",
     "LOST": "Perdido"
+  },
+  "VALIDATION": {
+    "NAME_REQUIRED": "El nombre de la empresa es requerido",
+    "NAME_MIN_LENGTH": "El nombre debe tener al menos 2 caracteres",
+    "NAME_MAX_LENGTH": "El nombre no puede exceder 100 caracteres",
+    "INVALID_URL": "Ingrese una URL válida (ej: https://ejemplo.com)",
+    "COUNTRY_REQUIRED": "El país es requerido"
   }
 }

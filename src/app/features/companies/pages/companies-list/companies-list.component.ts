@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   inject,
   OnInit,
+  OnDestroy,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -32,8 +34,6 @@ import {
   CreateCompanyDto,
   InvestigateCompanyDto,
   Country,
-  Industry,
-  CompanySize,
 } from '@core';
 import {
   CompanyPipelineBadgeComponent,
@@ -84,12 +84,17 @@ export interface CreateCompanyFormErrors {
   styleUrl: './companies-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompaniesListComponent implements OnInit {
+export class CompaniesListComponent implements OnInit, OnDestroy {
   private readonly companyService = inject(COMPANY_SERVICE);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private langSubscription: { unsubscribe: () => void } | null = null;
+
+  // Language change tracker
+  private readonly currentLang = signal(this.translate.currentLang);
 
   // Loading state
   readonly isLoading = signal(false);
@@ -150,48 +155,48 @@ export class CompaniesListComponent implements OnInit {
     'actions',
   ];
 
-  // Filter options
-  readonly relationshipTypeOptions: { value: CompanyRelationshipType | ''; label: string }[] = [
-    { value: '', label: 'Todos' },
-    { value: 'client', label: 'Cliente' },
-    { value: 'prospect', label: 'Prospecto' },
-    { value: 'lead', label: 'Lead' },
-    { value: 'inactive', label: 'Inactivo' },
+  // Filter options with translation keys
+  readonly relationshipTypeOptions = [
+    { value: '' as const, labelKey: 'COMPANIES.TYPE_ALL' },
+    { value: 'client' as const, labelKey: 'COMPANIES.TYPE_CLIENT' },
+    { value: 'prospect' as const, labelKey: 'COMPANIES.TYPE_PROSPECT' },
+    { value: 'lead' as const, labelKey: 'COMPANIES.TYPE_LEAD' },
+    { value: 'inactive' as const, labelKey: 'COMPANIES.TYPE_INACTIVE' },
   ];
 
-  readonly pipelineOptions: { value: CompanyPipelineStage | ''; label: string }[] = [
-    { value: '', label: 'Todos' },
-    { value: 'lead', label: 'Lead' },
-    { value: 'prospecting', label: 'Prospecting' },
-    { value: 'engaged', label: 'Engaged' },
-    { value: 'initial_appointment_held', label: 'Initial Appointment Held' },
-    { value: 'onboarding_started', label: 'Onboarding Started' },
-    { value: 'lost', label: 'Lost' },
+  readonly pipelineOptions = [
+    { value: '' as const, labelKey: 'COMPANIES.PIPELINE_ALL' },
+    { value: 'lead' as const, labelKey: 'COMPANIES.PIPELINE_LEAD' },
+    { value: 'prospecting' as const, labelKey: 'COMPANIES.PIPELINE_PROSPECTING' },
+    { value: 'engaged' as const, labelKey: 'COMPANIES.PIPELINE_ENGAGED' },
+    { value: 'initial_appointment_held' as const, labelKey: 'COMPANIES.PIPELINE_INITIAL_APPT' },
+    { value: 'onboarding_started' as const, labelKey: 'COMPANIES.PIPELINE_ONBOARDING' },
+    { value: 'lost' as const, labelKey: 'COMPANIES.PIPELINE_LOST' },
   ];
 
-  readonly industryOptions: { value: Industry | ''; label: string }[] = [
-    { value: '', label: 'Seleccionar...' },
-    { value: 'technology', label: 'Technology' },
-    { value: 'healthcare', label: 'Healthcare' },
-    { value: 'financial_services', label: 'Financial Services' },
-    { value: 'manufacturing', label: 'Manufacturing' },
-    { value: 'retail', label: 'Retail' },
-    { value: 'energy', label: 'Energy' },
-    { value: 'education', label: 'Education' },
-    { value: 'logistics', label: 'Logistics' },
-    { value: 'construction', label: 'Construction' },
-    { value: 'other', label: 'Other' },
+  readonly industryOptions = [
+    { value: '' as const, labelKey: 'COMPANIES.INDUSTRY_SELECT' },
+    { value: 'technology' as const, labelKey: 'COMPANIES.INDUSTRY_TECHNOLOGY' },
+    { value: 'healthcare' as const, labelKey: 'COMPANIES.INDUSTRY_HEALTHCARE' },
+    { value: 'financial_services' as const, labelKey: 'COMPANIES.INDUSTRY_FINANCIAL' },
+    { value: 'manufacturing' as const, labelKey: 'COMPANIES.INDUSTRY_MANUFACTURING' },
+    { value: 'retail' as const, labelKey: 'COMPANIES.INDUSTRY_RETAIL' },
+    { value: 'energy' as const, labelKey: 'COMPANIES.INDUSTRY_ENERGY' },
+    { value: 'education' as const, labelKey: 'COMPANIES.INDUSTRY_EDUCATION' },
+    { value: 'logistics' as const, labelKey: 'COMPANIES.INDUSTRY_LOGISTICS' },
+    { value: 'construction' as const, labelKey: 'COMPANIES.INDUSTRY_CONSTRUCTION' },
+    { value: 'other' as const, labelKey: 'COMPANIES.INDUSTRY_OTHER' },
   ];
 
-  readonly employeeSizeOptions: { value: CompanySize | ''; label: string }[] = [
-    { value: '', label: 'Seleccionar...' },
-    { value: '1-50', label: '1-50' },
-    { value: '50-100', label: '50-100' },
-    { value: '100-200', label: '100-200' },
-    { value: '200-500', label: '200-500' },
-    { value: '500-1000', label: '500-1000' },
-    { value: '1000-5000', label: '1000-5000' },
-    { value: '5000+', label: '5000+' },
+  readonly employeeSizeOptions = [
+    { value: '' as const, labelKey: 'COMPANIES.SIZE_SELECT' },
+    { value: '1-50' as const, label: '1-50' },
+    { value: '50-100' as const, label: '50-100' },
+    { value: '100-200' as const, label: '100-200' },
+    { value: '200-500' as const, label: '200-500' },
+    { value: '500-1000' as const, label: '500-1000' },
+    { value: '1000-5000' as const, label: '1000-5000' },
+    { value: '5000+' as const, label: '5000+' },
   ];
 
   readonly countryOptions: { value: Country; label: string }[] = [
@@ -206,15 +211,31 @@ export class CompaniesListComponent implements OnInit {
 
   // Computed pagination info
   readonly paginationInfo = computed(() => {
+    // Track language changes
+    this.currentLang();
     const total = this.totalItems();
-    if (total === 0) return 'No companies found';
+    if (total === 0) return this.translate.instant('COMPANIES.NO_COMPANIES_FOUND');
     const start = (this.currentPage() - 1) * this.pageSize() + 1;
     const end = Math.min(this.currentPage() * this.pageSize(), total);
-    return `Mostrando ${start.toLocaleString()}-${end.toLocaleString()} de ${total.toLocaleString()}`;
+    return this.translate.instant('COMPANIES.SHOWING_RESULTS', {
+      start: start.toLocaleString(),
+      end: end.toLocaleString(),
+      total: total.toLocaleString(),
+    });
   });
 
   ngOnInit(): void {
     this.loadCompanies();
+
+    // Subscribe to language changes and force change detection
+    this.langSubscription = this.translate.onLangChange.subscribe(() => {
+      this.currentLang.set(this.translate.currentLang);
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSubscription?.unsubscribe();
   }
 
   /**
@@ -240,7 +261,11 @@ export class CompaniesListComponent implements OnInit {
       },
       error: (err: unknown) => {
         console.error('Error loading companies:', err);
-        this.snackBar.open('Error al cargar empresas', 'Cerrar', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('COMPANIES.LOAD_ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
         this.isLoading.set(false);
       },
     });
@@ -337,13 +362,21 @@ export class CompaniesListComponent implements OnInit {
 
     this.companyService.create(form).subscribe({
       next: newCompany => {
-        this.snackBar.open('Empresa creada exitosamente', 'Cerrar', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('COMPANIES.CREATE_SUCCESS'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
         this.closeCreateModal();
         this.router.navigate(['/companies', newCompany.id]);
       },
       error: (err: unknown) => {
         console.error('Error creating company:', err);
-        this.snackBar.open('Error al crear empresa', 'Cerrar', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('COMPANIES.CREATE_ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
     });
   }
@@ -364,18 +397,18 @@ export class CompaniesListComponent implements OnInit {
 
     // Validate name (required)
     if (!form.name.trim()) {
-      errors.name = 'El nombre de la empresa es requerido';
+      errors.name = this.translate.instant('VALIDATION.NAME_REQUIRED');
     } else if (form.name.trim().length < 2) {
-      errors.name = 'El nombre debe tener al menos 2 caracteres';
+      errors.name = this.translate.instant('VALIDATION.NAME_MIN_LENGTH');
     } else if (form.name.trim().length > 100) {
-      errors.name = 'El nombre no puede exceder 100 caracteres';
+      errors.name = this.translate.instant('VALIDATION.NAME_MAX_LENGTH');
     }
 
     // Validate website (optional but must be valid URL if provided)
     if (form.website && form.website.trim()) {
       const urlPattern = /^https?:\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(\/[^\s]*)?$/;
       if (!urlPattern.test(form.website.trim())) {
-        errors.website = 'Ingrese una URL válida (ej: https://ejemplo.com)';
+        errors.website = this.translate.instant('VALIDATION.INVALID_URL');
       }
     }
 
@@ -412,25 +445,39 @@ export class CompaniesListComponent implements OnInit {
   investigateCompany(): void {
     const form = this.investigateForm();
     if (!form.name.trim()) {
-      this.snackBar.open('El nombre es requerido', 'Cerrar', { duration: 3000 });
+      this.snackBar.open(
+        this.translate.instant('VALIDATION.NAME_REQUIRED'),
+        this.translate.instant('COMMON.CLOSE'),
+        { duration: 3000 }
+      );
       return;
     }
     if (!form.country) {
-      this.snackBar.open('El país es requerido', 'Cerrar', { duration: 3000 });
+      this.snackBar.open(
+        this.translate.instant('VALIDATION.COUNTRY_REQUIRED'),
+        this.translate.instant('COMMON.CLOSE'),
+        { duration: 3000 }
+      );
       return;
     }
 
     this.companyService.investigate(form).subscribe({
       next: () => {
-        this.snackBar.open('Investigación iniciada. Tiempo estimado: ~5 min', 'Cerrar', {
-          duration: 5000,
-        });
+        this.snackBar.open(
+          this.translate.instant('COMPANIES.INVESTIGATE_STARTED'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 5000 }
+        );
         this.closeInvestigateModal();
         this.loadCompanies();
       },
       error: (err: unknown) => {
         console.error('Error investigating company:', err);
-        this.snackBar.open('Error al iniciar investigación', 'Cerrar', { duration: 3000 });
+        this.snackBar.open(
+          this.translate.instant('COMPANIES.INVESTIGATE_ERROR'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
       },
     });
   }
@@ -461,7 +508,7 @@ export class CompaniesListComponent implements OnInit {
   getIndustryLabel(industry?: string): string {
     if (!industry) return '-';
     const option = this.industryOptions.find(o => o.value === industry);
-    return option?.label || industry;
+    return option ? this.translate.instant(option.labelKey) : industry;
   }
 
   /**

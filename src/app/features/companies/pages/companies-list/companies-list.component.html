@@ -42,7 +42,7 @@
           (ngModelChange)="relationshipTypeFilter.set($event); applyFilters()"
         >
           @for (option of relationshipTypeOptions; track option.value) {
-            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -55,7 +55,7 @@
           (ngModelChange)="pipelineFilter.set($event); applyFilters()"
         >
           @for (option of pipelineOptions; track option.value) {
-            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -267,7 +267,7 @@
                 {{ 'CREATE_COMPANY.SELECT_PLACEHOLDER' | translate }}
               </option>
               @for (option of industryOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
+                <option [value]="option.value">{{ option.labelKey | translate }}</option>
               }
             </select>
             @if (createFormSubmitted() && createFormErrors().industry) {
@@ -309,7 +309,9 @@
                 {{ 'CREATE_COMPANY.SELECT_PLACEHOLDER' | translate }}
               </option>
               @for (option of employeeSizeOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
+                <option [value]="option.value">
+                  {{ option.labelKey ? (option.labelKey | translate) : option.label }}
+                </option>
               }
             </select>
             @if (createFormSubmitted() && createFormErrors().employees) {

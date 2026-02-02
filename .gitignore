@@ -38,6 +38,10 @@ testem.log
 /typings
 __screenshots__/
 
+# Test results
+/test-results
+junit.xml
+
 # Linting cache
 .eslintcache
 

@@ -155,6 +155,7 @@
     "COL_TYPE": "Type",
     "COL_PIPELINE": "Pipeline",
     "COL_ASSIGNED": "Assigned",
+    "COL_ACTIONS": "Actions",
     "VIEW": "View",
     "RESEARCH_COMPLETED": "Research completed",
     "RESEARCH_PENDING": "Research pending",
@@ -164,7 +165,33 @@
     "TYPE_CLIENT": "Client",
     "TYPE_PROSPECT": "Prospect",
     "TYPE_LEAD": "Lead",
-    "TYPE_INACTIVE": "Inactive"
+    "TYPE_INACTIVE": "Inactive",
+    "PIPELINE_ALL": "All",
+    "PIPELINE_LEAD": "Lead",
+    "PIPELINE_PROSPECTING": "Prospecting",
+    "PIPELINE_ENGAGED": "Engaged",
+    "PIPELINE_INITIAL_APPT": "Initial Appointment Held",
+    "PIPELINE_ONBOARDING": "Onboarding Started",
+    "PIPELINE_LOST": "Lost",
+    "INDUSTRY_SELECT": "Select...",
+    "INDUSTRY_TECHNOLOGY": "Technology",
+    "INDUSTRY_HEALTHCARE": "Healthcare",
+    "INDUSTRY_FINANCIAL": "Financial Services",
+    "INDUSTRY_MANUFACTURING": "Manufacturing",
+    "INDUSTRY_RETAIL": "Retail",
+    "INDUSTRY_ENERGY": "Energy",
+    "INDUSTRY_EDUCATION": "Education",
+    "INDUSTRY_LOGISTICS": "Logistics",
+    "INDUSTRY_CONSTRUCTION": "Construction",
+    "INDUSTRY_OTHER": "Other",
+    "SIZE_SELECT": "Select...",
+    "NO_COMPANIES_FOUND": "No companies found",
+    "SHOWING_RESULTS": "Showing {{start}}-{{end}} of {{total}}",
+    "LOAD_ERROR": "Error loading companies",
+    "CREATE_SUCCESS": "Company created successfully",
+    "CREATE_ERROR": "Error creating company",
+    "INVESTIGATE_STARTED": "Investigation started. Estimated time: ~5 min",
+    "INVESTIGATE_ERROR": "Error starting investigation"
   },
   "CREATE_COMPANY": {
     "TITLE": "New Company",
@@ -424,5 +451,12 @@
     "INITIAL_APPOINTMENT": "Initial Appointment Held",
     "ONBOARDING": "Onboarding Started",
     "LOST": "Lost"
+  },
+  "VALIDATION": {
+    "NAME_REQUIRED": "Company name is required",
+    "NAME_MIN_LENGTH": "Name must be at least 2 characters",
+    "NAME_MAX_LENGTH": "Name cannot exceed 100 characters",
+    "INVALID_URL": "Enter a valid URL (e.g., https://example.com)",
+    "COUNTRY_REQUIRED": "Country is required"
   }
 }
