@@ -155,7 +155,26 @@ vercel remove <URL_DEL_DEPLOY>
 
 ---
 
-## 8. Deploy automático con Git
+## 8. Desactivar Protección de Deploy
+
+Para que los deployments sean públicos sin requerir autenticación de Vercel:
+
+### 8.1 Vía Dashboard
+1. Ve a: https://vercel.com/kenshin1986s-projects/solvo-staffing-frontend/settings
+2. Navega a **Deployment Protection** en el menú lateral
+3. Desactiva **"Vercel Authentication"**
+4. Guarda los cambios
+
+### 8.2 Cuándo desactivar la protección
+- Cuando necesites compartir URLs de preview con clientes externos
+- Para demos públicas
+- Para testing con usuarios sin cuenta Vercel
+
+> ⚠️ **Nota:** Desactivar la protección hace que cualquier persona con el enlace pueda acceder al deploy.
+
+---
+
+## 9. Deploy automático con Git
 
 El proyecto está configurado para deploy automático desde GitHub:
 
