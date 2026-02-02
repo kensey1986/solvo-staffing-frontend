@@ -1,53 +1,763 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="24" failures="0" errors="0" time="6.155">
-  <testsuite name="VacancyDetailComponent" errors="0" failures="0" skipped="0" timestamp="2026-01-28T13:32:58" time="4.796" tests="24">
-    <testcase classname="VacancyDetailComponent should create" name="VacancyDetailComponent should create" time="0.229">
+<testsuites name="jest tests" tests="355" failures="0" errors="0" time="36.746">
+  <testsuite name="VacancyApiService" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:13" time="12.268" tests="7">
+    <testcase classname="VacancyApiService should get all vacancies with filters" name="VacancyApiService should get all vacancies with filters" time="0.051">
     </testcase>
-    <testcase classname="VacancyDetailComponent Initialization should load vacancy on init" name="VacancyDetailComponent Initialization should load vacancy on init" time="0.18">
+    <testcase classname="VacancyApiService should get vacancy by id" name="VacancyApiService should get vacancy by id" time="0.013">
     </testcase>
-    <testcase classname="VacancyDetailComponent Initialization should not load state history on init" name="VacancyDetailComponent Initialization should not load state history on init" time="0.106">
+    <testcase classname="VacancyApiService should create vacancy" name="VacancyApiService should create vacancy" time="0.033">
     </testcase>
-    <testcase classname="VacancyDetailComponent Initialization should not load when no id" name="VacancyDetailComponent Initialization should not load when no id" time="0.059">
+    <testcase classname="VacancyApiService should update vacancy" name="VacancyApiService should update vacancy" time="0.011">
     </testcase>
-    <testcase classname="VacancyDetailComponent Initialization should handle load error and navigate" name="VacancyDetailComponent Initialization should handle load error and navigate" time="0.32">
+    <testcase classname="VacancyApiService should delete vacancy" name="VacancyApiService should delete vacancy" time="0.016">
     </testcase>
-    <testcase classname="VacancyDetailComponent State change modal should open state modal when vacancy exists" name="VacancyDetailComponent State change modal should open state modal when vacancy exists" time="0.095">
+    <testcase classname="VacancyApiService should change vacancy state" name="VacancyApiService should change vacancy state" time="0.01">
     </testcase>
-    <testcase classname="VacancyDetailComponent State change modal should close state modal" name="VacancyDetailComponent State change modal should close state modal" time="0.105">
+    <testcase classname="VacancyApiService should get vacancy state history" name="VacancyApiService should get vacancy state history" time="0.006">
     </testcase>
-    <testcase classname="VacancyDetailComponent State change modal should handle state change" name="VacancyDetailComponent State change modal should handle state change" time="0.119">
+  </testsuite>
+  <testsuite name="CompanyApiService" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:13" time="12.263" tests="13">
+    <testcase classname="CompanyApiService should get all companies with filters" name="CompanyApiService should get all companies with filters" time="0.054">
     </testcase>
-    <testcase classname="VacancyDetailComponent State change modal should handle state change error" name="VacancyDetailComponent State change modal should handle state change error" time="0.098">
+    <testcase classname="CompanyApiService should get company by id" name="CompanyApiService should get company by id" time="0.02">
     </testcase>
-    <testcase classname="VacancyDetailComponent State change modal should not change state if no new state" name="VacancyDetailComponent State change modal should not change state if no new state" time="0.079">
+    <testcase classname="CompanyApiService should create company" name="CompanyApiService should create company" time="0.015">
     </testcase>
-    <testcase classname="VacancyDetailComponent Tracking tab lazy loading should load state history when tracking tab is selected" name="VacancyDetailComponent Tracking tab lazy loading should load state history when tracking tab is selected" time="0.115">
+    <testcase classname="CompanyApiService should update company" name="CompanyApiService should update company" time="0.012">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should open edit modal when vacancy exists" name="VacancyDetailComponent Edit vacancy modal should open edit modal when vacancy exists" time="0.039">
+    <testcase classname="CompanyApiService should delete company" name="CompanyApiService should delete company" time="0.024">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should not open edit modal when vacancy is null" name="VacancyDetailComponent Edit vacancy modal should not open edit modal when vacancy is null" time="0.039">
+    <testcase classname="CompanyApiService should change company state" name="CompanyApiService should change company state" time="0.012">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should close edit modal" name="VacancyDetailComponent Edit vacancy modal should close edit modal" time="0.037">
+    <testcase classname="CompanyApiService should get state history with filters" name="CompanyApiService should get state history with filters" time="0.007">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should update vacancy on edit submit" name="VacancyDetailComponent Edit vacancy modal should update vacancy on edit submit" time="0.053">
+    <testcase classname="CompanyApiService should get vacancies for a company" name="CompanyApiService should get vacancies for a company" time="0.01">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should handle edit submit error" name="VacancyDetailComponent Edit vacancy modal should handle edit submit error" time="0.047">
+    <testcase classname="CompanyApiService should update research" name="CompanyApiService should update research" time="0.011">
     </testcase>
-    <testcase classname="VacancyDetailComponent Edit vacancy modal should not submit edit when id is missing" name="VacancyDetailComponent Edit vacancy modal should not submit edit when id is missing" time="0.034">
+    <testcase classname="CompanyApiService should investigate company" name="CompanyApiService should investigate company" time="0.01">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should compute page title" name="VacancyDetailComponent Utility methods should compute page title" time="0.072">
+    <testcase classname="CompanyApiService should create contact" name="CompanyApiService should create contact" time="0.012">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should compute source label" name="VacancyDetailComponent Utility methods should compute source label" time="0.072">
+    <testcase classname="CompanyApiService should update contact" name="CompanyApiService should update contact" time="0.009">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should format date" name="VacancyDetailComponent Utility methods should format date" time="0.066">
+    <testcase classname="CompanyApiService should delete contact" name="CompanyApiService should delete contact" time="0.012">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should format datetime" name="VacancyDetailComponent Utility methods should format datetime" time="0.069">
+  </testsuite>
+  <testsuite name="TagsInputComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="13.08" tests="32">
+    <testcase classname="TagsInputComponent should create" name="TagsInputComponent should create" time="0.262">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should get pipeline label" name="VacancyDetailComponent Utility methods should get pipeline label" time="0.069">
+    <testcase classname="TagsInputComponent Tag Display should display existing tags" name="TagsInputComponent Tag Display should display existing tags" time="0.069">
     </testcase>
-    <testcase classname="VacancyDetailComponent Utility methods should get remote viable text" name="VacancyDetailComponent Utility methods should get remote viable text" time="0.065">
+    <testcase classname="TagsInputComponent Tag Display should show tag text" name="TagsInputComponent Tag Display should show tag text" time="0.042">
     </testcase>
-    <testcase classname="VacancyDetailComponent Error handling should handle state history load error" name="VacancyDetailComponent Error handling should handle state history load error" time="0.127">
+    <testcase classname="TagsInputComponent Tag Display should show counter when showCounter is true and maxTags &gt; 0" name="TagsInputComponent Tag Display should show counter when showCounter is true and maxTags &gt; 0" time="0.032">
+    </testcase>
+    <testcase classname="TagsInputComponent Tag Display should hide counter when showCounter is false" name="TagsInputComponent Tag Display should hide counter when showCounter is false" time="0.023">
+    </testcase>
+    <testcase classname="TagsInputComponent Tag Display should hide counter when maxTags is 0" name="TagsInputComponent Tag Display should hide counter when maxTags is 0" time="0.013">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should show input when not readonly" name="TagsInputComponent Adding Tags should show input when not readonly" time="0.017">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should display custom placeholder" name="TagsInputComponent Adding Tags should display custom placeholder" time="0.024">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should add tag on Enter key" name="TagsInputComponent Adding Tags should add tag on Enter key" time="0.027">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should add tag on comma key" name="TagsInputComponent Adding Tags should add tag on comma key" time="0.034">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should trim whitespace from new tags" name="TagsInputComponent Adding Tags should trim whitespace from new tags" time="0.02">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should remove commas from tag value" name="TagsInputComponent Adding Tags should remove commas from tag value" time="0.063">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should not add empty tags" name="TagsInputComponent Adding Tags should not add empty tags" time="0.014">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should not add duplicate tags" name="TagsInputComponent Adding Tags should not add duplicate tags" time="0.023">
+    </testcase>
+    <testcase classname="TagsInputComponent Adding Tags should clear input after adding tag" name="TagsInputComponent Adding Tags should clear input after adding tag" time="0.016">
+    </testcase>
+    <testcase classname="TagsInputComponent Max Tags Limit should allow adding when under limit" name="TagsInputComponent Max Tags Limit should allow adding when under limit" time="0.02">
+    </testcase>
+    <testcase classname="TagsInputComponent Max Tags Limit should prevent adding when at limit" name="TagsInputComponent Max Tags Limit should prevent adding when at limit" time="0.052">
+    </testcase>
+    <testcase classname="TagsInputComponent Max Tags Limit should hide input when at max tags" name="TagsInputComponent Max Tags Limit should hide input when at max tags" time="0.037">
+    </testcase>
+    <testcase classname="TagsInputComponent Max Tags Limit should allow unlimited tags when maxTags is 0" name="TagsInputComponent Max Tags Limit should allow unlimited tags when maxTags is 0" time="0.028">
+    </testcase>
+    <testcase classname="TagsInputComponent Max Tags Limit should not add tag when at max limit" name="TagsInputComponent Max Tags Limit should not add tag when at max limit" time="0.024">
+    </testcase>
+    <testcase classname="TagsInputComponent Removing Tags should show remove button for each tag" name="TagsInputComponent Removing Tags should show remove button for each tag" time="0.027">
+    </testcase>
+    <testcase classname="TagsInputComponent Removing Tags should remove tag when remove button clicked" name="TagsInputComponent Removing Tags should remove tag when remove button clicked" time="0.03">
+    </testcase>
+    <testcase classname="TagsInputComponent Removing Tags should emit updated tags array after removal" name="TagsInputComponent Removing Tags should emit updated tags array after removal" time="0.019">
+    </testcase>
+    <testcase classname="TagsInputComponent Readonly Mode should hide input when readonly" name="TagsInputComponent Readonly Mode should hide input when readonly" time="0.022">
+    </testcase>
+    <testcase classname="TagsInputComponent Readonly Mode should hide remove buttons when readonly" name="TagsInputComponent Readonly Mode should hide remove buttons when readonly" time="0.015">
+    </testcase>
+    <testcase classname="TagsInputComponent Readonly Mode should display tags without controls" name="TagsInputComponent Readonly Mode should display tags without controls" time="0.013">
+    </testcase>
+    <testcase classname="TagsInputComponent Readonly Mode should apply readonly class to container" name="TagsInputComponent Readonly Mode should apply readonly class to container" time="0.018">
+    </testcase>
+    <testcase classname="TagsInputComponent Computed Properties canAddMore should return true when below max" name="TagsInputComponent Computed Properties canAddMore should return true when below max" time="0.019">
+    </testcase>
+    <testcase classname="TagsInputComponent Computed Properties canAddMore should return false when at max" name="TagsInputComponent Computed Properties canAddMore should return false when at max" time="0.025">
+    </testcase>
+    <testcase classname="TagsInputComponent Computed Properties canAddMore should return true with unlimited (maxTags = 0)" name="TagsInputComponent Computed Properties canAddMore should return true with unlimited (maxTags = 0)" time="0.025">
+    </testcase>
+    <testcase classname="TagsInputComponent Accessibility should have aria-label on input" name="TagsInputComponent Accessibility should have aria-label on input" time="0.012">
+    </testcase>
+    <testcase classname="TagsInputComponent Accessibility should have aria-label on remove buttons" name="TagsInputComponent Accessibility should have aria-label on remove buttons" time="0.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthApiService" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="13.021" tests="15">
+    <testcase classname="AuthApiService should be created" name="AuthApiService should be created" time="0.061">
+    </testcase>
+    <testcase classname="AuthApiService login should send POST request to login endpoint" name="AuthApiService login should send POST request to login endpoint" time="0.03">
+    </testcase>
+    <testcase classname="AuthApiService login should store token and user in localStorage on successful login" name="AuthApiService login should store token and user in localStorage on successful login" time="0.03">
+    </testcase>
+    <testcase classname="AuthApiService login should set isAuthenticated to true after successful login" name="AuthApiService login should set isAuthenticated to true after successful login" time="0.025">
+    </testcase>
+    <testcase classname="AuthApiService logout should send POST request to logout endpoint" name="AuthApiService logout should send POST request to logout endpoint" time="0.046">
+    </testcase>
+    <testcase classname="AuthApiService logout should clear localStorage on logout" name="AuthApiService logout should clear localStorage on logout" time="0.014">
+    </testcase>
+    <testcase classname="AuthApiService logout should clear localStorage even if logout request fails" name="AuthApiService logout should clear localStorage even if logout request fails" time="0.011">
+    </testcase>
+    <testcase classname="AuthApiService getCurrentUser should return null when not authenticated" name="AuthApiService getCurrentUser should return null when not authenticated" time="0.007">
+    </testcase>
+    <testcase classname="AuthApiService getCurrentUser should return user when authenticated" name="AuthApiService getCurrentUser should return user when authenticated" time="0.073">
+    </testcase>
+    <testcase classname="AuthApiService isAuthenticated should return false when not logged in" name="AuthApiService isAuthenticated should return false when not logged in" time="0.007">
+    </testcase>
+    <testcase classname="AuthApiService isAuthenticated should return true after successful login" name="AuthApiService isAuthenticated should return true after successful login" time="0.009">
+    </testcase>
+    <testcase classname="AuthApiService getAccessToken should return null when not authenticated" name="AuthApiService getAccessToken should return null when not authenticated" time="0.007">
+    </testcase>
+    <testcase classname="AuthApiService getAccessToken should return token after successful login" name="AuthApiService getAccessToken should return token after successful login" time="0.007">
+    </testcase>
+    <testcase classname="AuthApiService restoreSession should restore session from localStorage on initialization" name="AuthApiService restoreSession should restore session from localStorage on initialization" time="0.01">
+    </testcase>
+    <testcase classname="AuthApiService restoreSession should not restore session if localStorage is empty" name="AuthApiService restoreSession should not restore session if localStorage is empty" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="CustomCardComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:13" time="13.583" tests="18">
+    <testcase classname="CustomCardComponent should create" name="CustomCardComponent should create" time="0.177">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should have default elevation as raised" name="CustomCardComponent Input signals should have default elevation as raised" time="0.027">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should accept different elevations" name="CustomCardComponent Input signals should accept different elevations" time="0.024">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should accept title" name="CustomCardComponent Input signals should accept title" time="0.029">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should accept subtitle" name="CustomCardComponent Input signals should accept subtitle" time="0.033">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should accept clickable state" name="CustomCardComponent Input signals should accept clickable state" time="0.055">
+    </testcase>
+    <testcase classname="CustomCardComponent Input signals should accept selected state" name="CustomCardComponent Input signals should accept selected state" time="0.014">
+    </testcase>
+    <testcase classname="CustomCardComponent Click events should emit cardClick when clickable and clicked" name="CustomCardComponent Click events should emit cardClick when clickable and clicked" time="0.015">
+    </testcase>
+    <testcase classname="CustomCardComponent Click events should not emit cardClick when not clickable" name="CustomCardComponent Click events should not emit cardClick when not clickable" time="0.013">
+    </testcase>
+    <testcase classname="CustomCardComponent Keyboard accessibility should emit cardClick on Enter key" name="CustomCardComponent Keyboard accessibility should emit cardClick on Enter key" time="0.019">
+    </testcase>
+    <testcase classname="CustomCardComponent Keyboard accessibility should emit cardClick on Space key" name="CustomCardComponent Keyboard accessibility should emit cardClick on Space key" time="0.016">
+    </testcase>
+    <testcase classname="CustomCardComponent Keyboard accessibility should not emit on other keys" name="CustomCardComponent Keyboard accessibility should not emit on other keys" time="0.015">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should display title when provided" name="CustomCardComponent Rendering should display title when provided" time="0.025">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should display subtitle when provided" name="CustomCardComponent Rendering should display subtitle when provided" time="0.016">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should display icon when provided" name="CustomCardComponent Rendering should display icon when provided" time="0.022">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should apply clickable class when clickable" name="CustomCardComponent Rendering should apply clickable class when clickable" time="0.015">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should set tabindex when clickable" name="CustomCardComponent Rendering should set tabindex when clickable" time="0.01">
+    </testcase>
+    <testcase classname="CustomCardComponent Rendering should set role button when clickable" name="CustomCardComponent Rendering should set role button when clickable" time="0.014">
+    </testcase>
+  </testsuite>
+  <testsuite name="ThemeService" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:25" time="1.116" tests="11">
+    <testcase classname="ThemeService should be created" name="ThemeService should be created" time="0.03">
+    </testcase>
+    <testcase classname="ThemeService should have initial theme &quot;light&quot; by default" name="ThemeService should have initial theme &quot;light&quot; by default" time="0.007">
+    </testcase>
+    <testcase classname="ThemeService should toggle theme from light to dark" name="ThemeService should toggle theme from light to dark" time="0.007">
+    </testcase>
+    <testcase classname="ThemeService should toggle theme from dark to light" name="ThemeService should toggle theme from dark to light" time="0.008">
+    </testcase>
+    <testcase classname="ThemeService should set theme to &quot;dark&quot;" name="ThemeService should set theme to &quot;dark&quot;" time="0.009">
+    </testcase>
+    <testcase classname="ThemeService should apply &quot;dark&quot; class to document element when theme is dark" name="ThemeService should apply &quot;dark&quot; class to document element when theme is dark" time="0.012">
+    </testcase>
+    <testcase classname="ThemeService should remove &quot;dark&quot; class from document element when theme is light" name="ThemeService should remove &quot;dark&quot; class from document element when theme is light" time="0.007">
+    </testcase>
+    <testcase classname="ThemeService should persist theme to localStorage" name="ThemeService should persist theme to localStorage" time="0.009">
+    </testcase>
+    <testcase classname="ThemeService should initialize with saved theme from localStorage" name="ThemeService should initialize with saved theme from localStorage" time="0.012">
+    </testcase>
+    <testcase classname="ThemeService should initialize with system preference if no saved theme" name="ThemeService should initialize with system preference if no saved theme" time="0.009">
+    </testcase>
+    <testcase classname="ThemeService should NOT access localStorage or update theme when on server platform" name="ThemeService should NOT access localStorage or update theme when on server platform" time="0.015">
+    </testcase>
+  </testsuite>
+  <testsuite name="CustomButtonComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:25" time="3.404" tests="16">
+    <testcase classname="CustomButtonComponent should create" name="CustomButtonComponent should create" time="0.197">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should have default variant as primary" name="CustomButtonComponent Input signals should have default variant as primary" time="0.036">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should have default size as medium" name="CustomButtonComponent Input signals should have default size as medium" time="0.03">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should accept different variants" name="CustomButtonComponent Input signals should accept different variants" time="0.053">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should accept different sizes" name="CustomButtonComponent Input signals should accept different sizes" time="0.052">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should accept disabled state" name="CustomButtonComponent Input signals should accept disabled state" time="0.042">
+    </testcase>
+    <testcase classname="CustomButtonComponent Input signals should accept loading state" name="CustomButtonComponent Input signals should accept loading state" time="0.053">
+    </testcase>
+    <testcase classname="CustomButtonComponent Click events should emit buttonClick when clicked and not disabled" name="CustomButtonComponent Click events should emit buttonClick when clicked and not disabled" time="0.046">
+    </testcase>
+    <testcase classname="CustomButtonComponent Click events should not emit buttonClick when disabled" name="CustomButtonComponent Click events should not emit buttonClick when disabled" time="0.034">
+    </testcase>
+    <testcase classname="CustomButtonComponent Click events should not emit buttonClick when loading" name="CustomButtonComponent Click events should not emit buttonClick when loading" time="0.042">
+    </testcase>
+    <testcase classname="CustomButtonComponent Accessibility should set aria-busy when loading" name="CustomButtonComponent Accessibility should set aria-busy when loading" time="0.058">
+    </testcase>
+    <testcase classname="CustomButtonComponent Accessibility should set aria-disabled when disabled" name="CustomButtonComponent Accessibility should set aria-disabled when disabled" time="0.019">
+    </testcase>
+    <testcase classname="CustomButtonComponent Rendering should display the label" name="CustomButtonComponent Rendering should display the label" time="0.037">
+    </testcase>
+    <testcase classname="CustomButtonComponent Rendering should display icon when provided" name="CustomButtonComponent Rendering should display icon when provided" time="0.028">
+    </testcase>
+    <testcase classname="CustomButtonComponent Rendering should display loading spinner when loading" name="CustomButtonComponent Rendering should display loading spinner when loading" time="0.023">
+    </testcase>
+    <testcase classname="CustomButtonComponent Rendering should apply full-width class when fullWidth is true" name="CustomButtonComponent Rendering should apply full-width class when fullWidth is true" time="0.025">
+    </testcase>
+  </testsuite>
+  <testsuite name="CallbackComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:25" time="4.28" tests="6">
+    <testcase classname="CallbackComponent should create" name="CallbackComponent should create" time="0.162">
+    </testcase>
+    <testcase classname="CallbackComponent successful callback should process valid token and navigate to dashboard" name="CallbackComponent successful callback should process valid token and navigate to dashboard" time="0.087">
+    </testcase>
+    <testcase classname="CallbackComponent successful callback should show processing state initially" name="CallbackComponent successful callback should show processing state initially" time="0.098">
+    </testcase>
+    <testcase classname="CallbackComponent error handling should handle error parameter in URL" name="CallbackComponent error handling should handle error parameter in URL" time="0.089">
+    </testcase>
+    <testcase classname="CallbackComponent error handling should handle missing token" name="CallbackComponent error handling should handle missing token" time="0.077">
+    </testcase>
+    <testcase classname="CallbackComponent error handling should handle callback service error" name="CallbackComponent error handling should handle callback service error" time="0.051">
+    </testcase>
+  </testsuite>
+  <testsuite name="LoginComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:26" time="4.023" tests="4">
+    <testcase classname="LoginComponent should create" name="LoginComponent should create" time="0.229">
+    </testcase>
+    <testcase classname="LoginComponent initial state should not be loading initially" name="LoginComponent initial state should not be loading initially" time="0.042">
+    </testcase>
+    <testcase classname="LoginComponent loginWithMicrosoft should set loading state and call initSsoLogin on success" name="LoginComponent loginWithMicrosoft should set loading state and call initSsoLogin on success" time="0.153">
+    </testcase>
+    <testcase classname="LoginComponent loginWithMicrosoft should show error snackbar on failure" name="LoginComponent loginWithMicrosoft should show error snackbar on failure" time="0.035">
+    </testcase>
+  </testsuite>
+  <testsuite name="RuntimeEnvService" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:29" time="1.051" tests="3">
+    <testcase classname="RuntimeEnvService should load runtime env and apply values" name="RuntimeEnvService should load runtime env and apply values" time="0.034">
+    </testcase>
+    <testcase classname="RuntimeEnvService should not apply runtime env when response is empty" name="RuntimeEnvService should not apply runtime env when response is empty" time="0.015">
+    </testcase>
+    <testcase classname="RuntimeEnvService should warn when runtime env fails to load" name="RuntimeEnvService should warn when runtime env fails to load" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="guestGuard" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:30" time="1.116" tests="3">
+    <testcase classname="guestGuard should allow access when user is not authenticated" name="guestGuard should allow access when user is not authenticated" time="0.02">
+    </testcase>
+    <testcase classname="guestGuard should redirect to dashboard when user is authenticated" name="guestGuard should redirect to dashboard when user is authenticated" time="0.011">
+    </testcase>
+    <testcase classname="guestGuard should call isAuthenticated on the auth service" name="guestGuard should call isAuthenticated on the auth service" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="authGuard" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:30" time="1.56" tests="3">
+    <testcase classname="authGuard should allow access when user is authenticated" name="authGuard should allow access when user is authenticated" time="0.032">
+    </testcase>
+    <testcase classname="authGuard should redirect to login when user is not authenticated" name="authGuard should redirect to login when user is not authenticated" time="0.081">
+    </testcase>
+    <testcase classname="authGuard should call isAuthenticated on the auth service" name="authGuard should call isAuthenticated on the auth service" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="StateChangeModalComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="20.334" tests="47">
+    <testcase classname="StateChangeModalComponent should create" name="StateChangeModalComponent should create" time="0.202">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Modal Visibility should not render when isOpen is false" name="StateChangeModalComponent Modal Visibility should not render when isOpen is false" time="0.052">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Modal Visibility should render when isOpen is true" name="StateChangeModalComponent Modal Visibility should render when isOpen is true" time="0.335">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Modal Visibility should display custom title" name="StateChangeModalComponent Modal Visibility should display custom title" time="0.19">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Modal Visibility should display default title when not provided" name="StateChangeModalComponent Modal Visibility should display default title when not provided" time="0.147">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should emit closeModal when close button clicked" name="StateChangeModalComponent Close Behavior should emit closeModal when close button clicked" time="0.103">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should emit closeModal when cancel button clicked" name="StateChangeModalComponent Close Behavior should emit closeModal when cancel button clicked" time="0.091">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should emit closeModal when overlay clicked with closeOnOverlay true" name="StateChangeModalComponent Close Behavior should emit closeModal when overlay clicked with closeOnOverlay true" time="0.095">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should not emit closeModal when overlay clicked with closeOnOverlay false" name="StateChangeModalComponent Close Behavior should not emit closeModal when overlay clicked with closeOnOverlay false" time="0.096">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should not emit closeModal when clicking modal container" name="StateChangeModalComponent Close Behavior should not emit closeModal when clicking modal container" time="0.095">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Close Behavior should call close method via public API" name="StateChangeModalComponent Close Behavior should call close method via public API" time="0.089">
+    </testcase>
+    <testcase classname="StateChangeModalComponent State Selection should display state label" name="StateChangeModalComponent State Selection should display state label" time="0.1">
+    </testcase>
+    <testcase classname="StateChangeModalComponent State Selection should initialize with current state" name="StateChangeModalComponent State Selection should initialize with current state" time="0.083">
+    </testcase>
+    <testcase classname="StateChangeModalComponent State Selection should display all state options" name="StateChangeModalComponent State Selection should display all state options" time="0.08">
+    </testcase>
+    <testcase classname="StateChangeModalComponent State Selection should use default state label" name="StateChangeModalComponent State Selection should use default state label" time="0.082">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should display note label" name="StateChangeModalComponent Note Validation should display note label" time="0.061">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should show minimum characters hint when minNoteLength &gt; 0" name="StateChangeModalComponent Note Validation should show minimum characters hint when minNoteLength &gt; 0" time="0.09">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should not show hint when minNoteLength is 0" name="StateChangeModalComponent Note Validation should not show hint when minNoteLength is 0" time="0.082">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should display character counter when minNoteLength &gt; 0" name="StateChangeModalComponent Note Validation should display character counter when minNoteLength &gt; 0" time="0.084">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should not show character counter when minNoteLength is 0" name="StateChangeModalComponent Note Validation should not show character counter when minNoteLength is 0" time="0.171">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Note Validation should render textarea with placeholder" name="StateChangeModalComponent Note Validation should render textarea with placeholder" time="0.065">
+    </testcase>
+    <testcase classname="StateChangeModalComponent isValid Computed should be invalid without state selection" name="StateChangeModalComponent isValid Computed should be invalid without state selection" time="0.156">
+    </testcase>
+    <testcase classname="StateChangeModalComponent isValid Computed should be invalid when note is too short" name="StateChangeModalComponent isValid Computed should be invalid when note is too short" time="0.065">
+    </testcase>
+    <testcase classname="StateChangeModalComponent isValid Computed should be valid when note meets minimum length" name="StateChangeModalComponent isValid Computed should be valid when note meets minimum length" time="0.081">
+    </testcase>
+    <testcase classname="StateChangeModalComponent isValid Computed should be valid with minNoteLength of 0 and state selected" name="StateChangeModalComponent isValid Computed should be valid with minNoteLength of 0 and state selected" time="0.088">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Tags should show tags input when showTags is true" name="StateChangeModalComponent Tags should show tags input when showTags is true" time="0.054">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Tags should hide tags input when showTags is false" name="StateChangeModalComponent Tags should hide tags input when showTags is false" time="0.088">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Tags should display tags label" name="StateChangeModalComponent Tags should display tags label" time="0.097">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Tags should pass maxTags to tags input" name="StateChangeModalComponent Tags should pass maxTags to tags input" time="0.121">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Tags should initialize tags as empty array" name="StateChangeModalComponent Tags should initialize tags as empty array" time="0.061">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should disable submit button when form is invalid" name="StateChangeModalComponent Form Submission should disable submit button when form is invalid" time="0.078">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should enable submit button when form is valid" name="StateChangeModalComponent Form Submission should enable submit button when form is valid" time="0.073">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should emit submitChange with correct data" name="StateChangeModalComponent Form Submission should emit submitChange with correct data" time="0.093">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should trim note text before emitting" name="StateChangeModalComponent Form Submission should trim note text before emitting" time="0.078">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should not emit if form is invalid" name="StateChangeModalComponent Form Submission should not emit if form is invalid" time="0.124">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Form Submission should include tags in submitted data" name="StateChangeModalComponent Form Submission should include tags in submitted data" time="0.067">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Custom Labels should display custom submit label" name="StateChangeModalComponent Custom Labels should display custom submit label" time="0.063">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Custom Labels should display custom cancel label" name="StateChangeModalComponent Custom Labels should display custom cancel label" time="0.058">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Custom Labels should display default submit label" name="StateChangeModalComponent Custom Labels should display default submit label" time="0.054">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Custom Labels should display default cancel label" name="StateChangeModalComponent Custom Labels should display default cancel label" time="0.079">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Reset on Open should reset note when modal opens" name="StateChangeModalComponent Reset on Open should reset note when modal opens" time="0.094">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Reset on Open should reset tags when modal opens" name="StateChangeModalComponent Reset on Open should reset tags when modal opens" time="0.089">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Reset on Open should initialize selectedState as null if currentState is null" name="StateChangeModalComponent Reset on Open should initialize selectedState as null if currentState is null" time="0.089">
+    </testcase>
+    <testcase classname="StateChangeModalComponent onOverlayClick should call close when closeOnOverlay is true" name="StateChangeModalComponent onOverlayClick should call close when closeOnOverlay is true" time="0.074">
+    </testcase>
+    <testcase classname="StateChangeModalComponent onOverlayClick should not call close when closeOnOverlay is false" name="StateChangeModalComponent onOverlayClick should not call close when closeOnOverlay is false" time="0.072">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Accessibility should have aria-label on state select" name="StateChangeModalComponent Accessibility should have aria-label on state select" time="0.052">
+    </testcase>
+    <testcase classname="StateChangeModalComponent Accessibility should have aria-label on note textarea" name="StateChangeModalComponent Accessibility should have aria-label on note textarea" time="0.076">
+    </testcase>
+  </testsuite>
+  <testsuite name="ThemeToggleComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:28" time="4.958" tests="6">
+    <testcase classname="ThemeToggleComponent should create" name="ThemeToggleComponent should create" time="0.254">
+    </testcase>
+    <testcase classname="ThemeToggleComponent should show dark_mode icon when theme is light" name="ThemeToggleComponent should show dark_mode icon when theme is light" time="0.058">
+    </testcase>
+    <testcase classname="ThemeToggleComponent should show light_mode icon when theme is dark" name="ThemeToggleComponent should show light_mode icon when theme is dark" time="0.099">
+    </testcase>
+    <testcase classname="ThemeToggleComponent should show correct tooltip when theme is light" name="ThemeToggleComponent should show correct tooltip when theme is light" time="0.033">
+    </testcase>
+    <testcase classname="ThemeToggleComponent should show correct tooltip when theme is dark" name="ThemeToggleComponent should show correct tooltip when theme is dark" time="0.06">
+    </testcase>
+    <testcase classname="ThemeToggleComponent should call toggleTheme on click" name="ThemeToggleComponent should call toggleTheme on click" time="0.023">
+    </testcase>
+  </testsuite>
+  <testsuite name="KpiCardComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:32" time="1.802" tests="3">
+    <testcase classname="KpiCardComponent should create" name="KpiCardComponent should create" time="0.213">
+    </testcase>
+    <testcase classname="KpiCardComponent should render label and value" name="KpiCardComponent should render label and value" time="0.032">
+    </testcase>
+    <testcase classname="KpiCardComponent should apply icon color class" name="KpiCardComponent should apply icon color class" time="0.048">
+    </testcase>
+  </testsuite>
+  <testsuite name="EditVacancyModalComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="21.435" tests="20">
+    <testcase classname="EditVacancyModalComponent should create" name="EditVacancyModalComponent should create" time="0.266">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should not render modal when isOpen is false" name="EditVacancyModalComponent should not render modal when isOpen is false" time="0.029">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should render modal when isOpen is true" name="EditVacancyModalComponent should render modal when isOpen is true" time="0.529">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should populate form with vacancy data when opened" name="EditVacancyModalComponent should populate form with vacancy data when opened" time="0.45">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should reset form to defaults when opened without vacancy" name="EditVacancyModalComponent should reset form to defaults when opened without vacancy" time="0.263">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should emit closeModal when close is called" name="EditVacancyModalComponent should emit closeModal when close is called" time="0.017">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should emit submitEdit with form data when submit is called" name="EditVacancyModalComponent should emit submitEdit with form data when submit is called" time="0.391">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should not emit submitEdit when form is invalid" name="EditVacancyModalComponent should not emit submitEdit when form is invalid" time="0.233">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should not submit when jobTitle is empty" name="EditVacancyModalComponent should not submit when jobTitle is empty" time="0.257">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should be valid when jobTitle is provided" name="EditVacancyModalComponent should be valid when jobTitle is provided" time="0.228">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should emit closeModal when overlay is clicked and closeOnOverlay is true" name="EditVacancyModalComponent should emit closeModal when overlay is clicked and closeOnOverlay is true" time="0.233">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should not emit closeModal when overlay is clicked and closeOnOverlay is false" name="EditVacancyModalComponent should not emit closeModal when overlay is clicked and closeOnOverlay is false" time="0.223">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should provide seniority options" name="EditVacancyModalComponent should provide seniority options" time="0.013">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should provide modality options" name="EditVacancyModalComponent should provide modality options" time="0.015">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should provide source options" name="EditVacancyModalComponent should provide source options" time="0.011">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should track modified fields count" name="EditVacancyModalComponent should track modified fields count" time="0.179">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should detect unsaved changes" name="EditVacancyModalComponent should detect unsaved changes" time="0.239">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should parse salary range to min/max values" name="EditVacancyModalComponent should parse salary range to min/max values" time="0.241">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should provide department options" name="EditVacancyModalComponent should provide department options" time="0.014">
+    </testcase>
+    <testcase classname="EditVacancyModalComponent should provide US states for location datalist" name="EditVacancyModalComponent should provide US states for location datalist" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="App" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:33" time="1.894" tests="2">
+    <testcase classname="App should create the app" name="App should create the app" time="0.093">
+    </testcase>
+    <testcase classname="App should render router-outlet" name="App should render router-outlet" time="0.02">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthLayoutComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:31" time="4.35" tests="3">
+    <testcase classname="AuthLayoutComponent should create" name="AuthLayoutComponent should create" time="0.245">
+    </testcase>
+    <testcase classname="AuthLayoutComponent should have the current year" name="AuthLayoutComponent should have the current year" time="0.063">
+    </testcase>
+    <testcase classname="AuthLayoutComponent should render router outlet" name="AuthLayoutComponent should render router outlet" time="0.065">
+    </testcase>
+  </testsuite>
+  <testsuite name="DashboardPageComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:26" time="9.771" tests="5">
+    <testcase classname="DashboardPageComponent should create" name="DashboardPageComponent should create" time="0.248">
+    </testcase>
+    <testcase classname="DashboardPageComponent should render vacancy pipeline section" name="DashboardPageComponent should render vacancy pipeline section" time="0.179">
+    </testcase>
+    <testcase classname="DashboardPageComponent should render 10 KPI cards (5 for vacancies, 5 for companies)" name="DashboardPageComponent should render 10 KPI cards (5 for vacancies, 5 for companies)" time="0.085">
+    </testcase>
+    <testcase classname="DashboardPageComponent should load dashboard data on init" name="DashboardPageComponent should load dashboard data on init" time="0.093">
+    </testcase>
+    <testcase classname="DashboardPageComponent should set lastUpdated after successful load" name="DashboardPageComponent should set lastUpdated after successful load" time="0.07">
+    </testcase>
+  </testsuite>
+  <testsuite name="ComponentsShowcasePageComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:33" time="3.822" tests="2">
+    <testcase classname="ComponentsShowcasePageComponent should create" name="ComponentsShowcasePageComponent should create" time="0.274">
+    </testcase>
+    <testcase classname="ComponentsShowcasePageComponent should render header with title" name="ComponentsShowcasePageComponent should render header with title" time="0.102">
+    </testcase>
+  </testsuite>
+  <testsuite name="MainLayoutComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:27" time="10.888" tests="6">
+    <testcase classname="MainLayoutComponent should create" name="MainLayoutComponent should create" time="0.398">
+    </testcase>
+    <testcase classname="MainLayoutComponent should have initial sidenavOpened as false" name="MainLayoutComponent should have initial sidenavOpened as false" time="0.126">
+    </testcase>
+    <testcase classname="MainLayoutComponent should toggle sidenavOpened" name="MainLayoutComponent should toggle sidenavOpened" time="0.117">
+    </testcase>
+    <testcase classname="MainLayoutComponent should have default navItems" name="MainLayoutComponent should have default navItems" time="0.125">
+    </testcase>
+    <testcase classname="MainLayoutComponent should close sidenav on nav item click if mobile" name="MainLayoutComponent should close sidenav on nav item click if mobile" time="0.152">
+    </testcase>
+    <testcase classname="MainLayoutComponent should NOT close sidenav on nav item click if NOT mobile" name="MainLayoutComponent should NOT close sidenav on nav item click if NOT mobile" time="0.125">
+    </testcase>
+  </testsuite>
+  <testsuite name="VacancyDetailComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="25.722" tests="24">
+    <testcase classname="VacancyDetailComponent should create" name="VacancyDetailComponent should create" time="0.912">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Initialization should load vacancy on init" name="VacancyDetailComponent Initialization should load vacancy on init" time="0.627">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Initialization should not load state history on init" name="VacancyDetailComponent Initialization should not load state history on init" time="0.399">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Initialization should not load when no id" name="VacancyDetailComponent Initialization should not load when no id" time="0.198">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Initialization should handle load error and navigate" name="VacancyDetailComponent Initialization should handle load error and navigate" time="0.637">
+    </testcase>
+    <testcase classname="VacancyDetailComponent State change modal should open state modal when vacancy exists" name="VacancyDetailComponent State change modal should open state modal when vacancy exists" time="0.324">
+    </testcase>
+    <testcase classname="VacancyDetailComponent State change modal should close state modal" name="VacancyDetailComponent State change modal should close state modal" time="0.305">
+    </testcase>
+    <testcase classname="VacancyDetailComponent State change modal should handle state change" name="VacancyDetailComponent State change modal should handle state change" time="0.265">
+    </testcase>
+    <testcase classname="VacancyDetailComponent State change modal should handle state change error" name="VacancyDetailComponent State change modal should handle state change error" time="0.249">
+    </testcase>
+    <testcase classname="VacancyDetailComponent State change modal should not change state if no new state" name="VacancyDetailComponent State change modal should not change state if no new state" time="0.228">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Tracking tab lazy loading should load state history when tracking tab is selected" name="VacancyDetailComponent Tracking tab lazy loading should load state history when tracking tab is selected" time="0.37">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should open edit modal when vacancy exists" name="VacancyDetailComponent Edit vacancy modal should open edit modal when vacancy exists" time="0.119">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should not open edit modal when vacancy is null" name="VacancyDetailComponent Edit vacancy modal should not open edit modal when vacancy is null" time="0.098">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should close edit modal" name="VacancyDetailComponent Edit vacancy modal should close edit modal" time="0.091">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should update vacancy on edit submit" name="VacancyDetailComponent Edit vacancy modal should update vacancy on edit submit" time="0.136">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should handle edit submit error" name="VacancyDetailComponent Edit vacancy modal should handle edit submit error" time="0.119">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Edit vacancy modal should not submit edit when id is missing" name="VacancyDetailComponent Edit vacancy modal should not submit edit when id is missing" time="0.106">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should compute page title" name="VacancyDetailComponent Utility methods should compute page title" time="0.2">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should compute source label" name="VacancyDetailComponent Utility methods should compute source label" time="0.201">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should format date" name="VacancyDetailComponent Utility methods should format date" time="0.188">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should format datetime" name="VacancyDetailComponent Utility methods should format datetime" time="0.195">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should get pipeline label" name="VacancyDetailComponent Utility methods should get pipeline label" time="0.166">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Utility methods should get remote viable text" name="VacancyDetailComponent Utility methods should get remote viable text" time="0.151">
+    </testcase>
+    <testcase classname="VacancyDetailComponent Error handling should handle state history load error" name="VacancyDetailComponent Error handling should handle state history load error" time="0.225">
+    </testcase>
+  </testsuite>
+  <testsuite name="VacanciesListComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:13" time="27.41" tests="13">
+    <testcase classname="VacanciesListComponent should create" name="VacanciesListComponent should create" time="0.663">
+    </testcase>
+    <testcase classname="VacanciesListComponent Initialization should load vacancies on init" name="VacanciesListComponent Initialization should load vacancies on init" time="0.544">
+    </testcase>
+    <testcase classname="VacanciesListComponent Initialization should set loading state while fetching" name="VacanciesListComponent Initialization should set loading state while fetching" time="0.389">
+    </testcase>
+    <testcase classname="VacanciesListComponent Filtering should apply search filter" name="VacanciesListComponent Filtering should apply search filter" time="0.254">
+    </testcase>
+    <testcase classname="VacanciesListComponent Filtering should apply status filter" name="VacanciesListComponent Filtering should apply status filter" time="0.227">
+    </testcase>
+    <testcase classname="VacanciesListComponent Filtering should apply status filter" name="VacanciesListComponent Filtering should apply status filter" time="0.231">
+    </testcase>
+    <testcase classname="VacanciesListComponent Filtering should clear all filters" name="VacanciesListComponent Filtering should clear all filters" time="0.21">
+    </testcase>
+    <testcase classname="VacanciesListComponent Pagination should handle page change" name="VacanciesListComponent Pagination should handle page change" time="0.183">
+    </testcase>
+    <testcase classname="VacanciesListComponent Pagination should handle page size change" name="VacanciesListComponent Pagination should handle page size change" time="0.193">
+    </testcase>
+    <testcase classname="VacanciesListComponent Navigation should navigate to vacancy detail" name="VacanciesListComponent Navigation should navigate to vacancy detail" time="0.122">
+    </testcase>
+    <testcase classname="VacanciesListComponent Utility methods should format date" name="VacanciesListComponent Utility methods should format date" time="0.072">
+    </testcase>
+    <testcase classname="VacanciesListComponent Utility methods should get source label" name="VacanciesListComponent Utility methods should get source label" time="0.066">
+    </testcase>
+    <testcase classname="VacanciesListComponent Error handling should handle load error" name="VacanciesListComponent Error handling should handle load error" time="0.356">
+    </testcase>
+  </testsuite>
+  <testsuite name="CompaniesListComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="28.854" tests="43">
+    <testcase classname="CompaniesListComponent should create" name="CompaniesListComponent should create" time="0.981">
+    </testcase>
+    <testcase classname="CompaniesListComponent Initialization should load companies on init" name="CompaniesListComponent Initialization should load companies on init" time="0.745">
+    </testcase>
+    <testcase classname="CompaniesListComponent Initialization should set loading state while fetching data" name="CompaniesListComponent Initialization should set loading state while fetching data" time="0.584">
+    </testcase>
+    <testcase classname="CompaniesListComponent Initialization should have correct default pagination values" name="CompaniesListComponent Initialization should have correct default pagination values" time="0.327">
+    </testcase>
+    <testcase classname="CompaniesListComponent Initialization should have empty filters by default" name="CompaniesListComponent Initialization should have empty filters by default" time="0.294">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should apply search filter" name="CompaniesListComponent Filtering should apply search filter" time="0.606">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should apply relationship type filter" name="CompaniesListComponent Filtering should apply relationship type filter" time="0.437">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should apply pipeline filter" name="CompaniesListComponent Filtering should apply pipeline filter" time="0.376">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should reset page to 1 when applying filters" name="CompaniesListComponent Filtering should reset page to 1 when applying filters" time="0.33">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should clear all filters" name="CompaniesListComponent Filtering should clear all filters" time="0.371">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filtering should reload companies after clearing filters" name="CompaniesListComponent Filtering should reload companies after clearing filters" time="0.307">
+    </testcase>
+    <testcase classname="CompaniesListComponent Pagination should handle page change" name="CompaniesListComponent Pagination should handle page change" time="0.3">
+    </testcase>
+    <testcase classname="CompaniesListComponent Pagination should handle page size change" name="CompaniesListComponent Pagination should handle page size change" time="0.283">
+    </testcase>
+    <testcase classname="CompaniesListComponent Pagination should display correct pagination info" name="CompaniesListComponent Pagination should display correct pagination info" time="0.277">
+    </testcase>
+    <testcase classname="CompaniesListComponent Pagination should show &quot;No companies found&quot; when total is 0" name="CompaniesListComponent Pagination should show &quot;No companies found&quot; when total is 0" time="0.296">
+    </testcase>
+    <testcase classname="CompaniesListComponent Navigation should navigate to company detail" name="CompaniesListComponent Navigation should navigate to company detail" time="0.206">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should open create modal" name="CompaniesListComponent Create Modal should open create modal" time="0.22">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should close create modal" name="CompaniesListComponent Create Modal should close create modal" time="0.224">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should reset form when opening create modal" name="CompaniesListComponent Create Modal should reset form when opening create modal" time="0.178">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should create company successfully" name="CompaniesListComponent Create Modal should create company successfully" time="0.188">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should not create company without name" name="CompaniesListComponent Create Modal should not create company without name" time="0.176">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should not create company with whitespace-only name" name="CompaniesListComponent Create Modal should not create company with whitespace-only name" time="0.165">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should handle create error" name="CompaniesListComponent Create Modal should handle create error" time="0.203">
+    </testcase>
+    <testcase classname="CompaniesListComponent Create Modal should update create form field" name="CompaniesListComponent Create Modal should update create form field" time="0.131">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should open investigate modal" name="CompaniesListComponent Investigate Modal should open investigate modal" time="0.123">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should close investigate modal" name="CompaniesListComponent Investigate Modal should close investigate modal" time="0.144">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should reset form when opening investigate modal" name="CompaniesListComponent Investigate Modal should reset form when opening investigate modal" time="0.128">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should investigate company successfully" name="CompaniesListComponent Investigate Modal should investigate company successfully" time="0.138">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should not investigate without name" name="CompaniesListComponent Investigate Modal should not investigate without name" time="0.132">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should not investigate without country" name="CompaniesListComponent Investigate Modal should not investigate without country" time="0.136">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should update investigate form field" name="CompaniesListComponent Investigate Modal should update investigate form field" time="0.144">
+    </testcase>
+    <testcase classname="CompaniesListComponent Investigate Modal should handle investigate error" name="CompaniesListComponent Investigate Modal should handle investigate error" time="0.154">
+    </testcase>
+    <testcase classname="CompaniesListComponent Utility Methods should get industry label" name="CompaniesListComponent Utility Methods should get industry label" time="0.062">
+    </testcase>
+    <testcase classname="CompaniesListComponent Utility Methods should close create modal on overlay click" name="CompaniesListComponent Utility Methods should close create modal on overlay click" time="0.06">
+    </testcase>
+    <testcase classname="CompaniesListComponent Utility Methods should close investigate modal on overlay click" name="CompaniesListComponent Utility Methods should close investigate modal on overlay click" time="0.062">
+    </testcase>
+    <testcase classname="CompaniesListComponent Utility Methods should close create modal on ESC key" name="CompaniesListComponent Utility Methods should close create modal on ESC key" time="0.06">
+    </testcase>
+    <testcase classname="CompaniesListComponent Utility Methods should close investigate modal on ESC key" name="CompaniesListComponent Utility Methods should close investigate modal on ESC key" time="0.056">
+    </testcase>
+    <testcase classname="CompaniesListComponent Error Handling should handle load error gracefully" name="CompaniesListComponent Error Handling should handle load error gracefully" time="0.323">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filter Options should have relationship type options" name="CompaniesListComponent Filter Options should have relationship type options" time="0.062">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filter Options should have pipeline options" name="CompaniesListComponent Filter Options should have pipeline options" time="0.057">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filter Options should have industry options" name="CompaniesListComponent Filter Options should have industry options" time="0.057">
+    </testcase>
+    <testcase classname="CompaniesListComponent Filter Options should have country options for investigate" name="CompaniesListComponent Filter Options should have country options for investigate" time="0.064">
+    </testcase>
+    <testcase classname="CompaniesListComponent Table Configuration should have correct displayed columns" name="CompaniesListComponent Table Configuration should have correct displayed columns" time="0.059">
+    </testcase>
+  </testsuite>
+  <testsuite name="CompanyDetailComponent" errors="0" failures="0" skipped="0" timestamp="2026-02-02T14:36:12" time="31.432" tests="50">
+    <testcase classname="CompanyDetailComponent should create" name="CompanyDetailComponent should create" time="0.895">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Initialization should load company on init" name="CompanyDetailComponent Initialization should load company on init" time="0.934">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Initialization should load state history after company loads" name="CompanyDetailComponent Initialization should load state history after company loads" time="0.463">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Initialization should load vacancies after company loads" name="CompanyDetailComponent Initialization should load vacancies after company loads" time="0.436">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Initialization should redirect to companies list if no ID" name="CompanyDetailComponent Initialization should redirect to companies list if no ID" time="0.192">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Initialization should handle load error" name="CompanyDetailComponent Initialization should handle load error" time="0.61">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should compute page title" name="CompanyDetailComponent Computed Properties should compute page title" time="0.381">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should return default page title when no company" name="CompanyDetailComponent Computed Properties should return default page title when no company" time="0.304">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should compute industry label" name="CompanyDetailComponent Computed Properties should compute industry label" time="0.267">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should return N/A for missing industry" name="CompanyDetailComponent Computed Properties should return N/A for missing industry" time="0.247">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should generate state options" name="CompanyDetailComponent Computed Properties should generate state options" time="0.207">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should compute size label" name="CompanyDetailComponent Computed Properties should compute size label" time="0.201">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should return N/A for missing size" name="CompanyDetailComponent Computed Properties should return N/A for missing size" time="0.205">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should compute country label" name="CompanyDetailComponent Computed Properties should compute country label" time="0.181">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Computed Properties should return N/A for missing country" name="CompanyDetailComponent Computed Properties should return N/A for missing country" time="0.168">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should open edit modal with company data" name="CompanyDetailComponent Edit Company Modal should open edit modal with company data" time="0.184">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should close edit modal" name="CompanyDetailComponent Edit Company Modal should close edit modal" time="0.152">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should save company changes" name="CompanyDetailComponent Edit Company Modal should save company changes" time="0.169">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should handle save error" name="CompanyDetailComponent Edit Company Modal should handle save error" time="0.185">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should not open edit modal if no company" name="CompanyDetailComponent Edit Company Modal should not open edit modal if no company" time="0.169">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should handle company with missing optional fields in edit modal" name="CompanyDetailComponent Edit Company Modal should handle company with missing optional fields in edit modal" time="0.18">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Company Modal should send undefined for empty optional fields when saving" name="CompanyDetailComponent Edit Company Modal should send undefined for empty optional fields when saving" time="0.162">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should open research modal with current data" name="CompanyDetailComponent Edit Research Modal should open research modal with current data" time="0.147">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should close research modal" name="CompanyDetailComponent Edit Research Modal should close research modal" time="0.149">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should save research changes" name="CompanyDetailComponent Edit Research Modal should save research changes" time="0.156">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should handle research save error" name="CompanyDetailComponent Edit Research Modal should handle research save error" time="0.155">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should open research modal with empty values if no research" name="CompanyDetailComponent Edit Research Modal should open research modal with empty values if no research" time="0.176">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should send undefined for empty optional research fields when saving" name="CompanyDetailComponent Edit Research Modal should send undefined for empty optional research fields when saving" time="0.147">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Edit Research Modal should update company with new research on save success" name="CompanyDetailComponent Edit Research Modal should update company with new research on save success" time="0.131">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should open state modal if company exists" name="CompanyDetailComponent State Change Modal should open state modal if company exists" time="0.118">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should not open state modal if no company" name="CompanyDetailComponent State Change Modal should not open state modal if no company" time="0.117">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should close state modal" name="CompanyDetailComponent State Change Modal should close state modal" time="0.115">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should handle state change" name="CompanyDetailComponent State Change Modal should handle state change" time="0.127">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should reload history after state change" name="CompanyDetailComponent State Change Modal should reload history after state change" time="0.131">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should handle state change error" name="CompanyDetailComponent State Change Modal should handle state change error" time="0.127">
+    </testcase>
+    <testcase classname="CompanyDetailComponent State Change Modal should not change state if no new state" name="CompanyDetailComponent State Change Modal should not change state if no new state" time="0.127">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should format date correctly" name="CompanyDetailComponent Utility Methods should format date correctly" time="0.117">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should return N/A for missing date" name="CompanyDetailComponent Utility Methods should return N/A for missing date" time="0.12">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should get pipeline label" name="CompanyDetailComponent Utility Methods should get pipeline label" time="0.126">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should return raw value for unknown pipeline stage" name="CompanyDetailComponent Utility Methods should return raw value for unknown pipeline stage" time="0.115">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should get vacancy pipeline label" name="CompanyDetailComponent Utility Methods should get vacancy pipeline label" time="0.117">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should calculate research completeness" name="CompanyDetailComponent Utility Methods should calculate research completeness" time="0.122">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should return 0 for missing research completeness" name="CompanyDetailComponent Utility Methods should return 0 for missing research completeness" time="0.127">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Utility Methods should navigate to vacancy detail" name="CompanyDetailComponent Utility Methods should navigate to vacancy detail" time="0.126">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Table Configuration should have correct history columns" name="CompanyDetailComponent Table Configuration should have correct history columns" time="0.061">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Table Configuration should have correct contacts columns" name="CompanyDetailComponent Table Configuration should have correct contacts columns" time="0.064">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Table Configuration should have correct vacancies columns" name="CompanyDetailComponent Table Configuration should have correct vacancies columns" time="0.064">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Tab State should have default tab index of 0" name="CompanyDetailComponent Tab State should have default tab index of 0" time="0.059">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Error Handling should handle state history load error" name="CompanyDetailComponent Error Handling should handle state history load error" time="0.152">
+    </testcase>
+    <testcase classname="CompanyDetailComponent Error Handling should handle vacancies load error" name="CompanyDetailComponent Error Handling should handle vacancies load error" time="0.111">
     </testcase>
   </testsuite>
 </testsuites>
