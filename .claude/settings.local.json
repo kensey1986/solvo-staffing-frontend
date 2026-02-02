@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx ng build)",
+      "Bash(npm ls:*)",
+      "Bash(node -e:*)",
+      "Bash(npx ng serve:*)",
+      "Bash(timeout:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl:*)"
+    ]
+  }
+}
