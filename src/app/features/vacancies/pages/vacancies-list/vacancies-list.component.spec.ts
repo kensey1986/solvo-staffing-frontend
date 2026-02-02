@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { provideRouter, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError, delay } from 'rxjs';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 import { VacanciesListComponent } from './vacancies-list.component';
 import { VACANCY_SERVICE, COMPANY_SERVICE, Vacancy, PaginatedResponse } from '@core';
@@ -69,7 +70,7 @@ describe('VacanciesListComponent', () => {
     mockVacancyService = createMockVacancyService();
 
     await TestBed.configureTestingModule({
-      imports: [VacanciesListComponent, NoopAnimationsModule],
+      imports: [VacanciesListComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [
         provideRouter([]),
         {
@@ -149,20 +150,19 @@ describe('VacanciesListComponent', () => {
       );
     }));
 
-    it('should apply pipeline filter', fakeAsync(() => {
-      component.pipelineFilter.set('proposal');
+    it('should apply status filter', fakeAsync(() => {
+      component.statusFilter.set('active');
       component.applyFilters();
       tick();
 
       expect(mockVacancyService.getAll).toHaveBeenCalledWith(
-        expect.objectContaining({ pipelineStage: 'proposal' })
+        expect.objectContaining({ status: 'active' })
       );
     }));
 
     it('should clear all filters', fakeAsync(() => {
       component.searchFilter.set('test');
       component.statusFilter.set('active');
-      component.pipelineFilter.set('won');
       component.sourceFilter.set('linkedin');
       component.stateFilter.set('CA');
       component.companyFilter.set('Acme');
@@ -174,7 +174,6 @@ describe('VacanciesListComponent', () => {
 
       expect(component.searchFilter()).toBe('');
       expect(component.statusFilter()).toBe('');
-      expect(component.pipelineFilter()).toBe('');
       expect(component.sourceFilter()).toBe('');
       expect(component.stateFilter()).toBe('');
       expect(component.companyFilter()).toBe('');
@@ -191,7 +190,7 @@ describe('VacanciesListComponent', () => {
     }));
 
     it('should handle page change', fakeAsync(() => {
-      component.onPageChange({ pageIndex: 1, pageSize: 50, length: 200 });
+      component.onPageChange({ page: 2, pageSize: 50 });
       tick();
 
       expect(component.currentPage()).toBe(2);

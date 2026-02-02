@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import {
   VACANCY_SERVICE,
@@ -89,6 +90,7 @@ interface HistoryFilters {
     EditVacancyModalComponent,
     CustomButtonComponent,
     ConfirmationModalComponent,
+    TranslateModule,
   ],
   providers: [VACANCY_SERVICE_PROVIDER],
   templateUrl: './vacancy-detail.component.html',
@@ -101,6 +103,7 @@ export class VacancyDetailComponent implements OnInit, AfterViewInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   // State
   readonly isLoading = signal(true);

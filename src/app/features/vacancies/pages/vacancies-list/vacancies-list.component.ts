@@ -20,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import {
   VACANCY_SERVICE,
@@ -68,6 +69,7 @@ import {
     CreateVacancyModalComponent,
     CustomPaginatorComponent,
     CustomButtonComponent,
+    TranslateModule,
   ],
   providers: [VACANCY_SERVICE_PROVIDER, COMPANY_SERVICE_PROVIDER],
   templateUrl: './vacancies-list.component.html',
@@ -79,6 +81,7 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   // Create modal state
   readonly showCreateModal = signal(false);

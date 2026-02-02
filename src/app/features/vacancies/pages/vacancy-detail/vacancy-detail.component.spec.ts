@@ -11,6 +11,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { provideRouter, Router, ActivatedRoute } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
+import { getTranslateTestingModule } from '@app/testing/translate-test-helper';
 
 import { VacancyDetailComponent } from './vacancy-detail.component';
 import { VACANCY_SERVICE, Vacancy, VacancyStateChange } from '@core';
@@ -66,7 +67,7 @@ describe('VacancyDetailComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [VacancyDetailComponent, NoopAnimationsModule],
+      imports: [VacancyDetailComponent, NoopAnimationsModule, getTranslateTestingModule()],
       providers: [provideRouter([]), { provide: ActivatedRoute, useValue: mockActivatedRoute }],
     })
       .overrideComponent(VacancyDetailComponent, {
