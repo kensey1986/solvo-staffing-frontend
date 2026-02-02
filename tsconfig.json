@@ -16,6 +16,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@app": [
         "./src/app"
