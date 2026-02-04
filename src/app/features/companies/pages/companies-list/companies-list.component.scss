@@ -56,23 +56,6 @@
   }
 }
 
-.filter-group-with-btn {
-  display: flex;
-  align-items: center;
-  gap: vars.$spacing-1;
-  margin-bottom: vars.$spacing-2;
-
-  .filter-assigned {
-    margin-bottom: 0;
-  }
-}
-
-.assigned-toggle-btn {
-  --mdc-icon-button-icon-size: 20px;
-  width: 40px;
-  height: 40px;
-}
-
 .clear-btn {
   margin-bottom: vars.$spacing-2;
 }
