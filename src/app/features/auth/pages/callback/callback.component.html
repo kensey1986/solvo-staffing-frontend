@@ -1,0 +1,14 @@
+<div class="callback">
+  @if (isProcessing()) {
+    <div class="callback__loading">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p class="callback__message">Procesando autenticación...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="callback__error">
+      <mat-icon class="callback__error-icon">error_outline</mat-icon>
+      <p class="callback__error-message">{{ errorMessage() }}</p>
+      <p class="callback__redirect-message">Redirigiendo al login...</p>
+    </div>
+  }
+</div>

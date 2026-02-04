@@ -1,0 +1,53 @@
+<div class="custom-paginator">
+  <span class="paginator-range">{{ rangeText() }}</span>
+
+  <div class="paginator-controls">
+    <div class="page-size-control">
+      <span class="page-size-label">Registros por página</span>
+      <mat-form-field appearance="outline" class="page-size-field">
+        <mat-select
+          [value]="pageSize()"
+          (selectionChange)="onPageSizeChange($event.value)"
+          aria-label="Registros por página"
+        >
+          @for (size of pageSizeOptions(); track size) {
+            <mat-option [value]="size">{{ size }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <button
+      type="button"
+      class="nav-btn"
+      [disabled]="isPrevDisabled()"
+      (click)="goToPrevious()"
+    >
+      Anterior
+    </button>
+
+    @for (item of visiblePages(); track $index) {
+      @if (isEllipsis(item)) {
+        <span class="ellipsis">...</span>
+      } @else {
+        <button
+          type="button"
+          class="page-btn"
+          [class.active]="item === currentPage()"
+          (click)="goToPage(item)"
+        >
+          {{ item.toLocaleString() }}
+        </button>
+      }
+    }
+
+    <button
+      type="button"
+      class="nav-btn"
+      [disabled]="isNextDisabled()"
+      (click)="goToNext()"
+    >
+      Siguiente
+    </button>
+  </div>
+</div>

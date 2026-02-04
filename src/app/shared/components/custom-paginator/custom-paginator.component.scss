@@ -1,0 +1,187 @@
+@use '../../../../styles/variables' as vars;
+
+.custom-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: vars.$spacing-2 vars.$spacing-4;
+  background-color: var(--mat-sys-surface-container);
+  font-family: vars.$font-family-primary;
+  font-size: vars.$font-size-body-medium;
+  color: vars.$neutral-900;
+  gap: vars.$spacing-3;
+}
+
+.paginator-range {
+  color: vars.$neutral-700;
+  white-space: nowrap;
+}
+
+.paginator-controls {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-1;
+  flex-wrap: nowrap;
+}
+
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: vars.$spacing-2;
+  margin-right: vars.$spacing-2;
+}
+
+.page-size-label {
+  color: vars.$neutral-700;
+  font-size: vars.$font-size-body-small;
+  white-space: nowrap;
+}
+
+.page-size-field {
+  width: 90px;
+  margin: 0;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 32px;
+  }
+
+  ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 32px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.nav-btn {
+  background-color: vars.$neutral-800;
+  border: 1px solid vars.$neutral-700;
+  border-radius: vars.$radius-md;
+  padding: 0 vars.$spacing-3;
+  height: 32px;
+  line-height: 32px;
+  font-size: vars.$font-size-body-medium;
+  font-family: inherit;
+  color: vars.$neutral-100;
+  -webkit-text-fill-color: vars.$neutral-100;
+  cursor: pointer;
+  transition: all vars.$transition-fast;
+  text-decoration: none;
+  outline: none;
+  box-shadow: none;
+  appearance: none;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    color: vars.$neutral-50;
+    -webkit-text-fill-color: vars.$neutral-50;
+    background-color: vars.$neutral-700;
+    border-color: vars.$neutral-600;
+  }
+
+  &:disabled {
+    color: vars.$neutral-500;
+    -webkit-text-fill-color: vars.$neutral-500;
+    cursor: default;
+    opacity: 0.6;
+    background-color: vars.$neutral-800;
+    border-color: vars.$neutral-700;
+  }
+}
+
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 vars.$spacing-2;
+  font-size: vars.$font-size-body-medium;
+  font-family: inherit;
+  background-color: vars.$neutral-800;
+  border: 1px solid vars.$neutral-700;
+  border-radius: vars.$radius-md;
+  color: vars.$neutral-300;
+  cursor: pointer;
+  transition: all vars.$transition-fast;
+
+  &:hover:not(.active) {
+    background-color: vars.$neutral-700;
+    border-color: vars.$neutral-600;
+    color: vars.$neutral-100;
+  }
+
+  &.active {
+    background-color: vars.$neutral-50;
+    border-color: vars.$neutral-50;
+    color: vars.$neutral-900;
+  }
+}
+
+.ellipsis {
+  padding: 0 vars.$spacing-1;
+  color: vars.$neutral-500;
+}
+
+// Dark theme
+:host-context(.dark-theme) {
+  .custom-paginator {
+    color: vars.$neutral-50;
+  }
+
+  .paginator-range {
+    color: vars.$neutral-300;
+  }
+
+  .page-size-label {
+    color: vars.$neutral-300;
+  }
+
+  .nav-btn {
+    background-color: vars.$neutral-700;
+    border-color: vars.$neutral-600;
+    color: vars.$neutral-100;
+    -webkit-text-fill-color: vars.$neutral-100;
+
+    &:hover:not(:disabled) {
+      color: vars.$neutral-50;
+      -webkit-text-fill-color: vars.$neutral-50;
+      background-color: vars.$neutral-600;
+      border-color: vars.$neutral-500;
+    }
+
+    &:disabled {
+      color: vars.$neutral-500;
+      -webkit-text-fill-color: vars.$neutral-500;
+      opacity: 0.5;
+      background-color: vars.$neutral-700;
+      border-color: vars.$neutral-600;
+    }
+  }
+
+  .page-btn {
+    background-color: vars.$neutral-700;
+    border-color: vars.$neutral-600;
+    color: vars.$neutral-300;
+
+    &:hover:not(.active) {
+      background-color: vars.$neutral-600;
+      border-color: vars.$neutral-500;
+      color: vars.$neutral-100;
+    }
+
+    &.active {
+      background-color: vars.$neutral-50;
+      border-color: vars.$neutral-50;
+      color: vars.$neutral-900;
+    }
+  }
+
+  .ellipsis {
+    color: vars.$neutral-500;
+  }
+}

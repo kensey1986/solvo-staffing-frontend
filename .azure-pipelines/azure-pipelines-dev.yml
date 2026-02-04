@@ -1,0 +1,543 @@
+# ============================================================================
+# AZURE DEVOPS PIPELINE - SOLVO STAFFING FRONTEND (DEVELOPMENT)
+# ============================================================================
+# CI/CD Pipeline for DEVELOPMENT environment using Azure-hosted agents
+# 
+# Workflow (direct push blocked, PRs only):
+#   - PR created/updated to release/* → Build & Test (validation)
+#   - PR completed (merge) to release/* → Automatic Deploy
+#
+# Variable Group: SOLVO_FRONT_DEV
+# ============================================================================
+
+# Trigger for when PR is completed (merge to release/*)
+# Note: Direct push is blocked by branch policies
+trigger:
+  branches:
+    include:
+      - release/*
+  paths:
+    exclude:
+      - README.md
+      - docs/**
+      - '*.md'
+      - '.vscode/**'
+      - 'prototype/**'
+
+# Trigger for Pull Request validation
+# Runs: on PR creation, push to PR, PR reopen
+pr:
+  branches:
+    include:
+      - release/*
+  paths:
+    exclude:
+      - README.md
+      - docs/**
+      - '*.md'
+      - '.vscode/**'
+      - 'prototype/**'
+  autoCancel: true  # Cancel previous runs if new push to PR
+
+# ============================================================================
+# VARIABLES
+# ============================================================================
+variables:
+  # Variable Group from Azure DevOps Library
+  - group: SOLVO_FRONT_DEV
+  
+  # Build Configuration
+  - name: NODE_VERSION
+    value: '20'
+  
+  # Versioning
+  - name: VERSION_MAJOR
+    value: '1'
+  - name: VERSION_MINOR
+    value: '0'
+  
+  # Paths
+  - name: DIST_PATH
+    value: 'dist/solvo-staffing-frontend/browser'
+  - name: ARTIFACT_NAME
+    value: 'solvo-frontend-build'
+
+# ============================================================================
+# STAGES
+# ============================================================================
+stages:
+  # ==========================================================================
+  # STAGE 1: BUILD & TEST (For PRs - validation)
+  # ==========================================================================
+  - stage: BuildAndTest
+    displayName: '🔨 Build & Test'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+      # ----------------------------------------------------------------------
+      # Job 1: Lint, Test & Build
+      # ----------------------------------------------------------------------
+      - job: Build
+        displayName: 'Lint, Test & Build'
+        timeoutInMinutes: 20
+        steps:
+          - checkout: self
+            clean: true
+            displayName: 'Checkout Repository'
+
+          # ------------------------------------------------------------------
+          # Setup Node.js
+          # ------------------------------------------------------------------
+          - task: NodeTool@0
+            displayName: 'Setup Node.js $(NODE_VERSION)'
+            inputs:
+              versionSpec: '$(NODE_VERSION)'
+
+          # ------------------------------------------------------------------
+          # Cache node_modules for faster builds
+          # ------------------------------------------------------------------
+          - task: Cache@2
+            displayName: 'Cache node_modules'
+            inputs:
+              key: 'npm-v3 | "$(Agent.OS)" | "$(NODE_VERSION)" | package-lock.json'
+              restoreKeys: |
+                npm-v3 | "$(Agent.OS)" | "$(NODE_VERSION)"
+              path: 'node_modules'
+              cacheHitVar: 'CACHE_RESTORED'
+
+          # ------------------------------------------------------------------
+          # Install Dependencies
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📦 Installing dependencies..."
+              npm ci
+            displayName: 'Install Dependencies'
+            condition: ne(variables['CACHE_RESTORED'], 'true')
+
+          - script: |
+              echo "📦 Dependencies restored from cache"
+              echo "🔄 Verifying node_modules integrity..."
+              npm ci --prefer-offline
+            displayName: 'Verify Cached Dependencies'
+            condition: eq(variables['CACHE_RESTORED'], 'true')
+
+          # ------------------------------------------------------------------
+          # Code Quality: Linting
+          # ------------------------------------------------------------------
+          - script: |
+              echo "🔍 Running ESLint..."
+              npm run lint
+            displayName: 'Run Linter (ESLint)'
+
+          # ------------------------------------------------------------------
+          # Unit Tests with Coverage
+          # ------------------------------------------------------------------
+          - script: |
+              echo "🧪 Running Unit Tests with Coverage..."
+              npm run test:coverage -- --ci
+            displayName: 'Run Unit Tests (Jest)'
+
+          # ------------------------------------------------------------------
+          # Publish Test Results
+          # ------------------------------------------------------------------
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/junit.xml'
+              mergeTestResults: true
+              failTaskOnFailedTests: true
+            condition: succeededOrFailed()
+
+          # ------------------------------------------------------------------
+          # Publish Code Coverage
+          # ------------------------------------------------------------------
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish Code Coverage'
+            inputs:
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/lcov.info'
+            condition: succeededOrFailed()
+
+          # ------------------------------------------------------------------
+          # Build Application (Development)
+          # ------------------------------------------------------------------
+          - script: |
+              echo "🏗️ Building Angular Application (Development)..."
+              echo ""
+              echo "📝 Generating env.json with PR validation defaults..."
+              
+              # Set environment variables for env.json generation
+              export PRODUCTION=false
+              export API_BASE_URL="${API_BASE_URL:-http://localhost:3000/api}"
+              export API_VERSION="${API_VERSION:-v1}"
+              export USE_MOCK_SERVICES="${USE_MOCK_SERVICES:-true}"
+              
+              npm run build:dev
+            displayName: 'Build Application (Dev)'
+
+          # ------------------------------------------------------------------
+          # Verify Build Output
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📋 Verifying build output..."
+              
+              if [ ! -d "$(DIST_PATH)" ]; then
+                echo "❌ ERROR: Build output directory not found: $(DIST_PATH)"
+                exit 1
+              fi
+              
+              if [ ! -f "$(DIST_PATH)/index.html" ]; then
+                echo "❌ ERROR: index.html not found in build output"
+                exit 1
+              fi
+              
+              if [ ! -f "$(DIST_PATH)/assets/env.json" ]; then
+                echo "❌ ERROR: env.json not found in build output"
+                exit 1
+              fi
+              
+              echo "✅ Build output verified successfully"
+              echo ""
+              echo "📂 Build contents:"
+              ls -la $(DIST_PATH)
+              echo ""
+              echo "📄 env.json contents:"
+              cat $(DIST_PATH)/assets/env.json
+            displayName: 'Verify Build Output'
+
+          # ------------------------------------------------------------------
+          # Build Summary
+          # ------------------------------------------------------------------
+          - script: |
+              echo "=============================================="
+              echo "✅ BUILD & TEST COMPLETED SUCCESSFULLY"
+              echo "=============================================="
+              echo "Branch: $(Build.SourceBranch)"
+              echo "Commit: $(Build.SourceVersion)"
+              echo "Build ID: $(Build.BuildId)"
+              echo "=============================================="
+            displayName: 'Build Summary'
+
+      # ----------------------------------------------------------------------
+      # Job 2: Validate Variable Group Configuration
+      # ----------------------------------------------------------------------
+      - job: ValidateConfig
+        displayName: 'Validate Configuration'
+        dependsOn: Build
+        timeoutInMinutes: 5
+        steps:
+          - checkout: none
+
+          # ------------------------------------------------------------------
+          # Validate Variable Group Variables
+          # ------------------------------------------------------------------
+          - script: |
+              echo "=============================================="
+              echo "🔍 CONFIGURATION VALIDATION"
+              echo "=============================================="
+              echo "Validating Variable Group: SOLVO_FRONT_DEV"
+              echo "=============================================="
+              
+              MISSING_VARS=""
+              WARNINGS=""
+              
+              # Required variables
+              if [ -z "$(API_BASE_URL)" ]; then
+                MISSING_VARS="$MISSING_VARS API_BASE_URL"
+              else
+                echo "✅ API_BASE_URL: $(API_BASE_URL)"
+              fi
+              
+              if [ -z "$(API_VERSION)" ]; then
+                WARNINGS="$WARNINGS API_VERSION (will use default: v1)"
+              else
+                echo "✅ API_VERSION: $(API_VERSION)"
+              fi
+              
+              if [ -z "$(PRODUCTION)" ]; then
+                WARNINGS="$WARNINGS PRODUCTION (will use default: false)"
+              else
+                echo "✅ PRODUCTION: $(PRODUCTION)"
+              fi
+              
+              if [ -z "$(USE_MOCK_SERVICES)" ]; then
+                WARNINGS="$WARNINGS USE_MOCK_SERVICES (will use default: false)"
+              else
+                echo "✅ USE_MOCK_SERVICES: $(USE_MOCK_SERVICES)"
+              fi
+              
+              echo ""
+              
+              if [ -n "$WARNINGS" ]; then
+                echo "⚠️ WARNINGS - Optional variables not set (using defaults):"
+                echo "   $WARNINGS"
+                echo ""
+              fi
+              
+              if [ -n "$MISSING_VARS" ]; then
+                echo "❌ ERROR: Missing required variables in Variable Group 'SOLVO_FRONT_DEV':"
+                echo "   $MISSING_VARS"
+                echo ""
+                echo "Please add these variables to the Variable Group before merging."
+                exit 1
+              fi
+              
+              echo "=============================================="
+              echo "✅ All required variables validated"
+              echo "=============================================="
+            displayName: 'Validate Variable Group'
+
+  # ==========================================================================
+  # STAGE 2: DEPLOY TO DEVELOPMENT
+  # ==========================================================================
+  - stage: DeployDev
+    displayName: '🚀 Deploy to DEV'
+    dependsOn: []
+    condition: |
+      and(
+        ne(variables['Build.Reason'], 'PullRequest'),
+        startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
+      )
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      # Semantic versioning
+      VERSION: '$(VERSION_MAJOR).$(VERSION_MINOR).$(Build.BuildId)'
+    jobs:
+      # ----------------------------------------------------------------------
+      # Job 1: Build for Production
+      # ----------------------------------------------------------------------
+      - job: BuildForDeploy
+        displayName: 'Build for Deployment'
+        timeoutInMinutes: 20
+        steps:
+          - checkout: self
+            clean: true
+            displayName: 'Checkout Repository'
+
+          # ------------------------------------------------------------------
+          # Setup Node.js
+          # ------------------------------------------------------------------
+          - task: NodeTool@0
+            displayName: 'Setup Node.js $(NODE_VERSION)'
+            inputs:
+              versionSpec: '$(NODE_VERSION)'
+
+          # ------------------------------------------------------------------
+          # Cache node_modules
+          # ------------------------------------------------------------------
+          - task: Cache@2
+            displayName: 'Cache node_modules'
+            inputs:
+              key: 'npm-v3 | "$(Agent.OS)" | "$(NODE_VERSION)" | package-lock.json'
+              restoreKeys: |
+                npm-v3 | "$(Agent.OS)" | "$(NODE_VERSION)"
+              path: 'node_modules'
+              cacheHitVar: 'CACHE_RESTORED'
+
+          # ------------------------------------------------------------------
+          # Install Dependencies
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📦 Installing dependencies..."
+              npm ci
+            displayName: 'Install Dependencies'
+
+          # ------------------------------------------------------------------
+          # Generate Environment Configuration
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📝 Generating env.json with deployment configuration..."
+              echo ""
+              
+              # Export environment variables from Variable Group
+              export PRODUCTION="$(PRODUCTION)"
+              export API_BASE_URL="$(API_BASE_URL)"
+              export API_VERSION="$(API_VERSION)"
+              export USE_MOCK_SERVICES="$(USE_MOCK_SERVICES)"
+              
+              # Generate env.json
+              npm run generate-env
+              
+              echo ""
+              echo "✅ env.json generated successfully"
+              echo ""
+              echo "📄 Generated configuration:"
+              cat public/assets/env.json
+            displayName: 'Generate Environment Config'
+
+          # ------------------------------------------------------------------
+          # Build Application (Production)
+          # ------------------------------------------------------------------
+          - script: |
+              echo "🏗️ Building Angular Application..."
+              echo "Version: $(VERSION)"
+              echo ""
+              
+              # Build with production configuration
+              npm run build:prod
+              
+              echo ""
+              echo "✅ Build completed"
+            displayName: 'Build Application'
+
+          # ------------------------------------------------------------------
+          # Verify and Display Build Info
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📋 Build Information"
+              echo "=============================================="
+              echo "Version: $(VERSION)"
+              echo "Build ID: $(Build.BuildId)"
+              echo "Branch: $(Build.SourceBranch)"
+              echo "Commit: $(Build.SourceVersion)"
+              echo "=============================================="
+              echo ""
+              echo "📂 Build output:"
+              ls -la $(DIST_PATH)
+              echo ""
+              echo "📊 Build size:"
+              du -sh $(DIST_PATH)
+              echo ""
+              echo "📄 Environment configuration:"
+              cat $(DIST_PATH)/assets/env.json
+            displayName: 'Build Information'
+
+          # ------------------------------------------------------------------
+          # Create Version File
+          # ------------------------------------------------------------------
+          - script: |
+              echo "📝 Creating version.json..."
+              
+              cat > $(DIST_PATH)/version.json << EOF
+              {
+                "version": "$(VERSION)",
+                "buildId": "$(Build.BuildId)",
+                "branch": "$(Build.SourceBranchName)",
+                "commit": "$(Build.SourceVersion)",
+                "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+              }
+              EOF
+              
+              echo "✅ version.json created"
+              cat $(DIST_PATH)/version.json
+            displayName: 'Create Version File'
+
+          # ------------------------------------------------------------------
+          # Publish Build Artifact
+          # ------------------------------------------------------------------
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Build Artifact'
+            inputs:
+              PathtoPublish: '$(DIST_PATH)'
+              ArtifactName: '$(ARTIFACT_NAME)'
+              publishLocation: 'Container'
+
+      # ----------------------------------------------------------------------
+      # Job 2: Deploy to Environment
+      # ----------------------------------------------------------------------
+      - deployment: DeployToEnvironment
+        displayName: 'Deploy to DEV Environment'
+        dependsOn: BuildForDeploy
+        environment: 'solvo-frontend-dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # ------------------------------------------------------------------
+                # Download Build Artifact
+                # ------------------------------------------------------------------
+                - download: current
+                  artifact: '$(ARTIFACT_NAME)'
+                  displayName: 'Download Build Artifact'
+
+                # ------------------------------------------------------------------
+                # Display Deployment Info
+                # ------------------------------------------------------------------
+                - script: |
+                    echo "=============================================="
+                    echo "🚀 DEPLOYING SOLVO STAFFING FRONTEND"
+                    echo "=============================================="
+                    echo "Environment: DEV"
+                    echo "Version: $(VERSION)"
+                    echo "Build ID: $(Build.BuildId)"
+                    echo "=============================================="
+                    echo ""
+                    echo "📂 Artifact contents:"
+                    ls -la $(Pipeline.Workspace)/$(ARTIFACT_NAME)
+                    echo ""
+                    echo "📄 Deployment configuration:"
+                    cat $(Pipeline.Workspace)/$(ARTIFACT_NAME)/assets/env.json
+                  displayName: 'Deployment Info'
+
+                # ------------------------------------------------------------------
+                # Deploy to Azure Static Web Apps / Blob Storage
+                # Uncomment and configure based on your deployment target
+                # ------------------------------------------------------------------
+                
+                # Option A: Azure Static Web Apps
+                # - task: AzureStaticWebApp@0
+                #   displayName: 'Deploy to Azure Static Web Apps'
+                #   inputs:
+                #     app_location: '$(Pipeline.Workspace)/$(ARTIFACT_NAME)'
+                #     skip_app_build: true
+                #     azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+                
+                # Option B: Azure Blob Storage (Static Website)
+                # - task: AzureCLI@2
+                #   displayName: 'Deploy to Azure Blob Storage'
+                #   inputs:
+                #     azureSubscription: '$(AZURE_SUBSCRIPTION)'
+                #     scriptType: 'bash'
+                #     scriptLocation: 'inlineScript'
+                #     inlineScript: |
+                #       az storage blob upload-batch \
+                #         --account-name $(STORAGE_ACCOUNT) \
+                #         --destination '$web' \
+                #         --source '$(Pipeline.Workspace)/$(ARTIFACT_NAME)' \
+                #         --overwrite
+                
+                # Option C: AWS S3
+                # - task: AWSCLI@1
+                #   displayName: 'Deploy to AWS S3'
+                #   inputs:
+                #     awsCredentials: '$(AWS_SERVICE_CONNECTION)'
+                #     regionName: '$(AWS_REGION)'
+                #     awsCommand: 's3'
+                #     awsSubCommand: 'sync'
+                #     awsArguments: '$(Pipeline.Workspace)/$(ARTIFACT_NAME) s3://$(S3_BUCKET) --delete'
+
+                # ------------------------------------------------------------------
+                # Placeholder: Configure your deployment target above
+                # ------------------------------------------------------------------
+                - script: |
+                    echo "=============================================="
+                    echo "⚠️ DEPLOYMENT TARGET NOT CONFIGURED"
+                    echo "=============================================="
+                    echo ""
+                    echo "The build artifact is ready for deployment."
+                    echo "Please configure one of the following options:"
+                    echo ""
+                    echo "  A) Azure Static Web Apps"
+                    echo "  B) Azure Blob Storage (Static Website)"
+                    echo "  C) AWS S3 + CloudFront"
+                    echo "  D) Self-hosted Nginx/Apache"
+                    echo ""
+                    echo "Artifact location: $(Pipeline.Workspace)/$(ARTIFACT_NAME)"
+                    echo "=============================================="
+                  displayName: 'Deployment Placeholder'
+
+                # ------------------------------------------------------------------
+                # Deployment Summary
+                # ------------------------------------------------------------------
+                - script: |
+                    echo "=============================================="
+                    echo "✅ DEPLOYMENT STAGE COMPLETED"
+                    echo "=============================================="
+                    echo "Environment: DEV"
+                    echo "Version: $(VERSION)"
+                    echo "Build ID: $(Build.BuildId)"
+                    echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+                    echo "=============================================="
+                  displayName: 'Deployment Summary'

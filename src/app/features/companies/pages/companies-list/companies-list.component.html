@@ -1,0 +1,412 @@
+<div class="companies-list-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">{{ 'COMPANIES.TITLE' | translate }}</h1>
+    <div class="page-actions">
+      <app-custom-button
+        [label]="'COMPANIES.INVESTIGATE' | translate"
+        variant="secondary"
+        icon="search"
+        (buttonClick)="openInvestigateModal()"
+      />
+      <app-custom-button
+        [label]="'COMPANIES.NEW_COMPANY' | translate"
+        variant="primary"
+        icon="add"
+        (buttonClick)="openCreateModal()"
+      />
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-card">
+    <div class="filters-row">
+      <!-- Search -->
+      <mat-form-field appearance="outline" class="filter-field filter-search">
+        <mat-label>{{ 'COMPANIES.SEARCH' | translate }}</mat-label>
+        <input
+          matInput
+          [placeholder]="'COMPANIES.SEARCH_PLACEHOLDER' | translate"
+          [ngModel]="searchFilter()"
+          (ngModelChange)="searchFilter.set($event)"
+          (keyup.enter)="applyFilters()"
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Relationship Type -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'COMPANIES.TYPE' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="relationshipTypeFilter()"
+          (ngModelChange)="relationshipTypeFilter.set($event); applyFilters()"
+        >
+          @for (option of relationshipTypeOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Pipeline -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'COMPANIES.PIPELINE' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="pipelineFilter()"
+          (ngModelChange)="pipelineFilter.set($event); applyFilters()"
+        >
+          @for (option of pipelineOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Sales Rep (Assigned To) -->
+      <mat-form-field appearance="outline" class="filter-field filter-assigned">
+        <mat-label>{{ 'COMPANIES.SALES_REP' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="assignedFilter()"
+          (ngModelChange)="assignedFilter.set($event); applyFilters()"
+        >
+          <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+          @for (rep of salesReps(); track rep.id) {
+            <mat-option [value]="rep.displayName">{{ rep.displayName }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
+
+      <!-- Clear Filters -->
+      <app-custom-button
+        [label]="'COMPANIES.CLEAR_FILTERS' | translate"
+        variant="secondary"
+        [type]="'button'"
+        (buttonClick)="clearFilters()"
+        class="clear-btn"
+      />
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <!-- Table Header -->
+    <div class="table-header">
+      <span class="table-count">{{ paginationInfo() }}</span>
+    </div>
+
+    <!-- Loading Spinner -->
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else {
+      <!-- Data Table -->
+      <table mat-table [dataSource]="companies()" class="companies-table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let company">
+            <span class="company-name">{{ company.name }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Industry Column -->
+        <ng-container matColumnDef="industry">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_INDUSTRY' | translate }}</th>
+          <td mat-cell *matCellDef="let company">{{ getIndustryLabel(company.industry) }}</td>
+        </ng-container>
+
+        <!-- Location Column -->
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_LOCATION' | translate }}</th>
+          <td mat-cell *matCellDef="let company">{{ company.location || '-' }}</td>
+        </ng-container>
+
+        <!-- Relationship Type Column -->
+        <ng-container matColumnDef="relationshipType">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let company">
+            <app-relationship-type-badge [type]="company.relationshipType" />
+          </td>
+        </ng-container>
+
+        <!-- Pipeline Column -->
+        <ng-container matColumnDef="pipelineStage">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_PIPELINE' | translate }}</th>
+          <td mat-cell *matCellDef="let company">
+            <app-company-pipeline-badge [stage]="company.pipelineStage" />
+          </td>
+        </ng-container>
+
+        <!-- Sales Rep Column -->
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_SALES_REP' | translate }}</th>
+          <td mat-cell *matCellDef="let company">
+            <span class="assigned-name">{{ company.assignedTo || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let company">
+            <div class="actions-cell">
+              <button
+                mat-button
+                color="primary"
+                (click)="goToDetail(company); $event.stopPropagation()"
+              >
+                <mat-icon>visibility</mat-icon>
+                {{ 'COMPANIES.VIEW' | translate }}
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let company; columns: displayedColumns"
+          (click)="goToDetail(company)"
+          class="company-row"
+        ></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator
+        [length]="totalItems()"
+        [pageSize]="pageSize()"
+        [pageIndex]="currentPage() - 1"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    }
+  </div>
+</div>
+
+<!-- Create Company Modal -->
+@if (showCreateModal()) {
+  <div
+    class="modal-overlay"
+    (click)="onModalOverlayClick($event, 'create')"
+    (keydown)="onModalKeydown($event, 'create')"
+    tabindex="0"
+  >
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">{{ 'CREATE_COMPANY.TITLE' | translate }}</h2>
+        <button class="modal-close" (click)="closeCreateModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="create-name">{{
+            'CREATE_COMPANY.NAME_LABEL' | translate
+          }}</label>
+          <input
+            id="create-name"
+            type="text"
+            class="form-input"
+            [class.input-error]="createFormSubmitted() && createFormErrors().name"
+            [placeholder]="'CREATE_COMPANY.NAME_PLACEHOLDER' | translate"
+            [ngModel]="createForm().name"
+            (ngModelChange)="updateCreateForm('name', $event)"
+          />
+          @if (createFormSubmitted() && createFormErrors().name) {
+            <span class="error-message">{{ createFormErrors().name }}</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="create-website">{{
+              'CREATE_COMPANY.WEBSITE_LABEL' | translate
+            }}</label>
+            <input
+              id="create-website"
+              type="url"
+              class="form-input"
+              [class.input-error]="createFormSubmitted() && createFormErrors().website"
+              [placeholder]="'CREATE_COMPANY.WEBSITE_PLACEHOLDER' | translate"
+              [ngModel]="createForm().website"
+              (ngModelChange)="updateCreateForm('website', $event)"
+            />
+            @if (createFormSubmitted() && createFormErrors().website) {
+              <span class="error-message">{{ createFormErrors().website }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="create-industry">{{
+              'CREATE_COMPANY.INDUSTRY_LABEL' | translate
+            }}</label>
+            <select
+              id="create-industry"
+              class="form-select"
+              [class.select-error]="createFormSubmitted() && createFormErrors().industry"
+              [ngModel]="createForm().industry"
+              (ngModelChange)="updateCreateForm('industry', $event)"
+            >
+              <option value="" disabled selected hidden>
+                {{ 'CREATE_COMPANY.SELECT_PLACEHOLDER' | translate }}
+              </option>
+              @for (option of industryOptions; track option.value) {
+                <option [value]="option.value">{{ option.labelKey | translate }}</option>
+              }
+            </select>
+            @if (createFormSubmitted() && createFormErrors().industry) {
+              <span class="error-message">{{ createFormErrors().industry }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="create-location">{{
+              'CREATE_COMPANY.LOCATION_LABEL' | translate
+            }}</label>
+            <input
+              id="create-location"
+              type="text"
+              class="form-input"
+              [class.input-error]="createFormSubmitted() && createFormErrors().location"
+              [placeholder]="'CREATE_COMPANY.LOCATION_PLACEHOLDER' | translate"
+              [ngModel]="createForm().location"
+              (ngModelChange)="updateCreateForm('location', $event)"
+            />
+            @if (createFormSubmitted() && createFormErrors().location) {
+              <span class="error-message">{{ createFormErrors().location }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="create-employees">{{
+              'CREATE_COMPANY.EMPLOYEES_LABEL' | translate
+            }}</label>
+            <select
+              id="create-employees"
+              class="form-select"
+              [class.select-error]="createFormSubmitted() && createFormErrors().employees"
+              [ngModel]="createForm().employees"
+              (ngModelChange)="updateCreateForm('employees', $event)"
+            >
+              <option value="" disabled selected hidden>
+                {{ 'CREATE_COMPANY.SELECT_PLACEHOLDER' | translate }}
+              </option>
+              @for (option of employeeSizeOptions; track option.value) {
+                <option [value]="option.value">
+                  {{ option.labelKey ? (option.labelKey | translate) : option.label }}
+                </option>
+              }
+            </select>
+            @if (createFormSubmitted() && createFormErrors().employees) {
+              <span class="error-message">{{ createFormErrors().employees }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-custom-button
+          [label]="'CREATE_COMPANY.CANCEL' | translate"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeCreateModal()"
+        />
+        <app-custom-button
+          [label]="'CREATE_COMPANY.CREATE' | translate"
+          variant="primary"
+          [type]="'button'"
+          (buttonClick)="createCompany()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Investigate Company Modal -->
+@if (showInvestigateModal()) {
+  <div
+    class="modal-overlay"
+    (click)="onModalOverlayClick($event, 'investigate')"
+    (keydown)="onModalKeydown($event, 'investigate')"
+    tabindex="0"
+  >
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">{{ 'INVESTIGATE_COMPANY.TITLE' | translate }}</h2>
+        <button class="modal-close" (click)="closeInvestigateModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-description">
+          {{ 'INVESTIGATE_COMPANY.DESCRIPTION' | translate }}
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-name">{{
+            'INVESTIGATE_COMPANY.NAME_LABEL' | translate
+          }}</label>
+          <input
+            id="investigate-name"
+            type="text"
+            class="form-input"
+            [placeholder]="'INVESTIGATE_COMPANY.NAME_PLACEHOLDER' | translate"
+            [ngModel]="investigateForm().name"
+            (ngModelChange)="updateInvestigateForm('name', $event)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-country">{{
+            'INVESTIGATE_COMPANY.COUNTRY_LABEL' | translate
+          }}</label>
+          <select
+            id="investigate-country"
+            class="form-select"
+            [ngModel]="investigateForm().country"
+            (ngModelChange)="updateInvestigateForm('country', $event)"
+          >
+            <option value="">{{ 'INVESTIGATE_COMPANY.COUNTRY_PLACEHOLDER' | translate }}</option>
+            @for (option of countryOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="investigate-website">{{
+            'INVESTIGATE_COMPANY.WEBSITE_LABEL' | translate
+          }}</label>
+          <input
+            id="investigate-website"
+            type="url"
+            class="form-input"
+            [placeholder]="'INVESTIGATE_COMPANY.WEBSITE_PLACEHOLDER' | translate"
+            [ngModel]="investigateForm().website"
+            (ngModelChange)="updateInvestigateForm('website', $event)"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <app-custom-button
+          [label]="'INVESTIGATE_COMPANY.CANCEL' | translate"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeInvestigateModal()"
+        />
+        <app-custom-button
+          [label]="'INVESTIGATE_COMPANY.START' | translate"
+          variant="primary"
+          icon="search"
+          [type]="'button'"
+          (buttonClick)="investigateCompany()"
+        />
+      </div>
+    </div>
+  </div>
+}

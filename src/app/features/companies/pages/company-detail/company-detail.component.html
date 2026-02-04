@@ -1,0 +1,725 @@
+<div class="company-detail-container">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (company(); as comp) {
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/companies" class="breadcrumb-link">{{
+        'COMPANY_DETAIL.BREADCRUMB' | translate
+      }}</a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">{{ comp.name }}</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">{{ comp.name }}</h1>
+        <app-company-pipeline-badge
+          [stage]="comp.pipelineStage"
+          class="clickable-badge"
+          (click)="openStateModal()"
+        />
+        <app-relationship-type-badge [type]="comp.relationshipType" />
+        @if (comp.assignedTo) {
+          <div class="assigned-badge">
+            <mat-icon>person</mat-icon>
+            <span>{{ comp.assignedTo }}</span>
+          </div>
+        }
+      </div>
+      <div class="page-header-actions">
+        @if (!comp.assignedTo) {
+          <app-custom-button
+            [label]="'COMPANY_DETAIL.ASSIGN_ME' | translate"
+            variant="primary"
+            icon="person_add"
+            (buttonClick)="assignMe()"
+          />
+        }
+        <app-custom-button
+          [label]="'COMPANY_DETAIL.EDIT' | translate"
+          variant="secondary"
+          icon="edit"
+          (buttonClick)="openEditModal()"
+        />
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group
+      [(selectedIndex)]="selectedTabIndex"
+      class="detail-tabs"
+      animationDuration="200ms"
+    >
+      <!-- General Tab -->
+      <mat-tab [label]="'COMPANY_DETAIL.TAB_GENERAL' | translate">
+        <div class="tab-content">
+          <!-- Company Info Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'COMPANY_DETAIL.COMPANY_INFO' | translate }}</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.INDUSTRY' | translate }}</span>
+                <span class="info-value">{{ industryLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.LOCATION' | translate }}</span>
+                <span class="info-value">{{ comp.location || ('COMMON.NA' | translate) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.COUNTRY' | translate }}</span>
+                <span class="info-value">{{ countryLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.EMPLOYEES' | translate }}</span>
+                <span class="info-value">{{ sizeLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.PHONE' | translate }}</span>
+                <span class="info-value">{{ comp.phone || ('COMMON.NA' | translate) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.WEBSITE' | translate }}</span>
+                <span class="info-value">
+                  @if (comp.website) {
+                    <a [href]="comp.website" target="_blank" class="external-link">
+                      {{ comp.website }} ↗
+                    </a>
+                  } @else {
+                    {{ 'COMMON.NA' | translate }}
+                  }
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.CREATED' | translate }}</span>
+                <span class="info-value">{{ formatDate(comp.createdAt) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'COMPANY_DETAIL.UPDATED' | translate }}</span>
+                <span class="info-value">{{ formatDate(comp.updatedAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts Card -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ 'COMPANY_DETAIL.CONTACTS' | translate }}</h3>
+              <app-custom-button
+                [label]="'COMPANY_DETAIL.ADD_CONTACT' | translate"
+                variant="secondary"
+                icon="add"
+                (buttonClick)="openAddContactModal()"
+              />
+            </div>
+
+            @if (comp.contacts.length === 0) {
+              <div class="empty-state">
+                <p>{{ 'COMPANY_DETAIL.NO_CONTACTS' | translate }}</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="comp.contacts" class="contacts-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_NAME' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.fullName }}</td>
+                </ng-container>
+
+                <!-- Title Column -->
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_TITLE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.jobTitle }}</td>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_EMAIL' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.email) {
+                      <a [href]="'mailto:' + contact.email" class="contact-link">
+                        {{ contact.email }}
+                      </a>
+                    } @else {
+                      {{ 'COMMON.NA' | translate }}
+                    }
+                  </td>
+                </ng-container>
+
+                <!-- Phone Column -->
+                <ng-container matColumnDef="phone">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_PHONE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">
+                    {{ contact.phone || ('COMMON.NA' | translate) }}
+                  </td>
+                </ng-container>
+
+                <!-- LinkedIn Column -->
+                <ng-container matColumnDef="linkedin">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_LINKEDIN' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.linkedinUrl) {
+                      <a [href]="contact.linkedinUrl" target="_blank" class="external-link">
+                        {{ 'COMPANY_DETAIL.VIEW_PROFILE' | translate }} ↗
+                      </a>
+                    } @else {
+                      {{ 'COMMON.NA' | translate }}
+                    }
+                  </td>
+                </ng-container>
+
+                <!-- Primary Column -->
+                <ng-container matColumnDef="primary">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_PRIMARY' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let contact">
+                    @if (contact.isPrimary) {
+                      <span class="primary-badge">✓</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="contactsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: contactsColumns"></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Research Tab -->
+      <mat-tab [label]="'COMPANY_DETAIL.TAB_RESEARCH' | translate">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ 'COMPANY_DETAIL.RESEARCH_DATA' | translate }}</h3>
+              <div class="research-header-right">
+                <div class="completeness-indicator">
+                  <span class="completeness-label">{{
+                    'COMPANY_DETAIL.COMPLETENESS' | translate
+                  }}</span>
+                  <div class="completeness-bar">
+                    <div
+                      class="completeness-fill"
+                      [style.width.%]="getResearchCompleteness()"
+                    ></div>
+                  </div>
+                  <span class="completeness-percent">{{ getResearchCompleteness() }}%</span>
+                </div>
+                <app-custom-button
+                  [label]="'COMPANY_DETAIL.EDIT' | translate"
+                  variant="secondary"
+                  (buttonClick)="openResearchModal()"
+                />
+              </div>
+            </div>
+
+            <div class="research-grid">
+              <div class="research-item">
+                <h4 class="research-label">{{ 'COMPANY_DETAIL.VALUE_PROPOSITION' | translate }}</h4>
+                <p class="research-content">
+                  {{ comp.research?.valueProposition || ('COMPANY_DETAIL.NO_INFO' | translate) }}
+                </p>
+              </div>
+              <div class="research-item">
+                <h4 class="research-label">{{ 'COMPANY_DETAIL.MISSION' | translate }}</h4>
+                <p class="research-content">
+                  {{ comp.research?.mission || ('COMPANY_DETAIL.NO_INFO' | translate) }}
+                </p>
+              </div>
+              <div class="research-item">
+                <h4 class="research-label">{{ 'COMPANY_DETAIL.VISION' | translate }}</h4>
+                <p class="research-content">
+                  {{ comp.research?.vision || ('COMPANY_DETAIL.NO_INFO' | translate) }}
+                </p>
+              </div>
+              <div class="research-item full-width">
+                <h4 class="research-label">{{ 'COMPANY_DETAIL.SALES_PITCH' | translate }}</h4>
+                <p class="research-content">
+                  {{ comp.research?.salesPitch || ('COMPANY_DETAIL.NO_INFO' | translate) }}
+                </p>
+              </div>
+            </div>
+
+            @if (comp.research?.lastResearchDate) {
+              <p class="last-research-date">
+                {{ 'COMPANY_DETAIL.LAST_UPDATED' | translate }}
+                {{ formatDate(comp.research!.lastResearchDate) }}
+              </p>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tracking Tab -->
+      <mat-tab [label]="'COMPANY_DETAIL.TAB_TRACKING' | translate">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ 'COMPANY_DETAIL.STATE_HISTORY' | translate }}</h3>
+              <app-custom-button
+                [label]="'COMPANY_DETAIL.CHANGE_STATE' | translate"
+                variant="primary"
+                (buttonClick)="openStateModal()"
+              />
+            </div>
+
+            @if (stateHistory().length === 0) {
+              <div class="empty-state">
+                <p>{{ 'COMPANY_DETAIL.NO_STATE_CHANGES' | translate }}</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="stateHistory()" class="history-table">
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_DATE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">{{ formatDate(entry.date) }}</td>
+                </ng-container>
+
+                <!-- User Column -->
+                <ng-container matColumnDef="user">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_USER' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">{{ entry.user }}</td>
+                </ng-container>
+
+                <!-- Change Column -->
+                <ng-container matColumnDef="change">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_CHANGE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry" class="change-cell">
+                    @if (entry.fromState) {
+                      <app-company-pipeline-badge [stage]="entry.fromState" />
+                      <span class="arrow">→</span>
+                    }
+                    <app-company-pipeline-badge [stage]="entry.toState" />
+                  </td>
+                </ng-container>
+
+                <!-- Note Column -->
+                <ng-container matColumnDef="note">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_NOTE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry" class="note-cell">{{ entry.note }}</td>
+                </ng-container>
+
+                <!-- Tags Column -->
+                <ng-container matColumnDef="tags">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_TAGS' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">
+                    <div class="tags-container">
+                      @for (tag of entry.tags; track tag) {
+                        <span class="tag-chip">{{ tag }}</span>
+                      }
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: historyColumns"></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Vacancies Tab -->
+      <mat-tab [label]="'COMPANY_DETAIL.TAB_VACANCIES' | translate">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ 'COMPANY_DETAIL.ASSOCIATED_VACANCIES' | translate }}</h3>
+              <span class="vacancies-count"
+                >{{ vacancies().length }}
+                {{ 'COMPANY_DETAIL.TAB_VACANCIES' | translate | lowercase }}</span
+              >
+            </div>
+
+            @if (vacancies().length === 0) {
+              <div class="empty-state">
+                <p>{{ 'COMPANY_DETAIL.NO_VACANCIES' | translate }}</p>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="vacancies()" class="vacancies-table">
+                <!-- Job Title Column -->
+                <ng-container matColumnDef="jobTitle">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_POSITION' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let vac">
+                    <a [routerLink]="['/vacancies', vac.id]" class="vacancy-link">
+                      {{ vac.jobTitle }}
+                    </a>
+                  </td>
+                </ng-container>
+
+                <!-- Location Column -->
+                <ng-container matColumnDef="location">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_LOCATION' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let vac">{{ vac.location }}</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_STATUS' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let vac">
+                    <span class="status-chip" [class]="'status-' + vac.status">
+                      {{ vac.status }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <!-- Pipeline Column -->
+                <ng-container matColumnDef="pipeline">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_PIPELINE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let vac">
+                    {{ getVacancyPipelineLabel(vac.pipelineStage) }}
+                  </td>
+                </ng-container>
+
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMPANY_DETAIL.COL_DATE_VAC' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let vac">{{ formatDate(vac.publishedDate) }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="vacanciesColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: vacanciesColumns"
+                  class="clickable-row"
+                  (click)="navigateToVacancy(row.id)"
+                  (keydown.enter)="navigateToVacancy(row.id)"
+                  (keydown.space)="navigateToVacancy(row.id)"
+                  tabindex="0"
+                  role="button"
+                ></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  } @else {
+    <div class="error-state">
+      <p>{{ 'COMPANY_DETAIL.COMPANY_NOT_FOUND' | translate }}</p>
+      <app-custom-button
+        [label]="'COMPANY_DETAIL.BACK_TO_COMPANIES' | translate"
+        variant="primary"
+        (buttonClick)="goToCompanies()"
+      />
+    </div>
+  }
+</div>
+
+<!-- Edit Company Modal -->
+@if (showEditModal()) {
+  <div
+    class="modal-overlay"
+    (click)="closeEditModal()"
+    (keydown.enter)="closeEditModal()"
+    (keydown.space)="closeEditModal()"
+    tabindex="0"
+    role="button"
+  >
+    <div
+      class="modal-container"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+      tabindex="0"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">{{ 'EDIT_COMPANY.TITLE' | translate }}</h2>
+        <button mat-icon-button (click)="closeEditModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label" for="edit-name">{{
+            'EDIT_COMPANY.NAME_LABEL' | translate
+          }}</label>
+          <input
+            id="edit-name"
+            type="text"
+            class="form-input"
+            [ngModel]="editName()"
+            (ngModelChange)="editName.set($event)"
+            [placeholder]="'EDIT_COMPANY.NAME_PLACEHOLDER' | translate"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-website">{{
+            'EDIT_COMPANY.WEBSITE_LABEL' | translate
+          }}</label>
+          <input
+            id="edit-website"
+            type="url"
+            class="form-input"
+            [ngModel]="editWebsite()"
+            (ngModelChange)="editWebsite.set($event)"
+            [placeholder]="'EDIT_COMPANY.WEBSITE_PLACEHOLDER' | translate"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-phone">{{
+            'EDIT_COMPANY.PHONE_LABEL' | translate
+          }}</label>
+          <input
+            id="edit-phone"
+            type="tel"
+            class="form-input"
+            [ngModel]="editPhone()"
+            (ngModelChange)="editPhone.set($event)"
+            [placeholder]="'EDIT_COMPANY.PHONE_PLACEHOLDER' | translate"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="edit-location">{{
+            'EDIT_COMPANY.LOCATION_LABEL' | translate
+          }}</label>
+          <input
+            id="edit-location"
+            type="text"
+            class="form-input"
+            [ngModel]="editLocation()"
+            (ngModelChange)="editLocation.set($event)"
+            [placeholder]="'EDIT_COMPANY.LOCATION_PLACEHOLDER' | translate"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <app-custom-button
+          [label]="'EDIT_COMPANY.CANCEL' | translate"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeEditModal()"
+        />
+        <app-custom-button
+          [label]="'EDIT_COMPANY.SAVE' | translate"
+          variant="primary"
+          [type]="'button'"
+          [disabled]="!editName()"
+          (buttonClick)="saveCompany()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit Research Modal -->
+@if (showResearchModal()) {
+  <div
+    class="modal-overlay"
+    (click)="closeResearchModal()"
+    (keydown.enter)="closeResearchModal()"
+    (keydown.space)="closeResearchModal()"
+    tabindex="0"
+    role="button"
+  >
+    <div
+      class="modal-container modal-large"
+      (click)="$event.stopPropagation()"
+      (keydown.enter)="$event.stopPropagation()"
+      (keydown.space)="$event.stopPropagation()"
+      tabindex="0"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">{{ 'EDIT_RESEARCH.TITLE' | translate }}</h2>
+        <button mat-icon-button (click)="closeResearchModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label" for="research-value">{{
+            'EDIT_RESEARCH.VALUE_PROPOSITION_LABEL' | translate
+          }}</label>
+          <textarea
+            id="research-value"
+            class="form-textarea"
+            rows="3"
+            [ngModel]="editValueProposition()"
+            (ngModelChange)="editValueProposition.set($event)"
+            [placeholder]="'EDIT_RESEARCH.VALUE_PROPOSITION_PLACEHOLDER' | translate"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-mission">{{
+            'EDIT_RESEARCH.MISSION_LABEL' | translate
+          }}</label>
+          <textarea
+            id="research-mission"
+            class="form-textarea"
+            rows="2"
+            [ngModel]="editMission()"
+            (ngModelChange)="editMission.set($event)"
+            [placeholder]="'EDIT_RESEARCH.MISSION_PLACEHOLDER' | translate"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-vision">{{
+            'EDIT_RESEARCH.VISION_LABEL' | translate
+          }}</label>
+          <textarea
+            id="research-vision"
+            class="form-textarea"
+            rows="2"
+            [ngModel]="editVision()"
+            (ngModelChange)="editVision.set($event)"
+            [placeholder]="'EDIT_RESEARCH.VISION_PLACEHOLDER' | translate"
+          ></textarea>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="research-pitch">{{
+            'EDIT_RESEARCH.SALES_PITCH_LABEL' | translate
+          }}</label>
+          <textarea
+            id="research-pitch"
+            class="form-textarea"
+            rows="4"
+            [ngModel]="editSalesPitch()"
+            (ngModelChange)="editSalesPitch.set($event)"
+            [placeholder]="'EDIT_RESEARCH.SALES_PITCH_PLACEHOLDER' | translate"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <app-custom-button
+          [label]="'EDIT_RESEARCH.CANCEL' | translate"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeResearchModal()"
+        />
+        <app-custom-button
+          [label]="'EDIT_RESEARCH.SAVE' | translate"
+          variant="primary"
+          [type]="'button'"
+          (buttonClick)="saveResearch()"
+        />
+      </div>
+    </div>
+  </div>
+}
+
+<!-- State Change Modal (shared component) -->
+<app-state-change-modal
+  [isOpen]="showStateModal()"
+  [title]="'STATE_CHANGE_MODAL.COMPANY_TITLE' | translate"
+  [currentState]="company()?.pipelineStage ?? null"
+  [states]="stateOptions()"
+  [stateLabel]="'STATE_CHANGE_MODAL.NEW_STATE' | translate"
+  [noteLabel]="'STATE_CHANGE_MODAL.NOTE' | translate"
+  [notePlaceholder]="'STATE_CHANGE_MODAL.NOTE_PLACEHOLDER' | translate"
+  [minNoteLength]="10"
+  [showTags]="true"
+  [tagsLabel]="'STATE_CHANGE_MODAL.TAGS' | translate"
+  [tagsPlaceholder]="'STATE_CHANGE_MODAL.TAGS_PLACEHOLDER' | translate"
+  [cancelLabel]="'STATE_CHANGE_MODAL.CANCEL' | translate"
+  [submitLabel]="'STATE_CHANGE_MODAL.SAVE' | translate"
+  (submitChange)="onStateChange($event)"
+  (closeModal)="closeStateModal()"
+/>
+
+<!-- Add Contact Modal -->
+@if (showAddContactModal()) {
+  <div
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    tabindex="0"
+    (click)="closeAddContactModal()"
+    (keydown.escape)="closeAddContactModal()"
+  >
+    <div
+      class="modal modal-sm"
+      role="document"
+      tabindex="-1"
+      (click)="$event.stopPropagation()"
+      (keydown.escape)="$event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <h2 class="modal-title">{{ 'ADD_CONTACT.TITLE' | translate }}</h2>
+        <button class="modal-close" (click)="closeAddContactModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          {{ 'ADD_CONTACT.FORM_FOR' | translate }} <strong>{{ company()?.name }}</strong>
+        </p>
+        <p class="modal-description">{{ 'ADD_CONTACT.FORM_DESCRIPTION' | translate }}</p>
+        <!-- Mock form for now -->
+        <div class="form-field">
+          <label class="form-label" for="contact-name">{{
+            'ADD_CONTACT.NAME_LABEL' | translate
+          }}</label>
+          <input
+            type="text"
+            id="contact-name"
+            class="form-input"
+            [placeholder]="'ADD_CONTACT.NAME_PLACEHOLDER' | translate"
+          />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="contact-title">{{
+            'ADD_CONTACT.TITLE_LABEL' | translate
+          }}</label>
+          <input
+            type="text"
+            id="contact-title"
+            class="form-input"
+            [placeholder]="'ADD_CONTACT.TITLE_PLACEHOLDER' | translate"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <app-custom-button
+          [label]="'ADD_CONTACT.CANCEL' | translate"
+          variant="secondary"
+          [type]="'button'"
+          (buttonClick)="closeAddContactModal()"
+        />
+        <app-custom-button
+          [label]="'ADD_CONTACT.SAVE' | translate"
+          variant="primary"
+          [type]="'button'"
+          (buttonClick)="addContact()"
+        />
+      </div>
+    </div>
+  </div>
+}

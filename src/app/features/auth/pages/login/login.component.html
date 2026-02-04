@@ -1,0 +1,29 @@
+<div class="login">
+  <!-- Header -->
+  <header class="login__header">
+    <h2 class="login__title">{{ 'AUTH.LOGIN_TITLE' | translate }}</h2>
+    <p class="login__subtitle">{{ 'AUTH.LOGIN_SUBTITLE' | translate }}</p>
+  </header>
+
+  <!-- SSO Buttons -->
+  <div class="login__sso">
+    <button
+      type="button"
+      class="login__microsoft-btn"
+      (click)="loginWithMicrosoft()"
+      [disabled]="isSsoLoading()"
+    >
+      @if (isSsoLoading()) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        <img
+          src="assets/icons/microsoft.svg"
+          alt=""
+          class="login__microsoft-icon"
+          aria-hidden="true"
+        />
+      }
+      <span>{{ 'AUTH.LOGIN_MICROSOFT' | translate }}</span>
+    </button>
+  </div>
+</div>

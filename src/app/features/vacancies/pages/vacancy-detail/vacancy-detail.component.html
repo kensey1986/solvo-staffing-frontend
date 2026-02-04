@@ -1,0 +1,388 @@
+<div class="vacancy-detail-container">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (vacancy(); as vac) {
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/vacancies" class="breadcrumb-link">{{
+        'VACANCY_DETAIL.BREADCRUMB' | translate
+      }}</a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">{{ vac.jobTitle }}</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">{{ vac.jobTitle }}</h1>
+        <app-pipeline-badge
+          [stage]="vac.pipelineStage"
+          [clickable]="true"
+          (click)="openStateChangeDialog()"
+        />
+      </div>
+      <div class="page-header-actions">
+        <app-custom-button
+          [label]="'VACANCY_DETAIL.ASSIGN_ME' | translate"
+          variant="secondary"
+          icon="person_add"
+          (buttonClick)="assignMe()"
+        />
+        <app-custom-button
+          [label]="'VACANCY_DETAIL.EDIT' | translate"
+          variant="primary"
+          icon="edit"
+          (buttonClick)="openEditDialog()"
+        />
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="onTabChange($event)"
+      class="detail-tabs"
+      animationDuration="200ms"
+    >
+      <!-- General Tab -->
+      <mat-tab [label]="'VACANCY_DETAIL.TAB_GENERAL' | translate">
+        <div class="tab-content">
+          <!-- Company Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'VACANCY_DETAIL.ASSOCIATED_COMPANY' | translate }}</h3>
+            <div class="company-row">
+              <a [routerLink]="['/companies', vac.companyId]" class="company-link">
+                {{ vac.companyName }}
+              </a>
+              <app-status-badge [status]="'active'" />
+            </div>
+          </div>
+
+          <!-- Vacancy Info Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'VACANCY_DETAIL.VACANCY_INFO' | translate }}</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.LOCATION' | translate }}</span>
+                <span class="info-value">{{ vac.location }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.DEPARTMENT' | translate }}</span>
+                <span class="info-value">{{
+                  vac.department || ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.SENIORITY_LEVEL' | translate }}</span>
+                <span class="info-value">{{
+                  vac.seniorityLevel || ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.JOB_TYPE' | translate }}</span>
+                <span class="info-value">{{
+                  vac.jobType || ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.WORK_MODALITY' | translate }}</span>
+                <span class="info-value">{{
+                  vac.workModality || ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.REMOTE_VIABLE' | translate }}</span>
+                <span class="info-value">{{ getRemoteViableText(vac.isRemoteViable) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.SALARY_RANGE' | translate }}</span>
+                <span class="info-value">{{
+                  vac.salaryRange || ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.STATUS' | translate }}</span>
+                <app-status-badge [status]="vac.status" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Job Description Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'VACANCY_DETAIL.JOB_DESCRIPTION' | translate }}</h3>
+            <div class="description-wrapper">
+              <div
+                #descriptionEl
+                class="description-content"
+                [class.expanded]="isDescriptionExpanded()"
+                [class.empty]="!vac.description"
+                [innerHTML]="vac.description || ('VACANCY_DETAIL.NO_DESCRIPTION' | translate)"
+              ></div>
+              @if (shouldShowDescriptionToggle()) {
+                <button mat-button color="primary" (click)="toggleDescription()" class="toggle-btn">
+                  {{
+                    isDescriptionExpanded()
+                      ? ('VACANCY_DETAIL.SHOW_LESS' | translate) + ' ↑'
+                      : ('VACANCY_DETAIL.SHOW_MORE' | translate) + ' ↓'
+                  }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Source Info Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'VACANCY_DETAIL.SOURCE_INFO' | translate }}</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.SOURCE' | translate }}</span>
+                <span class="info-value">{{ sourceLabel() }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.ORIGINAL_URL' | translate }}</span>
+                <span class="info-value">
+                  @if (vac.jobUrl) {
+                    <a [href]="vac.jobUrl" target="_blank" class="external-link">
+                      {{ 'VACANCY_DETAIL.VIEW_ORIGINAL' | translate }} ↗
+                    </a>
+                  } @else {
+                    {{ 'VACANCY_DETAIL.NA' | translate }}
+                  }
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.PUBLISHED_DATE' | translate }}</span>
+                <span class="info-value">{{ formatDate(vac.publishedDate) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">{{ 'VACANCY_DETAIL.DETECTED_DATE' | translate }}</span>
+                <span class="info-value">{{
+                  vac.scrapedAt ? formatDateTime(vac.scrapedAt) : ('VACANCY_DETAIL.NA' | translate)
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Card -->
+          <div class="info-card">
+            <h3 class="card-title">{{ 'VACANCY_DETAIL.NOTES' | translate }}</h3>
+            <div
+              class="notes-content"
+              [class.expanded]="isNotesExpanded()"
+              [class.empty]="!vac.notes"
+            >
+              {{ vac.notes || ('VACANCY_DETAIL.NO_NOTES' | translate) }}
+            </div>
+            @if (vac.notes && vac.notes.length > 200) {
+              <button
+                mat-button
+                color="primary"
+                (click)="isNotesExpanded.set(!isNotesExpanded())"
+                class="expand-btn"
+              >
+                {{
+                  isNotesExpanded()
+                    ? ('VACANCY_DETAIL.SHOW_LESS' | translate)
+                    : ('VACANCY_DETAIL.SHOW_MORE' | translate)
+                }}
+              </button>
+            }
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tracking Tab -->
+      <mat-tab [label]="'VACANCY_DETAIL.TAB_TRACKING' | translate">
+        <div class="tab-content">
+          <div class="info-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ 'VACANCY_DETAIL.STATE_HISTORY' | translate }}</h3>
+              <app-custom-button
+                [label]="'VACANCY_DETAIL.CHANGE_STATE' | translate"
+                variant="primary"
+                (buttonClick)="openStateChangeDialog()"
+              />
+            </div>
+
+            <!-- Filters Bar -->
+            @if (isHistoryLoaded() && stateHistory().length > 0) {
+              <div class="filters-bar">
+                <div class="filter-group">
+                  <label class="filter-label" for="history-filter-date-from">{{
+                    'VACANCY_DETAIL.FILTER_FROM' | translate
+                  }}</label>
+                  <input
+                    id="history-filter-date-from"
+                    type="date"
+                    class="filter-input"
+                    [value]="historyFilters().dateFrom"
+                    (change)="updateFilter('dateFrom', $any($event.target).value)"
+                  />
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label" for="history-filter-date-to">{{
+                    'VACANCY_DETAIL.FILTER_TO' | translate
+                  }}</label>
+                  <input
+                    id="history-filter-date-to"
+                    type="date"
+                    class="filter-input"
+                    [value]="historyFilters().dateTo"
+                    (change)="updateFilter('dateTo', $any($event.target).value)"
+                  />
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label" for="history-filter-commercial">{{
+                    'VACANCY_DETAIL.FILTER_COMMERCIAL' | translate
+                  }}</label>
+                  <select
+                    id="history-filter-commercial"
+                    class="filter-select"
+                    [value]="historyFilters().user"
+                    (change)="updateFilter('user', $any($event.target).value)"
+                  >
+                    <option value="">{{ 'VACANCY_DETAIL.FILTER_ALL' | translate }}</option>
+                    @for (user of availableUsers(); track user) {
+                      <option [value]="user">{{ user }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label" for="history-filter-state">{{
+                    'VACANCY_DETAIL.FILTER_STATE' | translate
+                  }}</label>
+                  <select
+                    id="history-filter-state"
+                    class="filter-select"
+                    [value]="historyFilters().state"
+                    (change)="updateFilter('state', $any($event.target).value)"
+                  >
+                    <option value="">{{ 'VACANCY_DETAIL.FILTER_ALL' | translate }}</option>
+                    @for (stage of pipelineStages; track stage) {
+                      <option [value]="stage">{{ pipelineLabels[stage] }}</option>
+                    }
+                  </select>
+                </div>
+                @if (hasActiveFilters()) {
+                  <button class="filter-clear-btn" (click)="clearFilters()">
+                    <mat-icon>clear</mat-icon>
+                    {{ 'VACANCY_DETAIL.FILTER_CLEAR' | translate }}
+                  </button>
+                }
+              </div>
+            }
+
+            @if (isHistoryLoading()) {
+              <div class="loading-container">
+                <mat-spinner diameter="32"></mat-spinner>
+              </div>
+            } @else if (!isHistoryLoaded()) {
+              <div class="empty-state">
+                <p>{{ 'VACANCY_DETAIL.SELECT_TAB_HINT' | translate }}</p>
+              </div>
+            } @else if (stateHistory().length === 0) {
+              <div class="empty-state">
+                <p>{{ 'VACANCY_DETAIL.NO_STATE_CHANGES' | translate }}</p>
+              </div>
+            } @else if (filteredHistory().length === 0) {
+              <div class="empty-state">
+                <p>{{ 'VACANCY_DETAIL.NO_FILTER_RESULTS' | translate }}</p>
+                <button mat-button color="primary" (click)="clearFilters()">
+                  {{ 'VACANCY_DETAIL.CLEAR_FILTERS' | translate }}
+                </button>
+              </div>
+            } @else {
+              <table mat-table [dataSource]="filteredHistory()" class="history-table">
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'VACANCY_DETAIL.COL_DATE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">{{ formatDate(entry.date) }}</td>
+                </ng-container>
+
+                <!-- User Column -->
+                <ng-container matColumnDef="user">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'VACANCY_DETAIL.COL_USER' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">{{ entry.user }}</td>
+                </ng-container>
+
+                <!-- Change Column -->
+                <ng-container matColumnDef="change">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'VACANCY_DETAIL.COL_CHANGE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry" class="change-cell">
+                    @if (entry.fromState) {
+                      <app-pipeline-badge [stage]="entry.fromState" />
+                      <span class="arrow">→</span>
+                    }
+                    <app-pipeline-badge [stage]="entry.toState" />
+                  </td>
+                </ng-container>
+
+                <!-- Note Column -->
+                <ng-container matColumnDef="note">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'VACANCY_DETAIL.COL_NOTE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry" class="note-cell">{{ entry.note }}</td>
+                </ng-container>
+
+                <!-- Tags Column -->
+                <ng-container matColumnDef="tags">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'VACANCY_DETAIL.COL_TAGS' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let entry">
+                    <div class="tags-container">
+                      @for (tag of entry.tags; track tag) {
+                        <span class="tag-chip">{{ tag }}</span>
+                      }
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: historyColumns"></tr>
+              </table>
+            }
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <!-- State Change Modal -->
+    <app-state-change-modal
+      [isOpen]="showStateModal()"
+      [currentState]="vacancy()?.pipelineStage"
+      [states]="stateOptions()"
+      [minNoteLength]="10"
+      (submitChange)="onStateChange($event)"
+      (closeModal)="closeStateModal()"
+    />
+
+    <!-- Edit Vacancy Modal -->
+    <app-edit-vacancy-modal
+      [isOpen]="showEditModal()"
+      [vacancy]="vacancy()"
+      (submitEdit)="onEditSubmit($event)"
+      (closeModal)="closeEditModal()"
+    />
+
+    <app-confirmation-modal
+      [isOpen]="showAssignModal()"
+      [title]="'VACANCY_DETAIL.CONFIRM_ASSIGN_TITLE' | translate"
+      [message]="assignMessage()"
+      [icon]="'work'"
+      [cancelLabel]="'COMMON.CANCEL' | translate"
+      [confirmLabel]="'COMMON.CONFIRM' | translate"
+      (confirmAction)="confirmAssign()"
+      (cancelAction)="closeAssignModal()"
+    />
+  }
+</div>

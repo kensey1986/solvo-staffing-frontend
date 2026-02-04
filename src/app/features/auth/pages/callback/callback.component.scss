@@ -1,0 +1,86 @@
+@use '../../../../../styles/variables' as vars;
+
+// ==========================================================================
+// CALLBACK COMPONENT STYLES
+// ==========================================================================
+
+.callback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: vars.$spacing-8;
+  text-align: center;
+
+  // ==========================================================================
+  // LOADING STATE
+  // ==========================================================================
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: vars.$spacing-6;
+  }
+
+  &__message {
+    font-size: vars.$font-size-body-large;
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+    transition: color vars.$transition-normal;
+  }
+
+  // ==========================================================================
+  // ERROR STATE
+  // ==========================================================================
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: vars.$spacing-4;
+  }
+
+  &__error-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-error);
+  }
+
+  &__error-message {
+    font-size: vars.$font-size-body-large;
+    color: var(--mat-sys-error);
+    margin: 0;
+    font-weight: vars.$font-weight-medium;
+  }
+
+  &__redirect-message {
+    font-size: vars.$font-size-body-small;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0;
+  }
+
+  // ==========================================================================
+  // DARK MODE
+  // ==========================================================================
+
+  :host-context(html.dark) & {
+    &__message {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    &__error-icon {
+      color: #f87171;
+    }
+
+    &__error-message {
+      color: #fca5a5;
+    }
+
+    &__redirect-message {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+}

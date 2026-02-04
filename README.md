@@ -1,20 +1,109 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Solvo Staffing Frontend
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Angular 18+ enterprise frontend application with Material 3 theming and Clean Architecture.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Quick Start
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+```bash
+# Install dependencies
+npm install
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+# Development server
+npm start
+
+# Production build
+npm run build
+
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+```
+
+Open [http://localhost:4200](http://localhost:4200) in your browser.
+
+## Repository
+
+- **URL**: `https://devops.softgic.co/DevOps_SE/OP.Solvo.CelulaIA2/_git/solvo_platform_front`
+
+## Tech Stack
+
+- **Angular 21** - Standalone components, Signals, Control Flow
+- **Angular Material** - M3 theming with custom brand colors
+- **SCSS** - Modular styling with design tokens
+- **@ngx-translate** - Runtime i18n (English / Spanish)
+- **Jest** - Unit testing
+- **ESLint + Prettier** - Code quality
+- **Husky** - Git hooks
+
+## Project Structure
+
+```
+src/app/
+├── core/          # Singleton services, guards, interceptors
+├── shared/        # Reusable components, directives, pipes
+├── features/      # Feature modules (lazy-loaded)
+├── layouts/       # Layout components (main, auth)
+└── app.routes.ts  # Root routing
+```
+
+## Brand Colors
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary | `#F09F54` | Sandy Orange |
+| Secondary | `#74E1F5` | Malibu Blue |
+| Warn | `#B00020` | Error states |
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Components](docs/COMPONENTS.md)
+- [Internationalization (i18n)](docs/I18N.md)
+
+## Environment Configuration
+
+The app uses runtime configuration loaded from `/assets/env.json`.
+
+### Local Development
+
+Edit `.env` file:
+
+```env
+API_BASE_URL=http://localhost:3000/api
+API_VERSION=v1
+USE_MOCK_SERVICES=true
+PRODUCTION=false
+```
+
+### CI/CD Pipeline
+
+Set environment variables in Azure DevOps (from Key Vault or variable groups):
+
+```yaml
+variables:
+  API_BASE_URL: $(KeyVault-ApiBaseUrl)
+  USE_MOCK_SERVICES: 'false'
+  PRODUCTION: 'true'
+```
+
+Then run `npm run build:prod`.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Development server (generates env.json) |
+| `npm run build` | Production build (generates env.json) |
+| `npm run build:dev` | Development build |
+| `npm run build:prod` | Production build |
+| `npm run generate-env` | Generate env.json from environment variables |
+| `npm test` | Run tests |
+| `npm run test:coverage` | Test with coverage |
+| `npm run lint` | ESLint check |
+| `npm run format` | Prettier format |
+
+## License
+
+Proprietary - Solvo Global
