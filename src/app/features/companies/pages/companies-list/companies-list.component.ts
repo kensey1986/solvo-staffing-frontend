@@ -34,6 +34,9 @@ import {
   CreateCompanyDto,
   InvestigateCompanyDto,
   Country,
+  SALES_REP_SERVICE,
+  SALES_REP_SERVICE_PROVIDER,
+  SalesRep,
 } from '@core';
 import {
   CompanyPipelineBadgeComponent,
@@ -79,13 +82,14 @@ export interface CreateCompanyFormErrors {
     CustomButtonComponent,
     TranslateModule,
   ],
-  providers: [COMPANY_SERVICE_PROVIDER],
+  providers: [COMPANY_SERVICE_PROVIDER, SALES_REP_SERVICE_PROVIDER],
   templateUrl: './companies-list.component.html',
   styleUrl: './companies-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompaniesListComponent implements OnInit, OnDestroy {
   private readonly companyService = inject(COMPANY_SERVICE);
+  private readonly salesRepService = inject(SALES_REP_SERVICE);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
@@ -113,10 +117,10 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
   readonly relationshipTypeFilter = signal<CompanyRelationshipType | ''>('');
   readonly pipelineFilter = signal<CompanyPipelineStage | ''>('');
   readonly assignedFilter = signal('');
-  readonly myAssignmentsActive = signal(false);
 
   // Data
   readonly companies = signal<Company[]>([]);
+  readonly salesReps = signal<SalesRep[]>([]);
 
   // Create form state
   readonly createForm = signal<CreateCompanyDto>({
@@ -160,7 +164,6 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     { value: '' as const, labelKey: 'COMPANIES.TYPE_ALL' },
     { value: 'client' as const, labelKey: 'COMPANIES.TYPE_CLIENT' },
     { value: 'prospect' as const, labelKey: 'COMPANIES.TYPE_PROSPECT' },
-    { value: 'lead' as const, labelKey: 'COMPANIES.TYPE_LEAD' },
     { value: 'inactive' as const, labelKey: 'COMPANIES.TYPE_INACTIVE' },
   ];
 
@@ -226,6 +229,7 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCompanies();
+    this.loadSalesReps();
 
     // Subscribe to language changes and force change detection
     this.langSubscription = this.translate.onLangChange.subscribe(() => {
@@ -250,7 +254,7 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
       search: this.searchFilter() || undefined,
       relationshipType: this.relationshipTypeFilter() || undefined,
       pipelineStage: this.pipelineFilter() || undefined,
-      assignedTo: this.assignedFilter() || (this.myAssignmentsActive() ? 'Carlos M.' : undefined),
+      assignedTo: this.assignedFilter() || undefined,
     };
 
     this.companyService.getAll(params).subscribe({
@@ -272,6 +276,20 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Loads sales representatives list.
+   */
+  loadSalesReps(): void {
+    this.salesRepService.getAll().subscribe({
+      next: (reps: SalesRep[]) => {
+        this.salesReps.set(reps);
+      },
+      error: (err: unknown) => {
+        console.error('Error loading sales reps:', err);
+      },
+    });
+  }
+
+  /**
    * Applies filters and reloads data.
    */
   applyFilters(): void {
@@ -287,19 +305,6 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     this.relationshipTypeFilter.set('');
     this.pipelineFilter.set('');
     this.assignedFilter.set('');
-    this.myAssignmentsActive.set(false);
-    this.applyFilters();
-  }
-
-  /**
-   * Toggles "My Assignments" filter.
-   */
-  toggleMyAssignments(): void {
-    const newState = !this.myAssignmentsActive();
-    this.myAssignmentsActive.set(newState);
-    if (newState) {
-      this.assignedFilter.set('');
-    }
     this.applyFilters();
   }
 

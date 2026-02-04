@@ -223,11 +223,11 @@ function hydrateVacancy(vacancy: Vacancy): Vacancy {
   const department = vacancy.department || inferDepartment(vacancy.jobTitle);
   const seniorityLevel = vacancy.seniorityLevel || inferSeniority(vacancy.jobTitle);
   const jobType = vacancy.jobType || inferJobType(vacancy.jobTitle);
-  const workModality = vacancy.workModality || inferWorkModality(vacancy.jobTitle, vacancy.location);
+  const workModality =
+    vacancy.workModality || inferWorkModality(vacancy.jobTitle, vacancy.location);
   const isRemoteViable = vacancy.isRemoteViable ?? workModality !== 'on_site';
   const salaryRange = vacancy.salaryRange || inferSalaryRange(department, seniorityLevel);
-  const scrapedAt =
-    vacancy.scrapedAt || `${vacancy.publishedDate}T14:30:00Z`;
+  const scrapedAt = vacancy.scrapedAt || `${vacancy.publishedDate}T14:30:00Z`;
   const jobUrl =
     vacancy.jobUrl ||
     (vacancy.source === 'company_website'
@@ -791,6 +791,10 @@ export class CompanyMockService implements ICompanyService {
       filtered = filtered.filter(c => c.location?.toLowerCase().includes(location));
     }
 
+    if (params?.assignedTo) {
+      filtered = filtered.filter(c => c.assignedTo === params.assignedTo);
+    }
+
     // Sort by name ascending
     filtered.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -801,10 +805,10 @@ export class CompanyMockService implements ICompanyService {
 
     return of({
       data: paginatedData,
-      total: 5186, // Mock total count
+      total: filtered.length,
       page,
       pageSize,
-      totalPages: Math.ceil(5186 / pageSize),
+      totalPages: Math.ceil(filtered.length / pageSize),
     }).pipe(delay(MOCK_DELAY));
   }
 
@@ -979,7 +983,9 @@ export class CompanyMockService implements ICompanyService {
   createContact(companyId: number, data: CreateContactDto): Observable<Contact> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(
+        delay(MOCK_DELAY)
+      );
     }
 
     // If new contact is primary, demote others
@@ -1006,12 +1012,16 @@ export class CompanyMockService implements ICompanyService {
   updateContact(companyId: number, contactId: number, data: UpdateContactDto): Observable<Contact> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(
+        delay(MOCK_DELAY)
+      );
     }
 
     const contactIndex = company.contacts.findIndex(c => c.id === contactId);
     if (contactIndex === -1) {
-      return throwError(() => new Error(`Contact with id ${contactId} not found`)).pipe(delay(MOCK_DELAY));
+      return throwError(() => new Error(`Contact with id ${contactId} not found`)).pipe(
+        delay(MOCK_DELAY)
+      );
     }
 
     // If updating to primary, demote others
@@ -1031,7 +1041,9 @@ export class CompanyMockService implements ICompanyService {
   deleteContact(companyId: number, contactId: number): Observable<void> {
     const company = this.companies.find(c => c.id === companyId);
     if (!company) {
-      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(delay(MOCK_DELAY));
+      return throwError(() => new Error(`Company with id ${companyId} not found`)).pipe(
+        delay(MOCK_DELAY)
+      );
     }
 
     const contactIndex = company.contacts.findIndex(c => c.id === contactId);

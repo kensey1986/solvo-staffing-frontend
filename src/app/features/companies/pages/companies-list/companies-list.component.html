@@ -60,34 +60,20 @@
         </mat-select>
       </mat-form-field>
 
-      <!-- Comercial (Assigned To) -->
-      <div class="filter-group-with-btn">
-        <mat-form-field appearance="outline" class="filter-field filter-assigned">
-          <mat-label>{{ 'COMPANIES.COMMERCIAL' | translate }}</mat-label>
-          <input
-            matInput
-            [placeholder]="'COMPANIES.COMMERCIAL_PLACEHOLDER' | translate"
-            [ngModel]="assignedFilter()"
-            (ngModelChange)="assignedFilter.set($event)"
-            [disabled]="myAssignmentsActive()"
-            (keyup.enter)="applyFilters()"
-          />
-          <mat-icon matPrefix>person</mat-icon>
-        </mat-form-field>
-        <button
-          mat-icon-button
-          [color]="myAssignmentsActive() ? 'primary' : ''"
-          (click)="toggleMyAssignments()"
-          [title]="
-            myAssignmentsActive()
-              ? ('COMPANIES.VIEW_ALL_TOGGLE' | translate)
-              : ('COMPANIES.MY_ASSIGNMENTS_TOGGLE' | translate)
-          "
-          class="assigned-toggle-btn"
+      <!-- Sales Rep (Assigned To) -->
+      <mat-form-field appearance="outline" class="filter-field filter-assigned">
+        <mat-label>{{ 'COMPANIES.SALES_REP' | translate }}</mat-label>
+        <mat-select
+          [ngModel]="assignedFilter()"
+          (ngModelChange)="assignedFilter.set($event); applyFilters()"
         >
-          <mat-icon>{{ myAssignmentsActive() ? 'person' : 'person_outline' }}</mat-icon>
-        </button>
-      </div>
+          <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+          @for (rep of salesReps(); track rep.id) {
+            <mat-option [value]="rep.displayName">{{ rep.displayName }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+      </mat-form-field>
 
       <!-- Clear Filters -->
       <app-custom-button
@@ -151,9 +137,9 @@
           </td>
         </ng-container>
 
-        <!-- Assigned To Column -->
+        <!-- Sales Rep Column -->
         <ng-container matColumnDef="assignedTo">
-          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_ASSIGNED' | translate }}</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMPANIES.COL_SALES_REP' | translate }}</th>
           <td mat-cell *matCellDef="let company">
             <span class="assigned-name">{{ company.assignedTo || '-' }}</span>
           </td>
