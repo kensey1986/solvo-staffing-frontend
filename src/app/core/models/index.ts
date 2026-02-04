@@ -6,3 +6,4 @@ export * from './vacancy.model';
 export * from './company.model';
 export * from './user.model';
 export * from './dashboard.model';
+export * from './sales-rep.model';
