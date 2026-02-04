@@ -5,3 +5,4 @@ export * from './vacancy-service.interface';
 export * from './company-service.interface';
 export * from './auth-service.interface';
 export * from './dashboard-service.interface';
+export * from './sales-rep-service.interface';
