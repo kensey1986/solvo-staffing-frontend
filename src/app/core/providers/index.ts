@@ -5,3 +5,4 @@ export * from './vacancy-service.provider';
 export * from './company-service.provider';
 export * from './auth-service.provider';
 export * from './dashboard-service.provider';
+export * from './sales-rep-service.provider';

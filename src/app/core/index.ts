@@ -26,3 +26,4 @@ export * from './services/vacancy';
 export * from './services/company';
 export * from './services/auth';
 export * from './services/dashboard';
+export * from './services/sales-rep';
