@@ -73,7 +73,7 @@ describe('DashboardPageComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.dashboard-page__section-title')?.textContent).toContain(
-      'Pipeline de Vacantes'
+      'PIPELINE DE VACANTES'
     );
   }));
 

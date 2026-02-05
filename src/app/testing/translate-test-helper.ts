@@ -34,8 +34,8 @@ export class TranslateLoaderMock implements TranslateLoader {
         VACANCIES: 'Vacancies',
       },
       DASHBOARD: {
-        VACANCY_PIPELINE: 'Pipeline de Vacantes',
-        COMPANY_PIPELINE: 'Pipeline de Empresas',
+        VACANCY_PIPELINE: 'PIPELINE DE VACANTES',
+        COMPANY_PIPELINE: 'PIPELINE DE EMPRESAS',
       },
     };
     return of(translations);
