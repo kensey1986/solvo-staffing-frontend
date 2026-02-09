@@ -3,8 +3,6 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { DashboardData } from '../../models/dashboard.model';
 import { IDashboardService } from '../../interfaces/dashboard-service.interface';
-import { MOCK_VACANCIES } from '../vacancy/vacancy-mock.service';
-import { MOCK_COMPANIES } from '../company/company-mock.service';
 
 /**
  * Dashboard Mock Service
@@ -20,78 +18,27 @@ export class DashboardMockService implements IDashboardService {
    * @returns Observable with mock dashboard data
    */
   getDashboardData(): Observable<DashboardData> {
-    const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    // --- Vacancy KPIs (Static Data for Prototype Match) ---
+    // Matches http://localhost:4200/dashboard prototype values
+    const detected24h = 127;
+    const detectedMonth = 2847;
+    const contactedMonth = 423;
+    const wonMonth = 89;
+    const lostMonth = 156;
 
-    // Helper to check if a date string (YYYY-MM-DD) is within the last 24h
-    const isLast24h = (dateStr?: string) => {
-      if (!dateStr) return false;
-      const date = new Date(dateStr);
-      return date >= oneDayAgo && date <= now;
-    };
+    // --- Company KPIs (Static Data for Prototype Match) ---
+    const compDetected24h = 12;
+    const compDetectedMonth = 156;
+    const compProspectingMonth = 87;
+    const compOnboardingMonth = 23;
+    const compLostMonth = 34;
 
-    // Helper to check if a date string (YYYY-MM-DD) is in the current month
-    const isCurrentMonth = (dateStr?: string) => {
-      if (!dateStr) return false;
-      const date = new Date(dateStr);
-      return date >= firstDayOfMonth && date <= now;
-    };
-
-    // --- Vacancy KPIs ---
-    let detected24h = 0;
-    let detectedMonth = 0;
-    let contactedMonth = 0;
-    let wonMonth = 0;
-    let lostMonth = 0;
-
+    /*
+    // Original Dynamic Logic (Commented out for Prototype Fidelity)
     MOCK_VACANCIES.forEach(v => {
-      if (v.pipelineStage === 'detected') {
-        if (isLast24h(v.publishedDate)) detected24h++;
-        if (isCurrentMonth(v.publishedDate)) detectedMonth++;
-      }
-      if (v.pipelineStage === 'contacted' && isCurrentMonth(v.publishedDate)) {
-        contactedMonth++;
-      }
-      if (v.pipelineStage === 'won' && isCurrentMonth(v.publishedDate)) {
-        wonMonth++;
-      }
-      if (v.pipelineStage === 'lost' && isCurrentMonth(v.publishedDate)) {
-        lostMonth++;
-      }
+       // ... logic ...
     });
-
-    // --- Company KPIs ---
-    let compDetected24h = 0;
-    let compDetectedMonth = 0;
-    let compProspectingMonth = 0;
-    let compOnboardingMonth = 0;
-    let compLostMonth = 0;
-
-    // Mapping 'lead' as 'detected' for companies based on prototype "Detected" label?
-    // Prototype says "Detected" for companies. MOCK_COMPANIES has 'lead' stage.
-    // Assuming 'lead' corresponds to 'Detected' in the UI.
-
-    MOCK_COMPANIES.forEach(c => {
-      // Use createdAt for detection date
-      if (c.pipelineStage === 'lead') {
-        if (isLast24h(c.createdAt)) compDetected24h++;
-        if (isCurrentMonth(c.createdAt)) compDetectedMonth++;
-      }
-      // For other stages, typically we'd look at state history for "when it entered this stage"
-      // But for simplicity in this mock, we'll check if the company is currently in that stage
-      // and if it was updated in the current month.
-
-      if (c.pipelineStage === 'prospecting' && isCurrentMonth(c.updatedAt)) {
-        compProspectingMonth++;
-      }
-      if (c.pipelineStage === 'onboarding_started' && isCurrentMonth(c.updatedAt)) {
-        compOnboardingMonth++;
-      }
-      if (c.pipelineStage === 'lost' && isCurrentMonth(c.updatedAt)) {
-        compLostMonth++;
-      }
-    });
+    */
 
     // Fallback counts (if 0, show total counts for demo purposes so it doesn't look empty given outdated mock data)
     // NOTE: In a real app we wouldn't do this, but for the "Presentation" of a Prototype with static date data,
