@@ -148,7 +148,9 @@ export class CompanyDetailComponent implements OnInit {
   /** Size label */
   readonly sizeLabel = computed(() => {
     const size = this.company()?.employees;
-    return size ? COMPANY_SIZE_LABELS[size] : 'N/A';
+    if (!size) return 'N/A';
+    if (typeof size === 'number') return size.toLocaleString();
+    return COMPANY_SIZE_LABELS[size];
   });
 
   /** Country label */
