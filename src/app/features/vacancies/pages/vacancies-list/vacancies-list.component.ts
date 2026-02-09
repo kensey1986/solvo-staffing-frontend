@@ -324,13 +324,25 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
   onCreateVacancy(formData: CreateVacancyFormData): void {
     if (!formData.companyId) return;
 
+    // Convert salary min/max to range string
+    let salaryRange: string | undefined;
+    if (formData.salaryMin && formData.salaryMax) {
+      const minFormatted = formData.salaryMin.toLocaleString('en-US');
+      const maxFormatted = formData.salaryMax.toLocaleString('en-US');
+      salaryRange = `$${minFormatted} - $${maxFormatted}`;
+    } else if (formData.salaryMin) {
+      salaryRange = `$${formData.salaryMin.toLocaleString('en-US')}+`;
+    } else if (formData.salaryMax) {
+      salaryRange = `Up to $${formData.salaryMax.toLocaleString('en-US')}`;
+    }
+
     const dto: CreateVacancyDto = {
       jobTitle: formData.jobTitle,
       companyId: formData.companyId,
       location: formData.location || undefined,
       department: formData.department || undefined,
       seniorityLevel: formData.seniorityLevel || undefined,
-      salaryRange: formData.salaryRange || undefined,
+      salaryRange: salaryRange,
     };
 
     this.vacancyService.create(dto).subscribe({
