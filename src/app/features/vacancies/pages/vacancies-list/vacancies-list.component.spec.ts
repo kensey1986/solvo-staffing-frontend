@@ -15,6 +15,7 @@ import { VacanciesListComponent } from './vacancies-list.component';
 import { VACANCY_SERVICE, COMPANY_SERVICE, Vacancy, PaginatedResponse } from '@core';
 import { ThemeService } from '@core/services/theme.service';
 import { signal, PLATFORM_ID } from '@angular/core';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 
 const mockVacancies: Vacancy[] = [
   {
@@ -70,9 +71,15 @@ describe('VacanciesListComponent', () => {
     mockVacancyService = createMockVacancyService();
 
     await TestBed.configureTestingModule({
-      imports: [VacanciesListComponent, NoopAnimationsModule, getTranslateTestingModule()],
+      imports: [
+        VacanciesListComponent,
+        NoopAnimationsModule,
+        getTranslateTestingModule(),
+        MatNativeDateModule,
+      ],
       providers: [
         provideRouter([]),
+        provideNativeDateAdapter(),
         {
           provide: ThemeService,
           useValue: { theme: signal('light'), toggleTheme: jest.fn() },
@@ -84,6 +91,7 @@ describe('VacanciesListComponent', () => {
         set: {
           providers: [
             { provide: VACANCY_SERVICE, useValue: mockVacancyService },
+            provideNativeDateAdapter(),
             {
               provide: COMPANY_SERVICE,
               useValue: { getAll: jest.fn().mockReturnValue(of({ data: [], total: 0 })) },
@@ -141,44 +149,44 @@ describe('VacanciesListComponent', () => {
     }));
 
     it('should apply status filter', fakeAsync(() => {
-      component.statusFilter.set('active');
+      component.pipelineStageFilter.set('detected');
       component.applyFilters();
       tick();
 
       expect(mockVacancyService.getAll).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ pipelineStage: 'detected' })
       );
     }));
 
     it('should apply status filter', fakeAsync(() => {
-      component.statusFilter.set('active');
+      component.pipelineStageFilter.set('contacted');
       component.applyFilters();
       tick();
 
       expect(mockVacancyService.getAll).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 'active' })
+        expect.objectContaining({ pipelineStage: 'contacted' })
       );
     }));
 
     it('should clear all filters', fakeAsync(() => {
       component.searchFilter.set('test');
-      component.statusFilter.set('active');
+      component.pipelineStageFilter.set('detected');
       component.sourceFilter.set('linkedin');
       component.stateFilter.set('CA');
       component.companyFilter.set('Acme');
-      component.dateFrom.set('2025-01-01');
-      component.dateTo.set('2025-01-31');
+      component.dateFrom.set(new Date('2025-01-01'));
+      component.dateTo.set(new Date('2025-01-31'));
 
       component.clearFilters();
       tick();
 
       expect(component.searchFilter()).toBe('');
-      expect(component.statusFilter()).toBe('');
-      expect(component.sourceFilter()).toBe('');
-      expect(component.stateFilter()).toBe('');
+      expect(component.pipelineStageFilter()).toBeNull();
+      expect(component.sourceFilter()).toBeNull();
+      expect(component.stateFilter()).toBeNull();
       expect(component.companyFilter()).toBe('');
-      expect(component.dateFrom()).toBe('');
-      expect(component.dateTo()).toBe('');
+      expect(component.dateFrom()).toBeNull();
+      expect(component.dateTo()).toBeNull();
     }));
   });
 
