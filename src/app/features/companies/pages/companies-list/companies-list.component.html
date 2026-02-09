@@ -202,42 +202,29 @@
       </div>
 
       <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label" for="create-name">{{
-            'CREATE_COMPANY.NAME_LABEL' | translate
-          }}</label>
-          <input
-            id="create-name"
-            type="text"
-            class="form-input"
-            [class.input-error]="createFormSubmitted() && createFormErrors().name"
-            [placeholder]="'CREATE_COMPANY.NAME_PLACEHOLDER' | translate"
-            [ngModel]="createForm().name"
-            (ngModelChange)="updateCreateForm('name', $event)"
-          />
-          @if (createFormSubmitted() && createFormErrors().name) {
-            <span class="error-message">{{ createFormErrors().name }}</span>
-          }
-        </div>
-
-        <div class="form-row">
+        <!-- Section 1: Basic Information -->
+        <div class="form-section">
+          <div class="form-section-title">
+            {{ 'CREATE_COMPANY.SECTION_BASIC_INFO' | translate }}
+          </div>
           <div class="form-group">
-            <label class="form-label" for="create-website">{{
-              'CREATE_COMPANY.WEBSITE_LABEL' | translate
+            <label class="form-label" for="create-name">{{
+              'CREATE_COMPANY.NAME_LABEL' | translate
             }}</label>
             <input
-              id="create-website"
-              type="url"
+              id="create-name"
+              type="text"
               class="form-input"
-              [class.input-error]="createFormSubmitted() && createFormErrors().website"
-              [placeholder]="'CREATE_COMPANY.WEBSITE_PLACEHOLDER' | translate"
-              [ngModel]="createForm().website"
-              (ngModelChange)="updateCreateForm('website', $event)"
+              [class.input-error]="createFormSubmitted() && createFormErrors().name"
+              [placeholder]="'CREATE_COMPANY.NAME_PLACEHOLDER' | translate"
+              [ngModel]="createForm().name"
+              (ngModelChange)="updateCreateForm('name', $event)"
             />
-            @if (createFormSubmitted() && createFormErrors().website) {
-              <span class="error-message">{{ createFormErrors().website }}</span>
+            @if (createFormSubmitted() && createFormErrors().name) {
+              <span class="error-message">{{ createFormErrors().name }}</span>
             }
           </div>
+
           <div class="form-group">
             <label class="form-label" for="create-industry">{{
               'CREATE_COMPANY.INDUSTRY_LABEL' | translate
@@ -260,9 +247,7 @@
               <span class="error-message">{{ createFormErrors().industry }}</span>
             }
           </div>
-        </div>
 
-        <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="create-location">{{
               'CREATE_COMPANY.LOCATION_LABEL' | translate
@@ -271,38 +256,142 @@
               id="create-location"
               type="text"
               class="form-input"
+              list="us-states-list"
               [class.input-error]="createFormSubmitted() && createFormErrors().location"
               [placeholder]="'CREATE_COMPANY.LOCATION_PLACEHOLDER' | translate"
               [ngModel]="createForm().location"
               (ngModelChange)="updateCreateForm('location', $event)"
             />
+            <datalist id="us-states-list">
+              @for (state of usStates; track state) {
+                <option [value]="state"></option>
+              }
+            </datalist>
             @if (createFormSubmitted() && createFormErrors().location) {
               <span class="error-message">{{ createFormErrors().location }}</span>
             }
           </div>
+
           <div class="form-group">
-            <label class="form-label" for="create-employees">{{
-              'CREATE_COMPANY.EMPLOYEES_LABEL' | translate
+            <label class="form-label" for="create-website">{{
+              'CREATE_COMPANY.WEBSITE_LABEL' | translate
+            }}</label>
+            <input
+              id="create-website"
+              type="url"
+              class="form-input"
+              [class.input-error]="createFormSubmitted() && createFormErrors().website"
+              [placeholder]="'CREATE_COMPANY.WEBSITE_PLACEHOLDER' | translate"
+              [ngModel]="createForm().website"
+              (ngModelChange)="updateCreateForm('website', $event)"
+            />
+            @if (createFormSubmitted() && createFormErrors().website) {
+              <span class="error-message">{{ createFormErrors().website }}</span>
+            }
+          </div>
+        </div>
+
+        <!-- Section 2: Company Details -->
+        <div class="form-section">
+          <div class="form-section-title">
+            {{ 'CREATE_COMPANY.SECTION_COMPANY_DETAILS' | translate }}
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="create-employees">{{
+                'CREATE_COMPANY.EMPLOYEES_LABEL' | translate
+              }}</label>
+              <input
+                id="create-employees"
+                type="number"
+                class="form-input"
+                min="0"
+                [class.input-error]="createFormSubmitted() && createFormErrors().employees"
+                [placeholder]="'CREATE_COMPANY.EMPLOYEES_PLACEHOLDER' | translate"
+                [ngModel]="createForm().employees"
+                (ngModelChange)="
+                  updateCreateForm(
+                    'employees',
+                    $event === '' || $event === null ? undefined : +$event
+                  )
+                "
+              />
+              @if (createFormSubmitted() && createFormErrors().employees) {
+                <span class="error-message">{{ createFormErrors().employees }}</span>
+              }
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="create-annual-revenue">{{
+                'CREATE_COMPANY.ANNUAL_REVENUE_LABEL' | translate
+              }}</label>
+              <input
+                id="create-annual-revenue"
+                type="number"
+                class="form-input"
+                min="0"
+                [placeholder]="'CREATE_COMPANY.ANNUAL_REVENUE_PLACEHOLDER' | translate"
+                [ngModel]="createForm().annualRevenue"
+                (ngModelChange)="
+                  updateCreateForm(
+                    'annualRevenue',
+                    $event === '' || $event === null ? undefined : +$event
+                  )
+                "
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="create-year-founded">{{
+              'CREATE_COMPANY.YEAR_FOUNDED_LABEL' | translate
+            }}</label>
+            <input
+              id="create-year-founded"
+              type="number"
+              class="form-input"
+              min="1800"
+              max="2099"
+              [placeholder]="'CREATE_COMPANY.YEAR_FOUNDED_PLACEHOLDER' | translate"
+              [ngModel]="createForm().yearFounded"
+              (ngModelChange)="
+                updateCreateForm(
+                  'yearFounded',
+                  $event === '' || $event === null ? undefined : +$event
+                )
+              "
+            />
+          </div>
+        </div>
+
+        <!-- Section 3: Classification -->
+        <div class="form-section form-section-last">
+          <div class="form-section-title">
+            {{ 'CREATE_COMPANY.SECTION_CLASSIFICATION' | translate }}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="create-relationship-type">{{
+              'CREATE_COMPANY.RELATIONSHIP_TYPE_LABEL' | translate
             }}</label>
             <select
-              id="create-employees"
+              id="create-relationship-type"
               class="form-select"
-              [class.select-error]="createFormSubmitted() && createFormErrors().employees"
-              [ngModel]="createForm().employees"
-              (ngModelChange)="updateCreateForm('employees', $event)"
+              [class.select-error]="createFormSubmitted() && createFormErrors().relationshipType"
+              [ngModel]="createForm().relationshipType"
+              (ngModelChange)="updateCreateForm('relationshipType', $event)"
             >
-              <option value="" disabled selected hidden>
-                {{ 'CREATE_COMPANY.SELECT_PLACEHOLDER' | translate }}
-              </option>
-              @for (option of employeeSizeOptions; track option.value) {
-                <option [value]="option.value">
-                  {{ option.labelKey ? (option.labelKey | translate) : option.label }}
-                </option>
+              @for (option of relationshipTypeCreateOptions; track option.value) {
+                <option [value]="option.value">{{ option.labelKey | translate }}</option>
               }
             </select>
-            @if (createFormSubmitted() && createFormErrors().employees) {
-              <span class="error-message">{{ createFormErrors().employees }}</span>
+            @if (createFormSubmitted() && createFormErrors().relationshipType) {
+              <span class="error-message">{{ createFormErrors().relationshipType }}</span>
             }
+          </div>
+
+          <div class="form-info-box">
+            <mat-icon class="form-info-icon">info</mat-icon>
+            <span class="form-info-text">{{ 'CREATE_COMPANY.PIPELINE_INFO' | translate }}</span>
           </div>
         </div>
       </div>

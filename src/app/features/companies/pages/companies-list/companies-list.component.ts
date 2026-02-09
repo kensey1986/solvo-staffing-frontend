@@ -43,6 +43,7 @@ import {
   RelationshipTypeBadgeComponent,
   CustomButtonComponent,
 } from '@shared';
+import { US_STATES } from '@shared/components/edit-vacancy-modal/edit-vacancy-modal.component';
 
 /**
  * Interface for create company form validation errors
@@ -53,6 +54,7 @@ export interface CreateCompanyFormErrors {
   industry: string;
   location: string;
   employees: string;
+  relationshipType: string;
 }
 
 /**
@@ -129,6 +131,9 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     industry: undefined,
     location: '',
     employees: undefined,
+    annualRevenue: undefined,
+    yearFounded: undefined,
+    relationshipType: 'prospect',
   });
 
   // Create form validation
@@ -139,6 +144,7 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     industry: '',
     location: '',
     employees: '',
+    relationshipType: '',
   });
 
   // Investigate form state
@@ -191,16 +197,13 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     { value: 'other' as const, labelKey: 'COMPANIES.INDUSTRY_OTHER' },
   ];
 
-  readonly employeeSizeOptions = [
-    { value: '' as const, labelKey: 'COMPANIES.SIZE_SELECT' },
-    { value: '1-50' as const, label: '1-50' },
-    { value: '50-100' as const, label: '50-100' },
-    { value: '100-200' as const, label: '100-200' },
-    { value: '200-500' as const, label: '200-500' },
-    { value: '500-1000' as const, label: '500-1000' },
-    { value: '1000-5000' as const, label: '1000-5000' },
-    { value: '5000+' as const, label: '5000+' },
+  readonly relationshipTypeCreateOptions = [
+    { value: 'prospect' as const, labelKey: 'COMPANIES.TYPE_PROSPECT' },
+    { value: 'client' as const, labelKey: 'COMPANIES.TYPE_CLIENT' },
+    { value: 'inactive' as const, labelKey: 'COMPANIES.TYPE_INACTIVE' },
   ];
+
+  readonly usStates = US_STATES;
 
   readonly countryOptions: { value: Country; label: string }[] = [
     { value: 'USA', label: 'USA' },
@@ -334,6 +337,9 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
       industry: undefined,
       location: '',
       employees: undefined,
+      annualRevenue: undefined,
+      yearFounded: undefined,
+      relationshipType: 'prospect',
     });
     this.createFormSubmitted.set(false);
     this.createFormErrors.set({
@@ -342,6 +348,7 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
       industry: '',
       location: '',
       employees: '',
+      relationshipType: '',
     });
     this.showCreateModal.set(true);
   }
@@ -398,6 +405,7 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
       industry: '',
       location: '',
       employees: '',
+      relationshipType: '',
     };
 
     // Validate name (required)
@@ -417,11 +425,20 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
       }
     }
 
+    if (!form.relationshipType) {
+      errors.relationshipType = this.translate.instant('CREATE_COMPANY.RELATIONSHIP_TYPE_REQUIRED');
+    }
+
     this.createFormErrors.set(errors);
 
     // Return true if no errors
     return (
-      !errors.name && !errors.website && !errors.industry && !errors.location && !errors.employees
+      !errors.name &&
+      !errors.website &&
+      !errors.industry &&
+      !errors.location &&
+      !errors.employees &&
+      !errors.relationshipType
     );
   }
 
