@@ -791,6 +791,20 @@
   (closeModal)="closeStateModal()"
 />
 
+<!-- Assign Confirmation Modal -->
+<app-confirmation-modal
+  [isOpen]="showAssignModal()"
+  [title]="'COMPANY_DETAIL.CONFIRM_ASSIGN_TITLE' | translate"
+  [message]="assignMessage()"
+  [icon]="'person_add'"
+  [loading]="isAssigning()"
+  [confirmDisabled]="isAssigning()"
+  [cancelLabel]="'COMMON.CANCEL' | translate"
+  [confirmLabel]="'COMPANY_DETAIL.CONFIRM_ASSIGN_BTN' | translate"
+  (confirmAction)="confirmAssign()"
+  (cancelAction)="closeAssignModal()"
+/>
+
 <!-- Add Contact Modal -->
 @if (showAddContactModal()) {
   <div

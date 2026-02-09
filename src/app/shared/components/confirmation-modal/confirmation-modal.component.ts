@@ -53,11 +53,14 @@ import { CustomButtonComponent } from '../custom-button/custom-button.component'
             <app-custom-button
               [label]="cancelLabel()"
               variant="secondary"
+              [disabled]="loading()"
               (buttonClick)="cancel()"
             />
             <app-custom-button
               [label]="confirmLabel()"
               [variant]="confirmVariant()"
+              [loading]="loading()"
+              [disabled]="confirmDisabled() || loading()"
               (buttonClick)="confirm()"
             />
           </div>
@@ -157,7 +160,7 @@ import { CustomButtonComponent } from '../custom-button/custom-button.component'
 
     .modal-message {
       font-size: 15px;
-      color: rgba(255, 255, 255, 0.78);
+      color: var(--mat-sys-on-surface-variant);
       margin: 0;
       line-height: 1.5;
       text-rendering: optimizeLegibility;
@@ -166,13 +169,23 @@ import { CustomButtonComponent } from '../custom-button/custom-button.component'
     }
 
     .modal-message strong {
-      color: #ffffff;
+      color: var(--mat-sys-on-surface);
       font-weight: 700;
     }
 
     .modal-message :deep(.company-name) {
-      color: #4da3ff;
+      color: var(--mat-sys-primary);
       font-weight: 700;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .modal-message {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .modal-message strong {
+        color: rgba(255, 255, 255, 0.9);
+      }
     }
 
     .modal-footer {
@@ -194,6 +207,8 @@ export class ConfirmationModalComponent {
   readonly confirmLabel = input<string>('Confirmar');
   readonly cancelLabel = input<string>('Cancelar');
   readonly confirmVariant = input<'primary' | 'warn'>('primary');
+  readonly loading = input<boolean>(false);
+  readonly confirmDisabled = input<boolean>(false);
 
   readonly confirmAction = output<void>();
   readonly cancelAction = output<void>();

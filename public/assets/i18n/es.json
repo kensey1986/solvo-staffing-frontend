@@ -319,8 +319,13 @@
     "COMPANY_NOT_FOUND": "No se encontró la empresa.",
     "BACK_TO_COMPANIES": "Volver a Empresas",
     "CONFIRM_ASSIGN": "¿Deseas asignarte esta empresa?",
+    "CONFIRM_ASSIGN_TITLE": "Confirmar Asignación",
+    "CONFIRM_ASSIGN_MSG": "¿Confirmas que deseas asignarte como responsable de:",
+    "CONFIRM_ASSIGN_BTN": "Confirmar Asignación",
     "ASSIGN_SUCCESS": "Empresa asignada exitosamente",
-    "ASSIGN_ERROR": "Error al asignar la empresa"
+    "ASSIGN_ERROR": "Error al asignar la empresa",
+    "ASSIGN_ERROR_CONFLICT": "Esta empresa ya fue asignada a otro comercial",
+    "ASSIGN_ERROR_NETWORK": "Error al asignar. Intente nuevamente."
   },
   "EDIT_COMPANY": {
     "TITLE": "Editar Empresa",

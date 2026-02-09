@@ -47,6 +47,7 @@ import {
   CompanyPipelineBadgeComponent,
   RelationshipTypeBadgeComponent,
   CustomButtonComponent,
+  ConfirmationModalComponent,
 } from '@shared';
 
 /** Pipeline stage options for state change */
@@ -103,6 +104,7 @@ const INITIAL_CONTACT_FORM: AddContactForm = {
     RelationshipTypeBadgeComponent,
     StateChangeModalComponent,
     CustomButtonComponent,
+    ConfirmationModalComponent,
   ],
   providers: [COMPANY_SERVICE_PROVIDER],
   templateUrl: './company-detail.component.html',
@@ -180,6 +182,20 @@ export class CompanyDetailComponent implements OnInit {
 
   /** State change modal state */
   readonly showStateModal = signal(false);
+
+  /** Assign modal state */
+  readonly showAssignModal = signal(false);
+  readonly isAssigning = signal(false);
+
+  /** Computed message for assign modal */
+  readonly assignMessage = computed(() => {
+    const comp = this.company();
+    if (!comp) return '';
+    return (
+      this.translate.instant('COMPANY_DETAIL.CONFIRM_ASSIGN_MSG') +
+      `<br/><strong>${comp.name}</strong>`
+    );
+  });
 
   /** Add contact modal state */
   readonly showAddContactModal = signal(false);
@@ -440,36 +456,60 @@ export class CompanyDetailComponent implements OnInit {
   // ============= Commercial Actions =============
 
   /**
-   * Assigns the current company to the logged-in user.
+   * Opens the assign confirmation modal.
    */
   assignMe(): void {
+    this.showAssignModal.set(true);
+  }
+
+  /**
+   * Closes the assign confirmation modal.
+   */
+  closeAssignModal(): void {
+    this.showAssignModal.set(false);
+  }
+
+  /**
+   * Confirms assignment and calls the API.
+   */
+  confirmAssign(): void {
     const id = this.companyId();
     if (!id) return;
 
-    if (confirm(this.translate.instant('COMPANY_DETAIL.CONFIRM_ASSIGN'))) {
-      const updateDto = {
-        assignedTo: 'Carlos M.', // Mock current user
-      };
+    this.isAssigning.set(true);
 
-      this.companyService.update(id, updateDto).subscribe({
-        next: updated => {
-          this.company.set(updated);
-          this.snackBar.open(
-            this.translate.instant('COMPANY_DETAIL.ASSIGN_SUCCESS'),
-            this.translate.instant('COMMON.CLOSE'),
-            { duration: 3000 }
-          );
-        },
-        error: err => {
-          console.error('Error assigning company:', err);
-          this.snackBar.open(
-            this.translate.instant('COMPANY_DETAIL.ASSIGN_ERROR'),
-            this.translate.instant('COMMON.CLOSE'),
-            { duration: 3000 }
-          );
-        },
-      });
-    }
+    const updateDto = {
+      assignedTo: 'Carlos M.', // Mock current user
+    };
+
+    this.companyService.update(id, updateDto).subscribe({
+      next: updated => {
+        this.company.set(updated);
+        this.showAssignModal.set(false);
+        this.isAssigning.set(false);
+        this.snackBar.open(
+          this.translate.instant('COMPANY_DETAIL.ASSIGN_SUCCESS'),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
+      },
+      error: err => {
+        console.error('Error assigning company:', err);
+        this.isAssigning.set(false);
+
+        // Handle specific error codes
+        const errorKey =
+          err?.status === 409
+            ? 'COMPANY_DETAIL.ASSIGN_ERROR_CONFLICT'
+            : 'COMPANY_DETAIL.ASSIGN_ERROR_NETWORK';
+
+        this.snackBar.open(
+          this.translate.instant(errorKey),
+          this.translate.instant('COMMON.CLOSE'),
+          { duration: 3000 }
+        );
+      },
+    });
   }
 
   // ============= Contact Actions =============

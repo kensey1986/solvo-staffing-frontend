@@ -319,8 +319,13 @@
     "COMPANY_NOT_FOUND": "Company not found.",
     "BACK_TO_COMPANIES": "Back to Companies",
     "CONFIRM_ASSIGN": "Do you want to assign yourself this company?",
+    "CONFIRM_ASSIGN_TITLE": "Confirm Assignment",
+    "CONFIRM_ASSIGN_MSG": "Do you confirm you want to assign yourself as responsible for:",
+    "CONFIRM_ASSIGN_BTN": "Confirm Assignment",
     "ASSIGN_SUCCESS": "Company assigned successfully",
-    "ASSIGN_ERROR": "Error assigning company"
+    "ASSIGN_ERROR": "Error assigning company",
+    "ASSIGN_ERROR_CONFLICT": "This company was already assigned to another sales representative",
+    "ASSIGN_ERROR_NETWORK": "Error assigning. Please try again."
   },
   "EDIT_COMPANY": {
     "TITLE": "Edit Company",
