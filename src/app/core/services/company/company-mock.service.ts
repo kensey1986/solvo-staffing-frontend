@@ -33,6 +33,9 @@ import {
 /** Simulated network delay in milliseconds */
 const MOCK_DELAY = 300;
 
+/** localStorage key for persisting mock company data */
+const STORAGE_KEY = 'solvo_mock_companies';
+
 const COMPANY_NAME_TO_ID: Record<string, number> = {
   'TechCorp Solutions': 1,
   'Global Manufacturing Inc': 2,
@@ -759,12 +762,44 @@ const MOCK_COMPANY_VACANCIES: Record<number, Vacancy[]> = {
 
 @Injectable()
 export class CompanyMockService implements ICompanyService {
-  private companies = [...MOCK_COMPANIES];
-  private nextCompanyId = Math.max(...this.companies.map(c => c.id)) + 1;
-  private nextContactId =
-    Math.max(...this.companies.flatMap(c => c.contacts.map(contact => contact.id)), 0) + 1;
+  private companies: Company[];
+  private nextCompanyId: number;
+  private nextContactId: number;
   private stateHistory = { ...MOCK_STATE_HISTORY };
   private companyVacancies = { ...MOCK_COMPANY_VACANCIES };
+
+  constructor() {
+    this.companies = this.loadFromStorage();
+    this.nextCompanyId = Math.max(...this.companies.map(c => c.id), 0) + 1;
+    this.nextContactId =
+      Math.max(...this.companies.flatMap(c => c.contacts.map(contact => contact.id)), 0) + 1;
+  }
+
+  /**
+   * Loads companies from localStorage or returns mock data if not found.
+   */
+  private loadFromStorage(): Company[] {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored) as Company[];
+      }
+    } catch (error) {
+      console.warn('[CompanyMockService] Failed to load from localStorage:', error);
+    }
+    return [...MOCK_COMPANIES];
+  }
+
+  /**
+   * Persists current companies to localStorage.
+   */
+  private saveToStorage(): void {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.companies));
+    } catch (error) {
+      console.warn('[CompanyMockService] Failed to save to localStorage:', error);
+    }
+  }
 
   getAll(params?: CompanyFilterParams): Observable<PaginatedResponse<Company>> {
     let filtered = [...this.companies];
@@ -988,6 +1023,19 @@ export class CompanyMockService implements ICompanyService {
       );
     }
 
+    // Check for duplicate email
+    if (data.email) {
+      const existingContact = company.contacts.find(
+        contact => contact.email?.toLowerCase() === data.email?.toLowerCase()
+      );
+      if (existingContact) {
+        return throwError(() => ({
+          code: 'DUPLICATE_EMAIL',
+          message: `A contact with email ${data.email} already exists in this company`,
+        })).pipe(delay(MOCK_DELAY));
+      }
+    }
+
     // If new contact is primary, demote others
     if (data.isPrimary) {
       company.contacts.forEach(c => (c.isPrimary = false));
@@ -1005,6 +1053,8 @@ export class CompanyMockService implements ICompanyService {
 
     company.contacts.push(newContact);
     company.updatedAt = new Date().toISOString().split('T')[0];
+
+    this.saveToStorage();
 
     return of(newContact).pipe(delay(MOCK_DELAY));
   }
@@ -1035,6 +1085,8 @@ export class CompanyMockService implements ICompanyService {
     };
     company.updatedAt = new Date().toISOString().split('T')[0];
 
+    this.saveToStorage();
+
     return of(company.contacts[contactIndex]).pipe(delay(MOCK_DELAY));
   }
 
@@ -1050,6 +1102,7 @@ export class CompanyMockService implements ICompanyService {
     if (contactIndex !== -1) {
       company.contacts.splice(contactIndex, 1);
       company.updatedAt = new Date().toISOString().split('T')[0];
+      this.saveToStorage();
     }
 
     return of(undefined).pipe(delay(MOCK_DELAY));
