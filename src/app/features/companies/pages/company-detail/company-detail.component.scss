@@ -524,7 +524,7 @@
   font-size: vars.$font-size-body-small;
   color: var(--mat-sys-on-surface);
   line-height: 1.6;
-  background-color: var(--mat-sys-surface-container-highest);
+  background-color: var(--mat-sys-surface-container-high);
   padding: vars.$spacing-4;
   border-radius: vars.$radius-sm;
   margin: 0;
@@ -554,6 +554,23 @@
   }
 }
 
+// Tracking Filters
+.tracking-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: vars.$spacing-4;
+  padding: vars.$spacing-4;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: vars.$radius-sm;
+  margin-top: vars.$spacing-4;
+
+  .filter-field {
+    flex: 1 1 180px;
+    min-width: 150px;
+    max-width: 220px;
+  }
+}
+
 // History Table
 .history-table {
   width: 100%;
@@ -574,9 +591,10 @@
 }
 
 .change-cell {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
+  vertical-align: middle;
 }
 
 .arrow {

@@ -22,11 +22,9 @@
           class="clickable-badge"
           (click)="openStateModal()"
         />
-        <app-relationship-type-badge [type]="comp.relationshipType" />
         @if (comp.assignedTo) {
           <div class="assigned-badge">
-            <mat-icon>person</mat-icon>
-            <span>{{ comp.assignedTo }}</span>
+            <span>{{ 'COMPANY_DETAIL.ASSIGNED_TO' | translate }}: {{ comp.assignedTo }}</span>
           </div>
         }
       </div>
@@ -344,18 +342,6 @@
             <div class="card-header">
               <h3 class="card-title">{{ 'COMPANY_DETAIL.RESEARCH_DATA' | translate }}</h3>
               <div class="research-header-right">
-                <div class="completeness-indicator">
-                  <span class="completeness-label">{{
-                    'COMPANY_DETAIL.COMPLETENESS' | translate
-                  }}</span>
-                  <div class="completeness-bar">
-                    <div
-                      class="completeness-fill"
-                      [style.width.%]="getResearchCompleteness()"
-                    ></div>
-                  </div>
-                  <span class="completeness-percent">{{ getResearchCompleteness() }}%</span>
-                </div>
                 <app-custom-button
                   [label]="'COMPANY_DETAIL.EDIT' | translate"
                   variant="secondary"
@@ -414,12 +400,65 @@
               />
             </div>
 
-            @if (stateHistory().length === 0) {
+            <!-- Tracking Filters -->
+            <div class="tracking-filters">
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'COMPANY_DETAIL.FILTER_FROM' | translate }}</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="pickerFrom"
+                  [ngModel]="trackingFilterDateFrom()"
+                  (ngModelChange)="trackingFilterDateFrom.set($event)"
+                />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'COMPANY_DETAIL.FILTER_TO' | translate }}</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="pickerTo"
+                  [ngModel]="trackingFilterDateTo()"
+                  (ngModelChange)="trackingFilterDateTo.set($event)"
+                />
+                <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'COMPANY_DETAIL.FILTER_USER' | translate }}</mat-label>
+                <mat-select
+                  [ngModel]="trackingFilterUser()"
+                  (ngModelChange)="trackingFilterUser.set($event)"
+                >
+                  <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+                  @for (user of trackingUsers(); track user) {
+                    <mat-option [value]="user">{{ user }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'COMPANY_DETAIL.FILTER_STATE' | translate }}</mat-label>
+                <mat-select
+                  [ngModel]="trackingFilterState()"
+                  (ngModelChange)="trackingFilterState.set($event)"
+                >
+                  <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+                  @for (stage of trackingStages(); track stage) {
+                    <mat-option [value]="stage">{{ getPipelineLabel(stage) }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            @if (filteredStateHistory().length === 0) {
               <div class="empty-state">
                 <p>{{ 'COMPANY_DETAIL.NO_STATE_CHANGES' | translate }}</p>
               </div>
             } @else {
-              <table mat-table [dataSource]="stateHistory()" class="history-table">
+              <table mat-table [dataSource]="filteredStateHistory()" class="history-table">
                 <!-- Date Column -->
                 <ng-container matColumnDef="date">
                   <th mat-header-cell *matHeaderCellDef>
@@ -441,12 +480,14 @@
                   <th mat-header-cell *matHeaderCellDef>
                     {{ 'COMPANY_DETAIL.COL_CHANGE' | translate }}
                   </th>
-                  <td mat-cell *matCellDef="let entry" class="change-cell">
-                    @if (entry.fromState) {
-                      <app-company-pipeline-badge [stage]="entry.fromState" />
-                      <span class="arrow">→</span>
-                    }
-                    <app-company-pipeline-badge [stage]="entry.toState" />
+                  <td mat-cell *matCellDef="let entry">
+                    <div class="change-cell">
+                      @if (entry.fromState) {
+                        <app-company-pipeline-badge [stage]="entry.fromState" />
+                        <span class="arrow">→</span>
+                      }
+                      <app-company-pipeline-badge [stage]="entry.toState" />
+                    </div>
                   </td>
                 </ng-container>
 

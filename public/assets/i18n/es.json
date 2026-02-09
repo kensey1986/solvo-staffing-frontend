@@ -268,6 +268,7 @@
   "COMPANY_DETAIL": {
     "BREADCRUMB": "Empresas",
     "ASSIGN_ME": "Asignarme",
+    "ASSIGNED_TO": "Asignado",
     "EDIT": "Editar",
     "TAB_GENERAL": "General",
     "TAB_RESEARCH": "Investigación",
@@ -302,6 +303,10 @@
     "LAST_UPDATED": "Última actualización:",
     "STATE_HISTORY": "Historial de Estados",
     "CHANGE_STATE": "Cambiar Estado",
+    "FILTER_FROM": "Desde",
+    "FILTER_TO": "Hasta",
+    "FILTER_USER": "Comercial",
+    "FILTER_STATE": "Estado",
     "NO_STATE_CHANGES": "No hay cambios de estado registrados.",
     "COL_DATE": "Fecha",
     "COL_USER": "Usuario",

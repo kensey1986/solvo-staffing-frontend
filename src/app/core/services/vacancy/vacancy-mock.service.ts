@@ -280,19 +280,18 @@ function buildDescription(
       'Experience managing operational workflows',
       'Strong organizational and leadership skills',
     ],
-    General: [
-      'Strong organizational skills',
-      'Ability to work collaboratively across teams',
-    ],
+    General: ['Strong organizational skills', 'Ability to work collaboratively across teams'],
   };
 
-  const responsibilityList =
-    (responsibilities[department as keyof typeof responsibilities] || responsibilities.General)
-      .map((item: string) => `• ${item}`)
+  const responsibilityList = (
+    responsibilities[department as keyof typeof responsibilities] || responsibilities.General
+  )
+    .map((item: string) => `• ${item}`)
     .join('\n');
-  const requirementList =
-    (requirements[department as keyof typeof requirements] || requirements.General)
-      .map((item: string) => `• ${item}`)
+  const requirementList = (
+    requirements[department as keyof typeof requirements] || requirements.General
+  )
+    .map((item: string) => `• ${item}`)
     .join('\n');
 
   return `We are looking for a ${title} to join ${companyName}. The ideal candidate will have ${
@@ -324,7 +323,8 @@ function normalizeVacancy(vacancy: Vacancy): Vacancy {
   const department = vacancy.department || inferDepartment(vacancy.jobTitle);
   const seniorityLevel = vacancy.seniorityLevel || inferSeniority(vacancy.jobTitle);
   const jobType = vacancy.jobType || inferJobType(vacancy.jobTitle);
-  const workModality = vacancy.workModality || inferWorkModality(vacancy.jobTitle, vacancy.location);
+  const workModality =
+    vacancy.workModality || inferWorkModality(vacancy.jobTitle, vacancy.location);
   const isRemoteViable = vacancy.isRemoteViable ?? workModality !== 'on_site';
   const salaryRange = vacancy.salaryRange || inferSalaryRange(department, seniorityLevel);
   const publishedDate = vacancy.publishedDate;
@@ -376,7 +376,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 2,
     jobTitle: 'Product Manager',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',
@@ -496,7 +496,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 12,
     jobTitle: 'HR Generalist',
-    companyId: 12,
+    companyId: 2,
     companyName: 'Global Manufacturing Inc',
     location: 'Houston, TX',
     status: 'active',
@@ -520,7 +520,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 14,
     jobTitle: 'UX Designer',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',
@@ -580,7 +580,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 19,
     jobTitle: 'Customer Success Manager',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'filled',
@@ -712,7 +712,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 30,
     jobTitle: 'Site Reliability Engineer',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',
@@ -760,7 +760,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 34,
     jobTitle: 'Cloud Architect',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',
@@ -832,7 +832,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 40,
     jobTitle: 'Machine Learning Engineer',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',
@@ -952,7 +952,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 50,
     jobTitle: 'Database Administrator',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'filled',
@@ -1000,7 +1000,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 54,
     jobTitle: 'Platform Engineer',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'expired',
@@ -1240,7 +1240,7 @@ const RAW_MOCK_VACANCIES: Vacancy[] = [
   {
     id: 74,
     jobTitle: 'API Developer',
-    companyId: 2,
+    companyId: 6,
     companyName: 'CloudScale Technologies',
     location: 'San Francisco, CA',
     status: 'active',

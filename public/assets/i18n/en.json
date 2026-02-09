@@ -268,6 +268,7 @@
   "COMPANY_DETAIL": {
     "BREADCRUMB": "Companies",
     "ASSIGN_ME": "Assign me",
+    "ASSIGNED_TO": "Assigned",
     "EDIT": "Edit",
     "TAB_GENERAL": "General",
     "TAB_RESEARCH": "Research",
@@ -302,6 +303,10 @@
     "LAST_UPDATED": "Last updated:",
     "STATE_HISTORY": "State History",
     "CHANGE_STATE": "Change State",
+    "FILTER_FROM": "From",
+    "FILTER_TO": "To",
+    "FILTER_USER": "Sales Rep",
+    "FILTER_STATE": "State",
     "NO_STATE_CHANGES": "No state changes recorded.",
     "COL_DATE": "Date",
     "COL_USER": "User",

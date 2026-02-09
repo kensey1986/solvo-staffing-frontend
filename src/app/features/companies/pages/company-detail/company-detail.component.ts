@@ -24,6 +24,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Core imports
@@ -45,7 +49,6 @@ import {
   StateOption,
   StateChangeResult,
   CompanyPipelineBadgeComponent,
-  RelationshipTypeBadgeComponent,
   CustomButtonComponent,
   ConfirmationModalComponent,
 } from '@shared';
@@ -99,9 +102,12 @@ const INITIAL_CONTACT_FORM: AddContactForm = {
     MatTableModule,
     MatTabsModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule,
     TranslateModule,
     CompanyPipelineBadgeComponent,
-    RelationshipTypeBadgeComponent,
     StateChangeModalComponent,
     CustomButtonComponent,
     ConfirmationModalComponent,
@@ -124,6 +130,53 @@ export class CompanyDetailComponent implements OnInit {
   readonly company = signal<Company | null>(null);
   readonly stateHistory = signal<CompanyStateChange[]>([]);
   readonly vacancies = signal<Vacancy[]>([]);
+
+  /** Tracking tab filters */
+  readonly trackingFilterDateFrom = signal<Date | null>(null);
+  readonly trackingFilterDateTo = signal<Date | null>(null);
+  readonly trackingFilterUser = signal<string>('');
+  readonly trackingFilterState = signal<string>('');
+
+  /** Unique users from state history */
+  readonly trackingUsers = computed(() => {
+    const users = this.stateHistory().map(h => h.user);
+    return [...new Set(users)].sort();
+  });
+
+  /** Unique pipeline stages from state history */
+  readonly trackingStages = computed(() => {
+    const stages = new Set<CompanyPipelineStage>();
+    this.stateHistory().forEach(h => {
+      if (h.fromState) stages.add(h.fromState);
+      if (h.toState) stages.add(h.toState);
+    });
+    return [...stages];
+  });
+
+  /** Filtered state history based on filters */
+  readonly filteredStateHistory = computed(() => {
+    let history = this.stateHistory();
+    const dateFrom = this.trackingFilterDateFrom();
+    const dateTo = this.trackingFilterDateTo();
+    const user = this.trackingFilterUser();
+    const state = this.trackingFilterState();
+
+    if (dateFrom) {
+      history = history.filter(h => new Date(h.date) >= dateFrom);
+    }
+    if (dateTo) {
+      const endOfDay = new Date(dateTo);
+      endOfDay.setHours(23, 59, 59, 999);
+      history = history.filter(h => new Date(h.date) <= endOfDay);
+    }
+    if (user) {
+      history = history.filter(h => h.user === user);
+    }
+    if (state) {
+      history = history.filter(h => h.fromState === state || h.toState === state);
+    }
+    return history;
+  });
 
   /** Tab state */
   readonly selectedTabIndex = signal(0);
@@ -821,13 +874,6 @@ export class CompanyDetailComponent implements OnInit {
    */
   getVacancyPipelineLabel(stage: string): string {
     return PIPELINE_STAGE_LABELS[stage as keyof typeof PIPELINE_STAGE_LABELS] || stage;
-  }
-
-  /**
-   * Calculates research completeness percentage.
-   */
-  getResearchCompleteness(): number {
-    return this.company()?.research?.completenessPercent || 0;
   }
 
   /**

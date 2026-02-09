@@ -543,19 +543,6 @@ describe('CompanyDetailComponent', () => {
       expect(component.getVacancyPipelineLabel('contacted')).toBe('Contacted');
     });
 
-    it('should calculate research completeness', () => {
-      expect(component.getResearchCompleteness()).toBe(75);
-    });
-
-    it('should return 0 for missing research completeness', () => {
-      const companyWithoutCompleteness = {
-        ...mockCompany,
-        research: undefined,
-      };
-      component.company.set(companyWithoutCompleteness as Company);
-      expect(component.getResearchCompleteness()).toBe(0);
-    });
-
     it('should navigate to vacancy detail', () => {
       const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
       component.navigateToVacancy(5);
