@@ -665,7 +665,7 @@
     (keydown.escape)="closeAddContactModal()"
   >
     <div
-      class="modal modal-sm"
+      class="modal-container modal-sm"
       role="document"
       tabindex="-1"
       (click)="$event.stopPropagation()"
@@ -678,21 +678,23 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>
-          {{ 'ADD_CONTACT.FORM_FOR' | translate }} <strong>{{ company()?.name }}</strong>
-        </p>
-        <p class="modal-description">{{ 'ADD_CONTACT.FORM_DESCRIPTION' | translate }}</p>
-        <!-- Mock form for now -->
         <div class="form-field">
-          <label class="form-label" for="contact-name">{{
-            'ADD_CONTACT.NAME_LABEL' | translate
-          }}</label>
+          <label class="form-label" for="contact-name">
+            {{ 'ADD_CONTACT.NAME_LABEL' | translate }}
+            <span class="required-mark">*</span>
+          </label>
           <input
             type="text"
             id="contact-name"
             class="form-input"
+            [class.input-error]="contactFormErrors().fullName"
             [placeholder]="'ADD_CONTACT.NAME_PLACEHOLDER' | translate"
+            [ngModel]="contactForm().fullName"
+            (ngModelChange)="updateContactField('fullName', $event)"
           />
+          @if (contactFormErrors().fullName) {
+            <span class="field-error">{{ contactFormErrors().fullName }}</span>
+          }
         </div>
         <div class="form-field">
           <label class="form-label" for="contact-title">{{
@@ -703,20 +705,82 @@
             id="contact-title"
             class="form-input"
             [placeholder]="'ADD_CONTACT.TITLE_PLACEHOLDER' | translate"
+            [ngModel]="contactForm().jobTitle"
+            (ngModelChange)="updateContactField('jobTitle', $event)"
           />
         </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="contact-email">{{
+              'ADD_CONTACT.EMAIL_LABEL' | translate
+            }}</label>
+            <input
+              type="email"
+              id="contact-email"
+              class="form-input"
+              [class.input-error]="contactFormErrors().email"
+              [placeholder]="'ADD_CONTACT.EMAIL_PLACEHOLDER' | translate"
+              [ngModel]="contactForm().email"
+              (ngModelChange)="updateContactField('email', $event)"
+            />
+            @if (contactFormErrors().email) {
+              <span class="field-error">{{ contactFormErrors().email }}</span>
+            }
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="contact-phone">{{
+              'ADD_CONTACT.PHONE_LABEL' | translate
+            }}</label>
+            <input
+              type="tel"
+              id="contact-phone"
+              class="form-input"
+              [placeholder]="'ADD_CONTACT.PHONE_PLACEHOLDER' | translate"
+              [ngModel]="contactForm().phone"
+              (ngModelChange)="updateContactField('phone', $event)"
+            />
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="contact-linkedin">{{
+            'ADD_CONTACT.LINKEDIN_LABEL' | translate
+          }}</label>
+          <input
+            type="url"
+            id="contact-linkedin"
+            class="form-input"
+            [class.input-error]="contactFormErrors().linkedinUrl"
+            [placeholder]="'ADD_CONTACT.LINKEDIN_PLACEHOLDER' | translate"
+            [ngModel]="contactForm().linkedinUrl"
+            (ngModelChange)="updateContactField('linkedinUrl', $event)"
+          />
+          @if (contactFormErrors().linkedinUrl) {
+            <span class="field-error">{{ contactFormErrors().linkedinUrl }}</span>
+          }
+        </div>
+        <mat-checkbox
+          class="form-checkbox"
+          [ngModel]="contactForm().isPrimary"
+          (ngModelChange)="updateContactField('isPrimary', $event)"
+        >
+          {{ 'ADD_CONTACT.IS_PRIMARY' | translate }}
+        </mat-checkbox>
+        <p class="primary-note">{{ 'ADD_CONTACT.PRIMARY_NOTE' | translate }}</p>
       </div>
       <div class="modal-footer">
         <app-custom-button
           [label]="'ADD_CONTACT.CANCEL' | translate"
           variant="secondary"
           [type]="'button'"
+          [disabled]="isSavingContact()"
           (buttonClick)="closeAddContactModal()"
         />
         <app-custom-button
           [label]="'ADD_CONTACT.SAVE' | translate"
           variant="primary"
           [type]="'button'"
+          [disabled]="isSavingContact() || !isContactFormValid()"
+          [loading]="isSavingContact()"
           (buttonClick)="addContact()"
         />
       </div>
