@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -58,6 +59,30 @@ const PIPELINE_STAGES: CompanyPipelineStage[] = [
   'lost',
 ];
 
+interface AddContactForm {
+  fullName: string;
+  jobTitle: string;
+  email: string;
+  phone: string;
+  linkedinUrl: string;
+  isPrimary: boolean;
+}
+
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  linkedinUrl?: string;
+}
+
+const INITIAL_CONTACT_FORM: AddContactForm = {
+  fullName: '',
+  jobTitle: '',
+  email: '',
+  phone: '',
+  linkedinUrl: '',
+  isPrimary: false,
+};
+
 @Component({
   selector: 'app-company-detail',
   standalone: true,
@@ -68,6 +93,7 @@ const PIPELINE_STAGES: CompanyPipelineStage[] = [
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatCheckboxModule,
     MatSnackBarModule,
     MatTableModule,
     MatTabsModule,
@@ -155,6 +181,14 @@ export class CompanyDetailComponent implements OnInit {
 
   /** Add contact modal state */
   readonly showAddContactModal = signal(false);
+  readonly contactForm = signal<AddContactForm>({ ...INITIAL_CONTACT_FORM });
+  readonly contactFormErrors = signal<FormErrors>({});
+  readonly isSavingContact = signal(false);
+
+  readonly isContactFormValid = computed(() => {
+    const errors = this.validateContactForm(this.contactForm());
+    return Object.keys(errors).length === 0;
+  });
 
   /** State options for state change modal */
   readonly stateOptions = computed<StateOption<CompanyPipelineStage>[]>(() =>
@@ -431,6 +465,7 @@ export class CompanyDetailComponent implements OnInit {
    * Opens the add contact modal.
    */
   openAddContactModal(): void {
+    this.resetContactForm();
     this.showAddContactModal.set(true);
   }
 
@@ -439,20 +474,131 @@ export class CompanyDetailComponent implements OnInit {
    */
   closeAddContactModal(): void {
     this.showAddContactModal.set(false);
+    this.resetContactForm();
+  }
+
+  updateContactField<K extends keyof AddContactForm>(key: K, value: AddContactForm[K]): void {
+    this.contactForm.update(form => ({
+      ...form,
+      [key]: value,
+    }));
+
+    if (this.contactFormErrors()[key as keyof FormErrors]) {
+      this.contactFormErrors.update(errors => ({
+        ...errors,
+        [key]: undefined,
+      }));
+    }
+  }
+
+  resetContactForm(): void {
+    this.contactForm.set({ ...INITIAL_CONTACT_FORM });
+    this.contactFormErrors.set({});
   }
 
   /**
-   * Mock implementation of adding a contact.
+   * Validates the contact form and returns errors.
+   */
+  private validateContactForm(form: AddContactForm): FormErrors {
+    const errors: FormErrors = {};
+
+    if (!form.fullName.trim()) {
+      errors.fullName = this.translate.instant('ADD_CONTACT.ERROR_NAME_REQUIRED');
+    }
+
+    if (form.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(form.email.trim())) {
+        errors.email = this.translate.instant('ADD_CONTACT.ERROR_EMAIL_INVALID');
+      }
+    }
+
+    if (form.linkedinUrl.trim()) {
+      if (!form.linkedinUrl.toLowerCase().includes('linkedin.com')) {
+        errors.linkedinUrl = this.translate.instant('ADD_CONTACT.ERROR_LINKEDIN_INVALID');
+      }
+    }
+
+    return errors;
+  }
+
+  /**
+   * Adds a new contact using the company service.
    */
   addContact(): void {
-    this.snackBar.open(
-      this.translate.instant('ADD_CONTACT.COMING_SOON'),
-      this.translate.instant('COMMON.CLOSE'),
-      {
-        duration: 3000,
-      }
-    );
-    this.closeAddContactModal();
+    const form = this.contactForm();
+    const errors = this.validateContactForm(form);
+
+    if (Object.keys(errors).length > 0) {
+      this.contactFormErrors.set(errors);
+      return;
+    }
+
+    const companyId = this.company()?.id;
+    if (!companyId) {
+      return;
+    }
+
+    this.isSavingContact.set(true);
+
+    this.companyService
+      .createContact(companyId, {
+        fullName: form.fullName.trim(),
+        jobTitle: form.jobTitle.trim(),
+        email: form.email.trim() || undefined,
+        phone: form.phone.trim() || undefined,
+        linkedinUrl: form.linkedinUrl.trim() || undefined,
+        isPrimary: form.isPrimary,
+      })
+      .subscribe({
+        next: newContact => {
+          const currentCompany = this.company();
+          if (currentCompany) {
+            const baseContacts = form.isPrimary
+              ? currentCompany.contacts.map(contact => ({
+                  ...contact,
+                  isPrimary: false,
+                }))
+              : [...currentCompany.contacts];
+
+            const hasContact = baseContacts.some(contact => contact.id === newContact.id);
+            const updatedContacts = hasContact
+              ? baseContacts.map(contact =>
+                  contact.id === newContact.id ? { ...contact, ...newContact } : contact
+                )
+              : [...baseContacts, newContact];
+
+            this.company.set({
+              ...currentCompany,
+              contacts: updatedContacts,
+            });
+          }
+
+          this.isSavingContact.set(false);
+          this.snackBar.open(
+            this.translate.instant('ADD_CONTACT.SUCCESS'),
+            this.translate.instant('COMMON.CLOSE'),
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar'],
+            }
+          );
+          this.closeAddContactModal();
+        },
+        error: error => {
+          this.isSavingContact.set(false);
+
+          const message =
+            error?.code === 'DUPLICATE_EMAIL'
+              ? this.translate.instant('ADD_CONTACT.ERROR_DUPLICATE_EMAIL')
+              : this.translate.instant('ADD_CONTACT.ERROR');
+
+          this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+          });
+        },
+      });
   }
 
   // ============= Utility Methods =============
