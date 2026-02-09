@@ -25,8 +25,14 @@ export interface CreateCompanyDto {
   industry?: Industry;
   /** Company location (City, State) */
   location?: string;
-  /** Company size by employee count */
-  employees?: CompanySize;
+  /** Number of employees */
+  employees?: number;
+  /** Annual revenue in USD */
+  annualRevenue?: number;
+  /** Year the company was founded */
+  yearFounded?: number;
+  /** Type of relationship with the company */
+  relationshipType: CompanyRelationshipType;
   /** Company phone number */
   phone?: string;
 }

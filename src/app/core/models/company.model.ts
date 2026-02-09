@@ -106,8 +106,8 @@ export interface Company {
   website?: string;
   /** Company phone number */
   phone?: string;
-  /** Company size by employee count */
-  employees?: CompanySize;
+  /** Number of employees (can be exact number or size range) */
+  employees?: number | CompanySize;
   /** Country where the company is located */
   country?: Country;
   /** List of contacts at the company */
