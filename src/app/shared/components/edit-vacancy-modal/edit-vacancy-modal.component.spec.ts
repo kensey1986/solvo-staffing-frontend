@@ -129,6 +129,11 @@ describe('EditVacancyModalComponent', () => {
         isRemoteViable: true,
       })
     );
+
+    const payload = submitSpy.mock.calls[0][0];
+    expect(payload.jobUrl).toBeUndefined();
+    expect(payload.source).toBeUndefined();
+    expect(payload.publishedDate).toBeUndefined();
   });
 
   it('should not emit submitEdit when form is invalid', () => {
@@ -210,6 +215,16 @@ describe('EditVacancyModalComponent', () => {
     expect(options.length).toBeGreaterThan(0);
     expect(options.some(o => o.value === 'indeed')).toBe(true);
     expect(options.some(o => o.value === 'linkedin')).toBe(true);
+  });
+
+  it('should not render source information fields', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('vacancy', mockVacancy);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#edit-source')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#edit-published-date')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#edit-job-url')).toBeNull();
   });
 
   it('should track modified fields count', () => {

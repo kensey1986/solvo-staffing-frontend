@@ -393,63 +393,6 @@ export interface EditVacancyFormData {
                 </div>
               </div>
 
-              <!-- Section: Información de Origen -->
-              <div class="form-section">
-                <h3 class="section-title">{{ 'EDIT_VACANCY_MODAL.SECTION_SOURCE' | translate }}</h3>
-
-                <div class="form-row">
-                  <div class="form-field" [class.field-modified]="isFieldModified('source')">
-                    <label class="form-label" for="edit-source">{{
-                      'EDIT_VACANCY_MODAL.SOURCE_LABEL' | translate
-                    }}</label>
-                    <mat-select
-                      id="edit-source"
-                      class="form-select"
-                      [(ngModel)]="formData.source"
-                      name="source"
-                      (ngModelChange)="onFieldChange()"
-                    >
-                      <mat-option value="">{{
-                        'EDIT_VACANCY_MODAL.UNSPECIFIED' | translate
-                      }}</mat-option>
-                      @for (option of sourceOptions(); track option.value) {
-                        <mat-option [value]="option.value">
-                          {{ option.label }}
-                        </mat-option>
-                      }
-                    </mat-select>
-                  </div>
-                  <div class="form-field" [class.field-modified]="isFieldModified('publishedDate')">
-                    <label class="form-label" for="edit-published-date">{{
-                      'EDIT_VACANCY_MODAL.PUBLISHED_DATE_LABEL' | translate
-                    }}</label>
-                    <input
-                      id="edit-published-date"
-                      type="date"
-                      class="form-input"
-                      [(ngModel)]="formData.publishedDate"
-                      name="publishedDate"
-                      (ngModelChange)="onFieldChange()"
-                    />
-                  </div>
-                </div>
-
-                <div class="form-field" [class.field-modified]="isFieldModified('jobUrl')">
-                  <label class="form-label" for="edit-job-url">{{
-                    'EDIT_VACANCY_MODAL.URL_LABEL' | translate
-                  }}</label>
-                  <input
-                    id="edit-job-url"
-                    type="url"
-                    class="form-input"
-                    [(ngModel)]="formData.jobUrl"
-                    name="jobUrl"
-                    placeholder="https://..."
-                    (ngModelChange)="onFieldChange()"
-                  />
-                </div>
-              </div>
-
               <!-- Section: Notas -->
               <div class="form-section">
                 <h3 class="section-title">{{ 'EDIT_VACANCY_MODAL.SECTION_NOTES' | translate }}</h3>
@@ -1056,13 +999,17 @@ export class EditVacancyModalComponent {
 
     this.isSaving.set(true);
 
+    const { jobUrl, publishedDate, source, ...rest } = this.formData;
+    void jobUrl;
+    void publishedDate;
+    void source;
+
     this.submitEdit.emit({
-      ...this.formData,
+      ...rest,
       jobTitle: this.formData.jobTitle.trim(),
       description: this.formData.description.trim(),
       location: this.formData.location.trim(),
       department: this.formData.department.trim(),
-      jobUrl: this.formData.jobUrl.trim(),
       notes: this.formData.notes.trim(),
     });
   }
