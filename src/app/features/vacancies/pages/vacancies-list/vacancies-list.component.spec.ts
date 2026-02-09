@@ -208,7 +208,7 @@ describe('VacanciesListComponent', () => {
     }));
 
     it('should handle page size change', fakeAsync(() => {
-      component.onPageChange({ pageIndex: 0, pageSize: 100, length: 200 });
+      component.onPageChange({ page: 1, pageSize: 100 });
       tick();
 
       expect(component.pageSize()).toBe(100);
