@@ -39,11 +39,12 @@
         <mat-form-field appearance="outline" class="filter-field">
           <mat-select
             id="statusFilter"
-            [ngModel]="statusFilter()"
-            (ngModelChange)="statusFilter.set($event); applyFilters()"
+            [ngModel]="pipelineStageFilter()"
+            (ngModelChange)="pipelineStageFilter.set($event); applyFilters()"
+            [placeholder]="'VACANCIES.ALL' | translate"
           >
             @for (option of statusOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+              <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -61,29 +62,10 @@
             [placeholder]="'VACANCIES.COMMERCIAL_PLACEHOLDER' | translate"
             [ngModel]="assignedFilter()"
             (ngModelChange)="onAssignedSearchChange($event)"
-            [disabled]="myAssignmentsActive()"
             [attr.aria-label]="'VACANCIES.COMMERCIAL' | translate"
           />
           <mat-icon matPrefix>person</mat-icon>
         </mat-form-field>
-      </div>
-
-      <!-- My Assignments -->
-      <div class="filter-group">
-        <span class="filter-label" aria-hidden="true">{{
-          'VACANCIES.MY_ASSIGNMENTS' | translate
-        }}</span>
-        <app-custom-button
-          [label]="
-            myAssignmentsActive()
-              ? ('VACANCIES.VIEW_ALL' | translate)
-              : ('VACANCIES.MY_ASSIGNMENTS' | translate)
-          "
-          [variant]="myAssignmentsActive() ? 'primary' : 'secondary'"
-          [type]="'button'"
-          (buttonClick)="toggleMyAssignments()"
-          class="assigned-toggle-btn"
-        />
       </div>
 
       <!-- Source -->
@@ -94,9 +76,10 @@
             id="sourceFilter"
             [ngModel]="sourceFilter()"
             (ngModelChange)="sourceFilter.set($event); applyFilters()"
+            [placeholder]="'VACANCIES.ALL' | translate"
           >
             @for (option of sourceOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+              <mat-option [value]="option.value">{{ option.labelKey | translate }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -110,9 +93,10 @@
             id="stateFilter"
             [ngModel]="stateFilter()"
             (ngModelChange)="stateFilter.set($event); applyFilters()"
+            [placeholder]="'VACANCIES.ALL' | translate"
           >
             @for (state of usStates; track state.value) {
-              <mat-option [value]="state.value">{{ state.label }}</mat-option>
+              <mat-option [value]="state.value">{{ state.labelKey | translate }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -150,12 +134,17 @@
           <input
             matInput
             id="dateFrom"
-            type="date"
             [ngModel]="dateFrom()"
             (ngModelChange)="dateFrom.set($event)"
-            (change)="applyFilters()"
+            (dateChange)="onDateFromChange($event.value)"
+            [matDatepicker]="dateFromPicker"
+            [max]="dateTo()"
+            [placeholder]="'VACANCIES.DATE_PLACEHOLDER' | translate"
             [attr.aria-label]="'VACANCIES.DATE_FROM' | translate"
           />
+          <mat-datepicker-toggle matIconSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateFromPicker></mat-datepicker>
+          <mat-hint>{{ 'VACANCIES.DATE_PLACEHOLDER' | translate }}</mat-hint>
         </mat-form-field>
       </div>
 
@@ -166,12 +155,17 @@
           <input
             matInput
             id="dateTo"
-            type="date"
             [ngModel]="dateTo()"
             (ngModelChange)="dateTo.set($event)"
-            (change)="applyFilters()"
+            (dateChange)="onDateToChange($event.value)"
+            [matDatepicker]="dateToPicker"
+            [min]="dateFrom()"
+            [placeholder]="'VACANCIES.DATE_PLACEHOLDER' | translate"
             [attr.aria-label]="'VACANCIES.DATE_TO' | translate"
           />
+          <mat-datepicker-toggle matIconSuffix [for]="dateToPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dateToPicker></mat-datepicker>
+          <mat-hint>{{ 'VACANCIES.DATE_PLACEHOLDER' | translate }}</mat-hint>
         </mat-form-field>
       </div>
 

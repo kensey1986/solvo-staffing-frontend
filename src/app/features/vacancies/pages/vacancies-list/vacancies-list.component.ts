@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -27,7 +29,7 @@ import {
   VACANCY_SERVICE_PROVIDER,
   COMPANY_SERVICE_PROVIDER,
   Vacancy,
-  VacancyStatus,
+  PipelineStage,
   VacancySource,
   VacancyFilterParams,
   PaginatedResponse,
@@ -61,6 +63,8 @@ import {
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
@@ -71,7 +75,7 @@ import {
     CustomButtonComponent,
     TranslateModule,
   ],
-  providers: [VACANCY_SERVICE_PROVIDER, COMPANY_SERVICE_PROVIDER],
+  providers: [VACANCY_SERVICE_PROVIDER, COMPANY_SERVICE_PROVIDER, provideNativeDateAdapter()],
   templateUrl: './vacancies-list.component.html',
   styleUrl: './vacancies-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,14 +102,13 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
 
   // Filter state
   readonly searchFilter = signal('');
-  readonly statusFilter = signal<VacancyStatus | ''>('');
-  readonly sourceFilter = signal<VacancySource | ''>('');
-  readonly stateFilter = signal('');
+  readonly pipelineStageFilter = signal<PipelineStage | null>(null);
+  readonly sourceFilter = signal<VacancySource | null>(null);
+  readonly stateFilter = signal<string | null>(null);
   readonly companyFilter = signal('');
-  readonly dateFrom = signal('');
-  readonly dateTo = signal('');
+  readonly dateFrom = signal<Date | null>(null);
+  readonly dateTo = signal<Date | null>(null);
   readonly assignedFilter = signal('');
-  readonly myAssignmentsActive = signal(false);
 
   // Search debounce
   readonly isSearchingTitle = signal(false);
@@ -133,32 +136,31 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
   ];
 
   // Filter options
-  readonly statusOptions: { value: VacancyStatus | ''; label: string }[] = [
-    { value: '', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'filled', label: 'Filled' },
-    { value: 'expired', label: 'Expired' },
+  readonly statusOptions: { value: PipelineStage; labelKey: string }[] = [
+    { value: 'detected', labelKey: 'VACANCIES.PIPELINE_DETECTED' },
+    { value: 'contacted', labelKey: 'VACANCIES.PIPELINE_CONTACTED' },
+    { value: 'proposal', labelKey: 'VACANCIES.PIPELINE_PROPOSAL' },
+    { value: 'won', labelKey: 'VACANCIES.PIPELINE_WON' },
+    { value: 'lost', labelKey: 'VACANCIES.PIPELINE_LOST' },
   ];
 
-  readonly sourceOptions: { value: VacancySource | ''; label: string }[] = [
-    { value: '', label: 'All' },
-    { value: 'indeed', label: 'Indeed' },
-    { value: 'linkedin', label: 'LinkedIn' },
-    { value: 'company_website', label: 'Website' },
-    { value: 'manual', label: 'Manual' },
+  readonly sourceOptions: { value: VacancySource; labelKey: string }[] = [
+    { value: 'indeed', labelKey: 'VACANCIES.SOURCE_INDEED' },
+    { value: 'linkedin', labelKey: 'VACANCIES.SOURCE_LINKEDIN' },
+    { value: 'company_website', labelKey: 'VACANCIES.SOURCE_WEBSITE' },
+    { value: 'manual', labelKey: 'VACANCIES.SOURCE_MANUAL' },
   ];
 
   readonly usStates = [
-    { value: '', label: 'All' },
-    { value: 'CA', label: 'California' },
-    { value: 'TX', label: 'Texas' },
-    { value: 'FL', label: 'Florida' },
-    { value: 'NY', label: 'New York' },
-    { value: 'GA', label: 'Georgia' },
-    { value: 'IL', label: 'Illinois' },
-    { value: 'CO', label: 'Colorado' },
-    { value: 'AZ', label: 'Arizona' },
-    { value: 'MA', label: 'Massachusetts' },
+    { value: 'CA', labelKey: 'VACANCIES.STATE_CA' },
+    { value: 'TX', labelKey: 'VACANCIES.STATE_TX' },
+    { value: 'FL', labelKey: 'VACANCIES.STATE_FL' },
+    { value: 'NY', labelKey: 'VACANCIES.STATE_NY' },
+    { value: 'GA', labelKey: 'VACANCIES.STATE_GA' },
+    { value: 'IL', labelKey: 'VACANCIES.STATE_IL' },
+    { value: 'CO', labelKey: 'VACANCIES.STATE_CO' },
+    { value: 'AZ', labelKey: 'VACANCIES.STATE_AZ' },
+    { value: 'MA', labelKey: 'VACANCIES.STATE_MA' },
   ];
 
   // Computed pagination info
@@ -208,13 +210,13 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
       page: this.currentPage(),
       pageSize: this.pageSize(),
       search: this.searchFilter() || undefined,
-      status: this.statusFilter() || undefined,
+      pipelineStage: this.pipelineStageFilter() || undefined,
       source: this.sourceFilter() || undefined,
       state: this.stateFilter() || undefined,
       company: this.companyFilter() || undefined,
-      dateFrom: this.dateFrom() || undefined,
-      dateTo: this.dateTo() || undefined,
-      assignedTo: this.assignedFilter() || (this.myAssignmentsActive() ? 'Carlos M.' : undefined),
+      dateFrom: this.formatDateForFilter(this.dateFrom()),
+      dateTo: this.formatDateForFilter(this.dateTo()),
+      assignedTo: this.assignedFilter() || undefined,
     };
 
     this.vacancyService.getAll(params).subscribe({
@@ -263,30 +265,16 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
    */
   clearFilters(): void {
     this.searchFilter.set('');
-    this.statusFilter.set('');
-    this.sourceFilter.set('');
-    this.stateFilter.set('');
+    this.pipelineStageFilter.set(null);
+    this.sourceFilter.set(null);
+    this.stateFilter.set(null);
     this.companyFilter.set('');
-    this.dateFrom.set('');
-    this.dateTo.set('');
+    this.dateFrom.set(null);
+    this.dateTo.set(null);
     this.assignedFilter.set('');
-    this.myAssignmentsActive.set(false);
     this.isSearchingTitle.set(false);
     this.isSearchingCompany.set(false);
     this.isSearchingAssigned.set(false);
-    this.applyFilters();
-  }
-
-  /**
-   * Toggles "My Assignments" filter.
-   */
-  toggleMyAssignments(): void {
-    const newState = !this.myAssignmentsActive();
-    this.myAssignmentsActive.set(newState);
-    if (newState) {
-      this.assignedFilter.set(''); // Clear specific assigned search if "Mine" is active
-      this.isSearchingAssigned.set(false);
-    }
     this.applyFilters();
   }
 
@@ -297,6 +285,16 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
     this.currentPage.set(event.page);
     this.pageSize.set(event.pageSize);
     this.loadVacancies();
+  }
+
+  onDateFromChange(value: Date | null): void {
+    this.dateFrom.set(value);
+    this.applyFilters();
+  }
+
+  onDateToChange(value: Date | null): void {
+    this.dateTo.set(value);
+    this.applyFilters();
   }
 
   /**
@@ -356,6 +354,14 @@ export class VacanciesListComponent implements OnInit, OnDestroy {
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  private formatDateForFilter(date: Date | null): string | undefined {
+    if (!date) return undefined;
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   /**
