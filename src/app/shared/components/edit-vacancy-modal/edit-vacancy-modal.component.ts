@@ -999,13 +999,8 @@ export class EditVacancyModalComponent {
 
     this.isSaving.set(true);
 
-    const { jobUrl, publishedDate, source, ...rest } = this.formData;
-    void jobUrl;
-    void publishedDate;
-    void source;
-
     this.submitEdit.emit({
-      ...rest,
+      ...this.formData,
       jobTitle: this.formData.jobTitle.trim(),
       description: this.formData.description.trim(),
       location: this.formData.location.trim(),
