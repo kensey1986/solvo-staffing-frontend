@@ -99,11 +99,11 @@ describe('CompanyApiService', () => {
   });
 
   it('should create company', () => {
-    const payload: CreateCompanyDto = { name: 'New Company' };
+    const payload: CreateCompanyDto = { name: 'New Company', relationshipType: 'prospect' };
     const mockCompany = {
       id: 1,
       name: 'New Company',
-      relationshipType: 'lead',
+      relationshipType: 'prospect',
       pipelineStage: 'lead',
       contacts: [],
     } as Company;

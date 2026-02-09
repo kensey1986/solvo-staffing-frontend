@@ -864,7 +864,7 @@ export class CompanyMockService implements ICompanyService {
       location: data.location,
       employees: data.employees,
       phone: data.phone,
-      relationshipType: 'lead',
+      relationshipType: data.relationshipType || 'prospect',
       pipelineStage: 'lead',
       contacts: [],
       research: {

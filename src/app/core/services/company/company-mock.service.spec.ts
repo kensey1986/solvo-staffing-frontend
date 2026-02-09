@@ -161,6 +161,7 @@ describe('CompanyMockService', () => {
         industry: 'technology',
         location: 'Test City, TS',
         employees: '50-100',
+        relationshipType: 'prospect',
         phone: '+1 555-1234',
       };
 
@@ -172,7 +173,7 @@ describe('CompanyMockService', () => {
       expect(result!.id).toBeDefined();
       expect(result!.name).toBe('Test Company');
       expect(result!.website).toBe('https://testcompany.com');
-      expect(result!.relationshipType).toBe('lead');
+      expect(result!.relationshipType).toBe('prospect');
       expect(result!.pipelineStage).toBe('lead');
       expect(result!.contacts).toEqual([]);
       expect(result!.research?.completenessPercent).toBe(0);
@@ -181,6 +182,7 @@ describe('CompanyMockService', () => {
     it('should add created company to the list', fakeAsync(() => {
       const newCompanyData: CreateCompanyDto = {
         name: 'Another Test Company',
+        relationshipType: 'prospect',
       };
 
       service.create(newCompanyData).subscribe();
