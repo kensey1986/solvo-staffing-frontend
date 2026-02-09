@@ -107,7 +107,10 @@
           <!-- Contacts Card -->
           <div class="info-card">
             <div class="card-header">
-              <h3 class="card-title">{{ 'COMPANY_DETAIL.CONTACTS' | translate }}</h3>
+              <h3 class="card-title">
+                {{ 'COMPANY_DETAIL.CONTACTS' | translate }}
+                <span class="contacts-count">({{ comp.contacts.length }})</span>
+              </h3>
               <app-custom-button
                 [label]="'COMPANY_DETAIL.ADD_CONTACT' | translate"
                 variant="secondary"
@@ -121,80 +124,214 @@
                 <p>{{ 'COMPANY_DETAIL.NO_CONTACTS' | translate }}</p>
               </div>
             } @else {
-              <table mat-table [dataSource]="comp.contacts" class="contacts-table">
-                <!-- Name Column -->
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_NAME' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.fullName }}</td>
-                </ng-container>
-
-                <!-- Title Column -->
-                <ng-container matColumnDef="title">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_TITLE' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.jobTitle }}</td>
-                </ng-container>
-
-                <!-- Email Column -->
-                <ng-container matColumnDef="email">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_EMAIL' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">
-                    @if (contact.email) {
-                      <a [href]="'mailto:' + contact.email" class="contact-link">
-                        {{ contact.email }}
-                      </a>
+              <div class="contacts-list">
+                @for (contact of comp.contacts; track contact.id) {
+                  <div
+                    class="contact-card"
+                    [class.contact-card-editing]="editingContactId() === contact.id"
+                  >
+                    @if (editingContactId() === contact.id) {
+                      <!-- Edit Mode -->
+                      <div class="contact-edit-form">
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label
+                              class="form-label"
+                              [attr.for]="'contact-edit-name-' + contact.id"
+                            >
+                              {{ 'EDIT_CONTACT.NAME_LABEL' | translate }}
+                            </label>
+                            <input
+                              [id]="'contact-edit-name-' + contact.id"
+                              type="text"
+                              class="form-input"
+                              [class.input-error]="editContactFormErrors().fullName"
+                              [ngModel]="editContactForm().fullName"
+                              (ngModelChange)="updateEditContactField('fullName', $event)"
+                              required
+                            />
+                            @if (editContactFormErrors().fullName) {
+                              <span class="field-error">{{
+                                editContactFormErrors().fullName
+                              }}</span>
+                            }
+                          </div>
+                          <div class="form-group">
+                            <label
+                              class="form-label"
+                              [attr.for]="'contact-edit-title-' + contact.id"
+                            >
+                              {{ 'EDIT_CONTACT.TITLE_LABEL' | translate }}
+                            </label>
+                            <input
+                              [id]="'contact-edit-title-' + contact.id"
+                              type="text"
+                              class="form-input"
+                              [ngModel]="editContactForm().jobTitle"
+                              (ngModelChange)="updateEditContactField('jobTitle', $event)"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label
+                              class="form-label"
+                              [attr.for]="'contact-edit-email-' + contact.id"
+                            >
+                              {{ 'EDIT_CONTACT.EMAIL_LABEL' | translate }}
+                            </label>
+                            <input
+                              [id]="'contact-edit-email-' + contact.id"
+                              type="email"
+                              class="form-input"
+                              [class.input-error]="editContactFormErrors().email"
+                              [ngModel]="editContactForm().email"
+                              (ngModelChange)="updateEditContactField('email', $event)"
+                              [placeholder]="'EDIT_CONTACT.EMAIL_PLACEHOLDER' | translate"
+                            />
+                            @if (editContactFormErrors().email) {
+                              <span class="field-error">{{ editContactFormErrors().email }}</span>
+                            }
+                          </div>
+                          <div class="form-group">
+                            <label
+                              class="form-label"
+                              [attr.for]="'contact-edit-phone-' + contact.id"
+                            >
+                              {{ 'EDIT_CONTACT.PHONE_LABEL' | translate }}
+                            </label>
+                            <input
+                              [id]="'contact-edit-phone-' + contact.id"
+                              type="tel"
+                              class="form-input"
+                              [ngModel]="editContactForm().phone"
+                              (ngModelChange)="updateEditContactField('phone', $event)"
+                              [placeholder]="'EDIT_CONTACT.PHONE_PLACEHOLDER' | translate"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label
+                            class="form-label"
+                            [attr.for]="'contact-edit-linkedin-' + contact.id"
+                          >
+                            {{ 'EDIT_CONTACT.LINKEDIN_LABEL' | translate }}
+                          </label>
+                          <input
+                            [id]="'contact-edit-linkedin-' + contact.id"
+                            type="text"
+                            class="form-input"
+                            [class.input-error]="editContactFormErrors().linkedinUrl"
+                            [ngModel]="editContactForm().linkedinUrl"
+                            (ngModelChange)="updateEditContactField('linkedinUrl', $event)"
+                            [placeholder]="'EDIT_CONTACT.LINKEDIN_PLACEHOLDER' | translate"
+                          />
+                          @if (editContactFormErrors().linkedinUrl) {
+                            <span class="field-error">{{
+                              editContactFormErrors().linkedinUrl
+                            }}</span>
+                          }
+                        </div>
+                        <div class="form-group">
+                          <div class="form-check">
+                            <input
+                              [id]="'contact-edit-primary-' + contact.id"
+                              type="checkbox"
+                              [ngModel]="editContactForm().isPrimary"
+                              (ngModelChange)="updateEditContactField('isPrimary', $event)"
+                            />
+                            <label [attr.for]="'contact-edit-primary-' + contact.id">
+                              {{ 'EDIT_CONTACT.IS_PRIMARY' | translate }}
+                            </label>
+                          </div>
+                        </div>
+                        <div class="contact-edit-actions">
+                          <button
+                            class="btn btn-secondary btn-sm"
+                            (click)="cancelEditContact()"
+                            [disabled]="isSavingEditContact()"
+                          >
+                            {{ 'EDIT_CONTACT.CANCEL' | translate }}
+                          </button>
+                          <button
+                            class="btn btn-primary btn-sm"
+                            (click)="saveEditContact()"
+                            [disabled]="isSavingEditContact() || !isEditContactFormValid()"
+                          >
+                            @if (isSavingEditContact()) {
+                              <mat-spinner diameter="16"></mat-spinner>
+                            } @else {
+                              {{ 'EDIT_CONTACT.SAVE' | translate }}
+                            }
+                          </button>
+                        </div>
+                      </div>
                     } @else {
-                      {{ 'COMMON.NA' | translate }}
+                      <!-- View Mode -->
+                      <div class="contact-card-header">
+                        <div class="contact-info">
+                          <h4 class="contact-name">{{ contact.fullName }}</h4>
+                          <span class="contact-title">{{ contact.jobTitle }}</span>
+                        </div>
+                        <div class="contact-actions">
+                          @if (contact.isPrimary) {
+                            <span class="primary-badge-label">{{
+                              'COMPANY_DETAIL.COL_PRIMARY' | translate
+                            }}</span>
+                          }
+                          <button
+                            class="contact-edit-btn"
+                            (click)="startEditContact(contact)"
+                            [title]="'EDIT_CONTACT.EDIT_TOOLTIP' | translate"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="contact-card-details">
+                        @if (contact.email) {
+                          <div class="contact-detail">
+                            <mat-icon class="contact-icon">email</mat-icon>
+                            <a [href]="'mailto:' + contact.email" class="contact-link">{{
+                              contact.email
+                            }}</a>
+                          </div>
+                        }
+                        @if (contact.phone) {
+                          <div class="contact-detail">
+                            <mat-icon class="contact-icon">phone</mat-icon>
+                            <span>{{ contact.phone }}</span>
+                          </div>
+                        }
+                        @if (contact.linkedinUrl) {
+                          <div class="contact-detail">
+                            <mat-icon class="contact-icon">link</mat-icon>
+                            <a
+                              [href]="formatLinkedInUrl(contact.linkedinUrl)"
+                              target="_blank"
+                              class="contact-link"
+                            >
+                              {{ contact.linkedinUrl }}
+                            </a>
+                          </div>
+                        }
+                      </div>
                     }
-                  </td>
-                </ng-container>
-
-                <!-- Phone Column -->
-                <ng-container matColumnDef="phone">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_PHONE' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">
-                    {{ contact.phone || ('COMMON.NA' | translate) }}
-                  </td>
-                </ng-container>
-
-                <!-- LinkedIn Column -->
-                <ng-container matColumnDef="linkedin">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_LINKEDIN' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">
-                    @if (contact.linkedinUrl) {
-                      <a [href]="contact.linkedinUrl" target="_blank" class="external-link">
-                        {{ 'COMPANY_DETAIL.VIEW_PROFILE' | translate }} ↗
-                      </a>
-                    } @else {
-                      {{ 'COMMON.NA' | translate }}
-                    }
-                  </td>
-                </ng-container>
-
-                <!-- Primary Column -->
-                <ng-container matColumnDef="primary">
-                  <th mat-header-cell *matHeaderCellDef>
-                    {{ 'COMPANY_DETAIL.COL_PRIMARY' | translate }}
-                  </th>
-                  <td mat-cell *matCellDef="let contact">
-                    @if (contact.isPrimary) {
-                      <span class="primary-badge">✓</span>
-                    }
-                  </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="contactsColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: contactsColumns"></tr>
-              </table>
+                  </div>
+                }
+              </div>
             }
           </div>
         </div>

@@ -192,6 +192,17 @@ export class CompanyDetailComponent implements OnInit {
     return Object.keys(errors).length === 0;
   });
 
+  /** Edit contact inline state */
+  readonly editingContactId = signal<number | null>(null);
+  readonly editContactForm = signal<AddContactForm>({ ...INITIAL_CONTACT_FORM });
+  readonly editContactFormErrors = signal<FormErrors>({});
+  readonly isSavingEditContact = signal(false);
+
+  readonly isEditContactFormValid = computed(() => {
+    const errors = this.validateContactForm(this.editContactForm());
+    return Object.keys(errors).length === 0;
+  });
+
   /** State options for state change modal */
   readonly stateOptions = computed<StateOption<CompanyPipelineStage>[]>(() =>
     PIPELINE_STAGES.map(stage => ({
@@ -601,6 +612,146 @@ export class CompanyDetailComponent implements OnInit {
           });
         },
       });
+  }
+
+  // ============= Edit Contact Inline =============
+
+  /**
+   * Starts editing a contact inline.
+   */
+  startEditContact(contact: {
+    id: number;
+    fullName: string;
+    jobTitle: string;
+    email?: string;
+    phone?: string;
+    linkedinUrl?: string;
+    isPrimary: boolean;
+  }): void {
+    this.editingContactId.set(contact.id);
+    this.editContactForm.set({
+      fullName: contact.fullName,
+      jobTitle: contact.jobTitle,
+      email: contact.email || '',
+      phone: contact.phone || '',
+      linkedinUrl: contact.linkedinUrl || '',
+      isPrimary: contact.isPrimary,
+    });
+    this.editContactFormErrors.set({});
+  }
+
+  /**
+   * Cancels editing a contact.
+   */
+  cancelEditContact(): void {
+    this.editingContactId.set(null);
+    this.editContactForm.set({ ...INITIAL_CONTACT_FORM });
+    this.editContactFormErrors.set({});
+  }
+
+  /**
+   * Updates a field in the edit contact form.
+   */
+  updateEditContactField<K extends keyof AddContactForm>(key: K, value: AddContactForm[K]): void {
+    this.editContactForm.update(form => ({
+      ...form,
+      [key]: value,
+    }));
+
+    if (this.editContactFormErrors()[key as keyof FormErrors]) {
+      this.editContactFormErrors.update(errors => ({
+        ...errors,
+        [key]: undefined,
+      }));
+    }
+  }
+
+  /**
+   * Saves the edited contact.
+   */
+  saveEditContact(): void {
+    const form = this.editContactForm();
+    const errors = this.validateContactForm(form);
+
+    if (Object.keys(errors).length > 0) {
+      this.editContactFormErrors.set(errors);
+      return;
+    }
+
+    const companyId = this.company()?.id;
+    const contactId = this.editingContactId();
+    if (!companyId || !contactId) {
+      return;
+    }
+
+    this.isSavingEditContact.set(true);
+
+    this.companyService
+      .updateContact(companyId, contactId, {
+        fullName: form.fullName.trim(),
+        jobTitle: form.jobTitle.trim(),
+        email: form.email.trim() || undefined,
+        phone: form.phone.trim() || undefined,
+        linkedinUrl: form.linkedinUrl.trim() || undefined,
+        isPrimary: form.isPrimary,
+      })
+      .subscribe({
+        next: updatedContact => {
+          const currentCompany = this.company();
+          if (currentCompany) {
+            const baseContacts = form.isPrimary
+              ? currentCompany.contacts.map(contact => ({
+                  ...contact,
+                  isPrimary: contact.id === contactId ? true : false,
+                }))
+              : currentCompany.contacts;
+
+            const updatedContacts = baseContacts.map(contact =>
+              contact.id === contactId ? { ...contact, ...updatedContact } : contact
+            );
+
+            this.company.set({
+              ...currentCompany,
+              contacts: updatedContacts,
+            });
+          }
+
+          this.isSavingEditContact.set(false);
+          this.cancelEditContact();
+          this.snackBar.open(
+            this.translate.instant('EDIT_CONTACT.SUCCESS'),
+            this.translate.instant('COMMON.CLOSE'),
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar'],
+            }
+          );
+        },
+        error: error => {
+          this.isSavingEditContact.set(false);
+
+          const message =
+            error?.code === 'DUPLICATE_EMAIL'
+              ? this.translate.instant('EDIT_CONTACT.ERROR_DUPLICATE_EMAIL')
+              : this.translate.instant('EDIT_CONTACT.ERROR');
+
+          this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+          });
+        },
+      });
+  }
+
+  /**
+   * Formats LinkedIn URL to ensure it has https:// prefix.
+   */
+  formatLinkedInUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return 'https://' + url;
   }
 
   // ============= Utility Methods =============

@@ -181,7 +181,7 @@
   }
 }
 
-// Contacts Table
+// Contacts Table (legacy - keeping for compatibility)
 .contacts-table {
   width: 100%;
   margin-top: vars.$spacing-4;
@@ -197,6 +197,246 @@
   td.mat-mdc-cell {
     font-size: vars.$font-size-body-small;
     color: var(--mat-sys-on-surface);
+  }
+}
+
+// Contacts List (card-based layout)
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-3;
+  margin-top: vars.$spacing-4;
+}
+
+.contacts-count {
+  font-weight: vars.$font-weight-regular;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.contact-card {
+  background-color: var(--mat-sys-surface-container-low);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$radius-md;
+  padding: vars.$spacing-4;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  &.contact-card-editing {
+    background-color: var(--mat-sys-surface-container);
+    border-color: var(--mat-sys-primary);
+  }
+}
+
+.contact-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: vars.$spacing-3;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contact-name {
+  font-size: vars.$font-size-body-medium;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface);
+  margin: 0;
+}
+
+.contact-title {
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-2;
+}
+
+.primary-badge-label {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  padding: 2px 10px;
+  border-radius: vars.$radius-sm;
+  font-size: vars.$font-size-label-small;
+  font-weight: vars.$font-weight-medium;
+}
+
+.contact-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--mat-sys-on-surface-variant);
+  border-radius: vars.$radius-sm;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface);
+  }
+
+  &:active {
+    background-color: var(--mat-sys-surface-container);
+  }
+}
+
+.contact-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-2;
+}
+
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-2;
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.contact-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Contact Edit Form (inline)
+.contact-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-4;
+}
+
+.contact-edit-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: vars.$spacing-4;
+}
+
+.contact-edit-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-1;
+}
+
+.contact-edit-form .form-label {
+  font-size: vars.$font-size-label-small;
+  font-weight: vars.$font-weight-medium;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.contact-edit-form .form-input {
+  padding: vars.$spacing-2 vars.$spacing-3;
+  font-size: vars.$font-size-body-small;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: vars.$radius-sm;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--mat-sys-primary);
+  }
+
+  &.input-error {
+    border-color: var(--mat-sys-error);
+  }
+
+  &::placeholder {
+    color: var(--mat-sys-on-surface-variant);
+    opacity: 0.6;
+  }
+}
+
+.contact-edit-form .form-check {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-2;
+  font-size: vars.$font-size-body-small;
+  color: var(--mat-sys-on-surface);
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--mat-sys-primary);
+  }
+}
+
+.contact-edit-form .field-error {
+  font-size: vars.$font-size-label-small;
+  color: var(--mat-sys-error);
+}
+
+.contact-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: vars.$spacing-2;
+  margin-top: vars.$spacing-2;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$spacing-2;
+  padding: vars.$spacing-2 vars.$spacing-4;
+  font-size: vars.$font-size-label-medium;
+  font-weight: vars.$font-weight-medium;
+  border: none;
+  border-radius: vars.$radius-sm;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-sm {
+  padding: vars.$spacing-1 vars.$spacing-3;
+  font-size: vars.$font-size-label-small;
+}
+
+.btn-primary {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--mat-sys-primary-hover, var(--mat-sys-primary));
+    filter: brightness(1.1);
+  }
+}
+
+.btn-secondary {
+  background-color: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface);
+
+  &:hover:not(:disabled) {
+    background-color: var(--mat-sys-surface-container);
   }
 }
 
